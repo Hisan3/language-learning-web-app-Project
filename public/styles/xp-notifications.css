@@ -1,0 +1,214 @@
+/* ============================================
+   XP NOTIFICATION STYLES
+   Animated XP popups for practice activities
+   ============================================ */
+
+/* Regular XP Notification */
+.xp-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    opacity: 0;
+    transform: translateY(-20px) scale(0.8);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
+}
+
+.xp-notification.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.xp-notification-content {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 16px 24px;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 200px;
+    animation: bounce 0.6s ease;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.xp-icon {
+    font-size: 32px;
+    animation: rotate 0.6s ease;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg) scale(1);
+    }
+    50% {
+        transform: rotate(180deg) scale(1.2);
+    }
+    100% {
+        transform: rotate(360deg) scale(1);
+    }
+}
+
+.xp-text {
+    color: white;
+}
+
+.xp-amount {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 2px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.xp-message {
+    font-size: 12px;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+/* Bonus XP Notification */
+.xp-bonus-notification {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    z-index: 10001;
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
+}
+
+.xp-bonus-notification.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.xp-bonus-content {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    padding: 40px 50px;
+    border-radius: 30px;
+    box-shadow: 0 20px 60px rgba(240, 147, 251, 0.5);
+    text-align: center;
+    animation: pulse 1s ease infinite;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    min-width: 350px;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 20px 60px rgba(240, 147, 251, 0.5);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 25px 70px rgba(240, 147, 251, 0.7);
+    }
+}
+
+.xp-bonus-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+    animation: celebrate 0.8s ease infinite;
+}
+
+@keyframes celebrate {
+    0%, 100% {
+        transform: rotate(-5deg);
+    }
+    50% {
+        transform: rotate(5deg);
+    }
+}
+
+.xp-bonus-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.xp-bonus-amount {
+    font-size: 48px;
+    font-weight: 900;
+    color: #FFE66D;
+    margin-bottom: 12px;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    animation: glow 1.5s ease infinite;
+}
+
+@keyframes glow {
+    0%, 100% {
+        text-shadow: 0 4px 12px rgba(255, 230, 109, 0.4);
+    }
+    50% {
+        text-shadow: 0 4px 24px rgba(255, 230, 109, 0.8);
+    }
+}
+
+.xp-bonus-message {
+    font-size: 16px;
+    color: white;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    opacity: 0.95;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .xp-notification {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+    }
+
+    .xp-notification-content {
+        padding: 12px 20px;
+        justify-content: center;
+    }
+
+    .xp-bonus-content {
+        padding: 30px 25px;
+        min-width: 280px;
+        max-width: 90vw;
+    }
+
+    .xp-bonus-icon {
+        font-size: 48px;
+    }
+
+    .xp-bonus-title {
+        font-size: 18px;
+    }
+
+    .xp-bonus-amount {
+        font-size: 36px;
+    }
+
+    .xp-bonus-message {
+        font-size: 14px;
+    }
+}
+
+/* Confetti effect for bonus (optional enhancement) */
+@keyframes confetti-fall {
+    0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+    }
+}

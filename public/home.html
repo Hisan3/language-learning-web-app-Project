@@ -1,0 +1,246 @@
+<!-- home.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Home</title>
+  <link rel="stylesheet" href="./styles/home.css">
+  <link rel="stylesheet" href="./styles/gamification.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+</head>
+
+<body>
+  <!-- Top Navbar -->
+  <header class="navbar">
+    <div class="navbar-container">
+      <!-- Left: Logo + Navigation -->
+      <div class="navbar-left">
+        <div class="logo">
+          <div class="logo-icon">
+            <i data-lucide="home" width="20" height="20"></i>
+          </div>
+          <span class="logo-text">learnGlow</span>
+        </div>
+      </div>
+
+      <!-- Desktop Navigation -->
+      <nav class="desktop-nav">
+        <a href="home.html" class="nav-link nav-link-active">
+          <i data-lucide="home" width="16" height="16"></i>
+          Home
+        </a>
+        <a href="learnhome.html" class="nav-link">
+          <i data-lucide="book-open" width="16" height="16"></i>
+          Learn
+        </a>
+        <a href="practice.html" class="nav-link">
+          <i data-lucide="clipboard-list" width="16" height="16"></i>
+          Practice
+        </a>
+
+        <a href="productivity.html" class="nav-link">
+          <i data-lucide="layout-dashboard" width="16" height="16"></i>
+          Tasks
+        </a>
+        <a href="mindhome.html" class="nav-link">
+          <i data-lucide="heart" width="16" height="16"></i>
+          Mind
+        </a>
+        <a href="blog.html" class="nav-link">
+          <i data-lucide="pen-line" width="16" height="16"></i>
+          Blog
+        </a>
+      </nav>
+
+      <!-- Right: Profile + Mobile Menu Button -->
+      <div class="navbar-right">
+        <a href="profile.html" class="profile-pill" title="View Profile">
+          <div class="profile-initial" id="profile-initial">U</div>
+          <div class="profile-name" id="top-user">User</div>
+        </a>
+
+        <!-- Hamburger for mobile -->
+        <button class="menu-btn" id="menu-btn">
+          <i data-lucide="menu" width="24" height="24" id="menu-icon"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown Menu -->
+    <div class="mobile-nav" id="mobile-nav">
+      <!-- Mobile Profile Info -->
+      <div class="mobile-profile-section">
+        <a href="profile.html" class="mobile-profile-pill">
+          <div class="mobile-profile-initial" id="mobile-profile-initial">U</div>
+          <div class="mobile-profile-name" id="mobile-user">User</div>
+        </a>
+      </div>
+      
+      <ul class="mobile-nav-list">
+        <li>
+          <a href="home.html" class="mobile-nav-link mobile-nav-link-pink">
+            <i data-lucide="home" width="20" height="20"></i>
+            Home
+          </a>
+        </li>
+        <li>
+          <a href="learnhome.html" class="mobile-nav-link mobile-nav-link-purple">
+            <i data-lucide="book-open" width="20" height="20"></i>
+            Learn
+          </a>
+        </li>
+        <li>
+          <a href="practice.html" class="mobile-nav-link mobile-nav-link-purple">
+            <i data-lucide="clipboard-list" width="20" height="20"></i>
+            Practice
+          </a>
+        </li>
+
+        <li>
+          <a href="productivity.html" class="mobile-nav-link mobile-nav-link-blue">
+            <i data-lucide="layout-dashboard" width="20" height="20"></i>
+            Tasks
+          </a>
+        </li>
+        <li>
+          <a href="mindhome.html" class="mobile-nav-link mobile-nav-link-teal">
+            <i data-lucide="heart" width="20" height="20"></i>
+            Mind
+          </a>
+        </li>
+        <li>
+          <a href="blog.html" class="mobile-nav-link mobile-nav-link-yellow">
+            <i data-lucide="pen-line" width="20" height="20"></i>
+            Blog
+          </a>
+        </li>
+      </ul>
+    </div>
+  </header>
+
+  <div id="app">
+    <div class="container">
+      <!-- Welcome Header -->
+      <div class="welcome-header animate-fade-in">
+        <h1 id="welcomeTitle">
+          Welcome back! 
+          <img src="./asset/loginimage.png" alt="Mascot" class="mascot-emoji" />
+        </h1>
+        <p class="quote" id="dailyQuote"></p>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="stats-grid">
+        <div class="stat-card stat-card-pink animate-scale-in" style="animation-delay: 0.1s;">
+          <div class="stat-content">
+            <div class="stat-icon stat-icon-orange">
+              <i data-lucide="flame" width="32" height="32"></i>
+            </div>
+            <div class="stat-info">
+              <p class="stat-label">Streak 🔥</p>
+              <h3 class="stat-value" id="streakValue">0 days</h3>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card stat-card-blue animate-scale-in" style="animation-delay: 0.2s;">
+          <div class="stat-content">
+            <div class="stat-icon stat-icon-yellow">
+              <i data-lucide="award" width="32" height="32"></i>
+            </div>
+            <div class="stat-info">
+              <p class="stat-label">Badges 🏆</p>
+              <h3 class="stat-value" id="badgesValue">0</h3>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card stat-card-purple animate-scale-in" style="animation-delay: 0.3s;">
+          <div class="stat-content">
+            <div class="stat-icon stat-icon-green">
+              <i data-lucide="trending-up" width="32" height="32"></i>
+            </div>
+            <div class="stat-info">
+              <p class="stat-label">XP Points ⭐</p>
+              <h3 class="stat-value" id="xpValue">0</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress Overview -->
+      <div class="progress-card animate-slide-up" style="animation-delay: 0.4s;">
+        <h2 class="progress-title">
+          <i data-lucide="sparkles" width="24" height="24"></i>
+          Today's Progress 📊
+        </h2>
+        <div class="progress-items">
+          <div class="progress-item">
+            <div class="progress-header">
+              <span>English Learning 📚</span>
+              <span id="learningProgress">0%</span>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar" id="learningBar" style="width: 0%"></div>
+            </div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-header">
+              <span>Practice Completed ✅</span>
+              <span id="practiceProgress">0%</span>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar" id="practiceBar" style="width: 0%"></div>
+            </div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-header">
+              <span>Task Completed</span>
+              <span id="tasksProgress">0%</span>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar" id="tasksBar" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Badges Section -->
+      <div class="badges-card animate-slide-up" style="animation-delay: 0.5s;">
+        <h2>Your Badges 🏅</h2>
+        <div class="badges-container" id="badgesContainer">
+          <p class="no-badges">Start learning to earn badges! 🎯</p>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions-grid">
+        <button class="action-button action-button-purple" onclick="navigateTo('learning')">
+          <h3>Start Learning 📚</h3>
+          <p>Practice English with flashcards & quizzes</p>
+        </button>
+
+        <button class="action-button action-button-blue" onclick="navigateTo('mindcare')">
+          <h3>Take a Breath 🧘‍♀️</h3>
+          <p>Relax with mindfulness exercises</p>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+  <script src="./JS/timezone-utils.js"></script>
+  <script src="./JS/streak-system.js?v=2.1"></script>
+  <script src="./JS/badge-system.js?v=2.1"></script>
+  <script src="./JS/stats-system.js?v=2.1"></script>
+  <script src="./JS/home.js?v=2.3"></script>
+  <script>
+    lucide.createIcons(); 
+  </script>
+
+</body>
+
+</html>

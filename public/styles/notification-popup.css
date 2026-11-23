@@ -1,0 +1,264 @@
+/* ============================================
+   MODERN NOTIFICATION POPUP SYSTEM
+   Celebration-style toast notifications for achievements
+   ============================================ */
+
+/* Notification Container */
+.achievement-notification {
+    position: fixed;
+    bottom: -200px;
+    right: 30px;
+    min-width: 320px;
+    max-width: 400px;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 20px 24px;
+    box-shadow: 
+        0 10px 40px rgba(139, 92, 246, 0.2),
+        0 4px 12px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    z-index: 10000;
+    animation: slideUpNotification 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    overflow: hidden;
+}
+
+.achievement-notification.hiding {
+    animation: slideDownNotification 0.4s ease-in forwards;
+}
+
+/* Slide Up Animation */
+@keyframes slideUpNotification {
+    0% {
+        bottom: -200px;
+        opacity: 0;
+        transform: scale(0.8) translateY(20px);
+    }
+    70% {
+        bottom: 35px;
+        transform: scale(1.05) translateY(-5px);
+    }
+    100% {
+        bottom: 30px;
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Slide Down Animation */
+@keyframes slideDownNotification {
+    0% {
+        bottom: 30px;
+        opacity: 1;
+        transform: scale(1);
+    }
+    100% {
+        bottom: -200px;
+        opacity: 0;
+        transform: scale(0.9);
+    }
+}
+
+/* Gradient Background Overlay */
+.achievement-notification::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #8b5cf6, #ec4899, #f59e0b, #8b5cf6);
+    background-size: 200% 100%;
+    animation: gradientShift 3s linear infinite;
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: 200% 50%;
+    }
+}
+
+/* Notification Header */
+.notification-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.notification-icons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.notification-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+    animation: iconPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+    }
+    50% {
+        transform: scale(1.1);
+        box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+    }
+}
+
+.notification-icon.streak-icon {
+    background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+}
+
+.notification-icon.badge-icon {
+    background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+}
+
+.notification-close {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notification-close:hover {
+    background: rgba(156, 163, 175, 0.1);
+    color: #6b7280;
+}
+
+/* Notification Content */
+.notification-content {
+    margin-top: 8px;
+}
+
+.notification-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 6px;
+    background: linear-gradient(90deg, #8b5cf6, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.notification-message {
+    font-size: 14px;
+    color: #6b7280;
+    line-height: 1.5;
+    margin-bottom: 8px;
+}
+
+.notification-xp {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #92400e;
+    margin-top: 8px;
+}
+
+/* Confetti Animation */
+.confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #8b5cf6;
+    position: absolute;
+    animation: confettiFall 3s linear;
+    opacity: 0;
+}
+
+@keyframes confettiFall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(300px) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+/* Multiple confetti colors */
+.confetti:nth-child(2n) { background: #ec4899; }
+.confetti:nth-child(3n) { background: #f59e0b; }
+.confetti:nth-child(4n) { background: #10b981; }
+.confetti:nth-child(5n) { background: #3b82f6; }
+
+/* Responsive Design */
+@media (max-width: 640px) {
+    .achievement-notification {
+        right: 15px;
+        left: 15px;
+        min-width: unset;
+        max-width: unset;
+    }
+
+    @keyframes slideUpNotification {
+        0% {
+            bottom: -200px;
+            opacity: 0;
+        }
+        100% {
+            bottom: 15px;
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideDownNotification {
+        0% {
+            bottom: 15px;
+            opacity: 1;
+        }
+        100% {
+            bottom: -200px;
+            opacity: 0;
+        }
+    }
+}
+
+/* Progress Bar */
+.notification-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #8b5cf6, #ec4899);
+    animation: progressShrink 3s linear;
+}
+
+@keyframes progressShrink {
+    0% {
+        width: 100%;
+    }
+    100% {
+        width: 0%;
+    }
+}

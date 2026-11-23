@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - LearnGlow</title>
+  <link rel="stylesheet" href="./styles/signup.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Back Button -->
+  <a href="index.html" class="back-button">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span>Back</span>
+  </a>
+
+  <div class="page-container">
+    <div class="content-wrapper">
+      <!-- Headline -->
+      <h1 class="main-heading">Create an Account</h1>
+
+      <!-- Form Card -->
+      <div class="card">
+        <!-- Illustration - Replaceable Component -->
+        <div class="illustration-container">
+          <img 
+            src="./asset/signuppage.png" 
+            alt="Cute Mushroom Character - Unsplash" 
+            class="illustration"
+            data-source="unsplash.com/photos/cute-mushroom-character"
+          />
+        </div>
+
+        <!-- Form -->
+        <form id="signupForm" class="form">
+          <div class="form-group">
+            <label for="name" class="label">Username</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              placeholder="Your username"
+              class="input"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="email" class="label">Email Address</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="your@email.com"
+              class="input"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="password" class="label">Password</label>
+            <div class="input-wrapper">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="••••••••"
+                class="input"
+                minlength="6"
+                required
+              />
+              <button type="button" class="eye-toggle" id="togglePassword" aria-label="Toggle password visibility">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="submit-button" id="submitButton">
+            SIGN UP
+          </button>
+        </form>
+
+        <div class="divider">or</div>
+
+        <button type="button" id="googleSignIn" class="google-button">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18.1713 8.36788H17.5V8.33329H10V11.6666H14.7096C14.0225 13.6071 12.1762 15 10 15C7.23917 15 5 12.7608 5 9.99996C5 7.23913 7.23917 4.99996 10 4.99996C11.2746 4.99996 12.4342 5.48079 13.3171 6.26663L15.6742 3.90954C14.1858 2.52204 12.195 1.66663 10 1.66663C5.39792 1.66663 1.66667 5.39788 1.66667 9.99996C1.66667 14.602 5.39792 18.3333 10 18.3333C14.6021 18.3333 18.3333 14.602 18.3333 9.99996C18.3333 9.44121 18.2758 8.89579 18.1713 8.36788Z" fill="#FFC107"/>
+            <path d="M2.6275 6.12121L5.36542 8.12913C6.10625 6.29496 7.90042 4.99996 10 4.99996C11.2746 4.99996 12.4342 5.48079 13.3171 6.26663L15.6742 3.90954C14.1858 2.52204 12.195 1.66663 10 1.66663C6.79917 1.66663 4.02334 3.47371 2.6275 6.12121Z" fill="#FF3D00"/>
+            <path d="M10 18.3333C12.1525 18.3333 14.1083 17.5095 15.5871 16.17L13.0079 13.9875C12.1431 14.6452 11.0864 15.0009 10 15C7.83255 15 5.99172 13.618 5.29797 11.6891L2.58047 13.783C3.96005 16.4816 6.7613 18.3333 10 18.3333Z" fill="#4CAF50"/>
+            <path d="M18.1713 8.36796H17.5V8.33337H10V11.6667H14.7096C14.3809 12.5902 13.7889 13.3972 13.0067 13.9879L13.0079 13.9871L15.5871 16.1696C15.4046 16.3355 18.3333 14.1667 18.3333 10C18.3333 9.44129 18.2758 8.89587 18.1713 8.36796Z" fill="#1976D2"/>
+          </svg>
+          Continue with Google
+        </button>
+
+        <!-- Decorative Clouds -->
+        <div class="cloud cloud-left"></div>
+        <div class="cloud cloud-right"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+  <script>
+  // Initialize Supabase
+  const SUPABASE_URL = "https://qtsfceqredvwhwukaugu.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF0c2ZjZXFyZWR2d2h3dWthdWd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI1MDE5NjcsImV4cCI6MjA3ODA3Nzk2N30.iJJ4wcah6BHs_ubjhwG-VU9Nj4XueSq5_Ro4sFm8QF8";
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+    auth: {
+      persistSession: true,
+      storage: localStorage
+    }
+  });
+
+  // Toast notification
+  function showToast(message, type = 'success') {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(100%)';
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  }
+
+  // Google sign-in
+  document.getElementById("googleSignIn").addEventListener("click", async () => {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: window.location.origin + '/home.html'
+      }
+    });
+    if (error) {
+      console.error("Google sign-in error:", error);
+      showToast("Google sign-in failed: " + error.message, "error");
+    }
+  });
+
+  // Manual signup
+  document.getElementById('signupForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const submitButton = document.getElementById('submitButton');
+
+    submitButton.disabled = true;
+    submitButton.textContent = 'Creating account...';
+
+    // Create Supabase user
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { 
+        data: { name: name }
+      }
+    });
+
+    if (error) {
+      console.error("Signup error:", error);
+      showToast(error.message, 'error');
+      submitButton.disabled = false;
+      submitButton.textContent = 'SIGN UP';
+    } else {
+      // Save user data to localStorage
+      if (data.user) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+        
+        // Initialize profile data
+        localStorage.setItem("productivity_hub_user_data", JSON.stringify({
+          name: name,
+          bio: "Keep up the amazing work! 🌟",
+          avatarColor: 0,
+          profilePicture: null,
+          streak: 0,
+          badges: [],
+          xp: 0,
+          pomodoroCount: 0
+        }));
+
+        // Initialize learning state
+        localStorage.setItem('englishLearningState', JSON.stringify({
+          name: name,
+          streak: 0,
+          badges: [],
+          xp: 0,
+          todayProgress: {
+            learning: 0,
+            tasks: 0,
+            mindcare: 0
+          }
+        }));
+      }
+
+      showToast('Account created successfully! 🌸', 'success');
+      setTimeout(() => {
+        window.location.href = 'home.html';
+      }, 1500);
+    }
+  });
+
+  // Auth state listener
+  supabase.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'SIGNED_IN' && session) {
+      const user = session.user;
+      localStorage.setItem("user", JSON.stringify(user));
+      
+      // Initialize profile data if not exists
+      if (!localStorage.getItem("productivity_hub_user_data")) {
+        // Google OAuth uses full_name, regular signup uses name
+        const userName = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'User';
+        localStorage.setItem("productivity_hub_user_data", JSON.stringify({
+          name: userName,
+          bio: "Keep up the amazing work! 🌟",
+          avatarColor: 0,
+          profilePicture: null,
+          streak: 0,
+          badges: [],
+          xp: 0,
+          pomodoroCount: 0
+        }));
+
+        localStorage.setItem('englishLearningState', JSON.stringify({
+          name: userName,
+          streak: 0,
+          badges: [],
+          xp: 0,
+          todayProgress: {
+            learning: 0,
+            tasks: 0,
+            mindcare: 0
+          }
+        }));
+      }
+    }
+  });
+
+  // Toggle password visibility
+  document.getElementById('togglePassword').addEventListener('click', function() {
+    const passwordInput = document.getElementById('password');
+    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordInput.setAttribute('type', type);
+    
+    // Change the icon
+    if (type === 'text') {
+      // Show eye-off icon when password is visible
+      this.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>';
+    } else {
+      // Show eye icon when password is hidden
+      this.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>';
+    }
+  });
+  </script>
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!-- productivity.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productivity Hub</title>
+    <link rel="stylesheet" href="./styles/productivity.css">
+    <link rel="stylesheet" href="./styles/gamification.css">
+      <script src="https://unpkg.com/lucide@latest"></script>
+
+</head>
+
+<body>
+    <!-- Top Navbar -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <!-- Left: Logo + Navigation -->
+            <div class="navbar-left">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 9.75L12 3l9 6.75V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1V9.75z" />
+                        </svg>
+                    </div>
+                    <span class="logo-text">Productivity Hub</span>
+                </div>
+            </div>
+
+      <!-- Desktop Navigation -->
+      <nav class="desktop-nav">
+        <a href="home.html" class="nav-link nav-link-active">
+          <i data-lucide="home" width="16" height="16"></i>
+          Home
+        </a>
+        <a href="learnhome.html" class="nav-link">
+          <i data-lucide="book-open" width="16" height="16"></i>
+          Learn
+        </a>
+        <a href="practice.html" class="nav-link">
+          <i data-lucide="clipboard-list" width="16" height="16"></i>
+          Practice
+        </a>
+
+        <a href="productivity.html" class="nav-link">
+          <i data-lucide="layout-dashboard" width="16" height="16"></i>
+          Tasks
+        </a>
+        <a href="mindhome.html" class="nav-link">
+          <i data-lucide="heart" width="16" height="16"></i>
+          Mind
+        </a>
+        <a href="blog.html" class="nav-link">
+          <i data-lucide="pen-line" width="16" height="16"></i>
+          Blog
+        </a>
+      </nav>
+
+      <!-- Right: Profile + Mobile Menu Button -->
+      <div class="navbar-right">
+        <div class="profile-pill">
+          <div class="profile-initial" id="profile-initial">G</div>
+          <div class="profile-name" id="top-user">Guest</div>
+        </div>
+
+        <!-- Hamburger for mobile -->
+        <button class="menu-btn" id="menu-btn">
+          <i data-lucide="menu" width="24" height="24" id="menu-icon"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown Menu -->
+    <div class="mobile-nav" id="mobile-nav">
+      <!-- Mobile Profile Info -->
+      <div class="mobile-profile-section">
+        <div class="mobile-profile-pill">
+          <div class="mobile-profile-initial" id="mobile-profile-initial">G</div>
+          <div class="mobile-profile-name" id="mobile-user">Guest</div>
+        </div>
+      </div>
+      
+      <ul class="mobile-nav-list">
+        <li>
+          <a href="home.html" class="mobile-nav-link mobile-nav-link-pink">
+            <i data-lucide="home" width="20" height="20"></i>
+            Home
+          </a>
+        </li>
+        <li>
+          <a href="learnhome.html" class="mobile-nav-link mobile-nav-link-purple">
+            <i data-lucide="book-open" width="20" height="20"></i>
+            Learn
+          </a>
+        </li>
+        <li>
+          <a href="practice.html" class="mobile-nav-link mobile-nav-link-purple">
+            <i data-lucide="clipboard-list" width="20" height="20"></i>
+            Practice
+          </a>
+        </li>
+
+        <li>
+          <a href="productivity.html" class="mobile-nav-link mobile-nav-link-blue">
+            <i data-lucide="layout-dashboard" width="20" height="20"></i>
+            Tasks
+          </a>
+        </li>
+        <li>
+          <a href="mindhome.html" class="mobile-nav-link mobile-nav-link-teal">
+            <i data-lucide="heart" width="20" height="20"></i>
+            Mind
+          </a>
+        </li>
+        <li>
+          <a href="blog.html" class="mobile-nav-link mobile-nav-link-yellow">
+            <i data-lucide="pen-line" width="20" height="20"></i>
+            Blog
+          </a>
+        </li>
+      </ul>
+    </div>
+  </header>
+
+    <div id="app">
+        <div class="container">
+            <!-- Welcome Header -->
+            <div class="welcome-header animate-fade-in">
+                <h1>Productivity Hub ✅</h1>
+                <p class="subtitle">Stay focused and achieve your goals! 🚀</p>
+            </div>
+
+            <!-- Study Progress Card -->
+            <div class="card card-cyan animate-scale-in">
+                <div class="study-tracker-header">
+                    <div>
+                        <h2 class="card-title">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" class="icon-inline">
+                                <line x1="12" y1="20" x2="12" y2="10"></line>
+                                <line x1="18" y1="20" x2="18" y2="4"></line>
+                                <line x1="6" y1="20" x2="6" y2="16"></line>
+                            </svg>
+                            Study Tracker 📊
+                        </h2>
+                        <p class="text-gray mb-2">Track your study sessions with custom categories</p>
+                        <div class="study-stats">
+                            <div class="stat-pill">
+                                <span class="text-gray">Total Study Time: </span>
+                                <span id="totalStudyHours">0h</span>
+                            </div>
+                            <div class="stat-pill">
+                                <span class="text-gray">Categories: </span>
+                                <span id="categoryCount">0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-cyan" onclick="window.location.href='studytracker.html'">
+                        View Your Progress
+                    </button>
+                </div>
+            </div>
+
+            <!-- Weekly Progress -->
+            <div class="card card-green animate-scale-in" style="animation-delay: 0.1s;">
+                <h2 class="card-title">Weekly Progress 📊</h2>
+                <div class="progress-section">
+                    <div class="progress-header">
+                        <span>Tasks Completed</span>
+                        <span id="taskProgress">0/0</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                    <div class="progress-footer">
+                        <span>🍅 Pomodoros: <span id="pomodoroCount">0</span></span>
+                        <span><span id="completionPercent">0</span>% Complete</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pomodoro Timer -->
+            <div class="card card-pink animate-slide-up" style="animation-delay: 0.2s;">
+                <h2 class="card-title">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        class="icon-inline">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    Pomodoro Timer 🍅
+                </h2>
+                <div class="timer-container">
+                    <div class="timer-display" id="timerDisplay">25:00</div>
+
+                    <div class="timer-buttons">
+                        <button class="btn btn-purple" id="startPauseBtn" onclick="toggleTimer()">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" id="playIcon">
+                                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                            </svg>
+                            <span id="timerBtnText">Start</span>
+                        </button>
+                        <button class="btn btn-blue" onclick="resetTimer()">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="1 4 1 10 7 10"></polyline>
+                                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                            </svg>
+                            Reset
+                        </button>
+                    </div>
+
+                    <!-- Animated circle progress -->
+                    <div class="timer-circle">
+                        <svg class="circle-svg" viewBox="0 0 192 192">
+                            <circle cx="96" cy="96" r="88" stroke="rgba(167, 139, 250, 0.2)" stroke-width="12"
+                                fill="none" />
+                            <circle id="progressCircle" cx="96" cy="96" r="88" stroke="url(#gradient)" stroke-width="12"
+                                fill="none" stroke-linecap="round" stroke-dasharray="552.92"
+                                stroke-dashoffset="552.92" />
+                            <defs>
+                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#A78BFA" />
+                                    <stop offset="100%" stop-color="#FBB6CE" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <div class="timer-emoji">🍅</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Task Manager -->
+            <div class="card card-white animate-slide-up" style="animation-delay: 0.3s;">
+                <h2 class="card-title">Task Manager 📝</h2>
+
+                <div class="task-input-group">
+                    <input type="text" id="taskInput" class="task-input" placeholder="Add a new task... ✨"
+                        onkeypress="if(event.key === 'Enter') addTask()" />
+                    <button class="btn btn-add" onclick="addTask()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="tasks-list" id="tasksList">
+                    <p class="no-tasks">No tasks yet! Add one to get started 🎯</p>
+                </div>
+            </div>
+
+            <!-- Motivational Message -->
+            <div class="motivational-message" id="motivationalMessage" style="display: none;">
+                <p id="motivationalText"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Supabase library first -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Load other dependencies -->
+    <script src="./JS/timezone-utils.js"></script>
+    <script src="./JS/stats-system.js"></script>
+    <script src="./JS/streak-system.js"></script>
+    
+    <!-- Load main productivity script -->
+    <script src="./JS/productivity.js"></script>
+    
+    <script>
+    lucide.createIcons(); 
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Self-Care Checklist - MindCare</title>
+  <link rel="stylesheet" href="./styles/selfcarelist.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <!-- Top Navbar -->
+  <header class="navbar">
+    <div class="navbar-container">
+      <!-- Left: Logo + Navigation -->
+      <div class="navbar-left">
+        <div class="logo">
+          <div class="logo-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 9.75L12 3l9 6.75V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1V9.75z" />
+            </svg>
+          </div>
+          <span class="logo-text">learnGlow</span>
+        </div>
+      </div>
+
+      <!-- Desktop Navigation -->
+      <nav class="desktop-nav">
+        <a href="home.html" class="nav-link">
+          <i data-lucide="home" width="16" height="16"></i>
+          Home
+        </a>
+        <a href="learnhome.html" class="nav-link">
+          <i data-lucide="book-open" width="16" height="16"></i>
+          Learn
+        </a>
+        <a href="practice.html" class="nav-link">
+          <i data-lucide="clipboard-list" width="16" height="16"></i>
+          Practice
+        </a>
+        <a href="productivity.html" class="nav-link">
+          <i data-lucide="layout-dashboard" width="16" height="16"></i>
+          Tasks
+        </a>
+        <a href="mindhome.html" class="nav-link nav-link-active">
+          <i data-lucide="heart" width="16" height="16"></i>
+          Mind
+        </a>
+        <a href="blog.html" class="nav-link">
+          <i data-lucide="pen-line" width="16" height="16"></i>
+          Blog
+        </a>
+      </nav>
+
+      <!-- Right: Profile + Mobile Menu Button -->
+      <div class="navbar-right">
+        <a href="profile.html" class="profile-pill" title="View Profile">
+          <div class="profile-initial" id="profile-initial">U</div>
+          <div class="profile-name" id="top-user">User</div>
+        </a>
+
+        <!-- Hamburger for mobile -->
+        <button class="menu-btn" id="menu-btn">
+          <i data-lucide="menu" width="24" height="24" id="menu-icon"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown Menu -->
+    <div class="mobile-nav" id="mobile-nav">
+      <!-- Mobile Profile Info -->
+      <div class="mobile-profile-section">
+        <a href="profile.html" class="mobile-profile-pill">
+          <div class="mobile-profile-initial" id="mobile-profile-initial">U</div>
+          <div class="mobile-profile-name" id="mobile-user">User</div>
+        </a>
+      </div>
+      
+      <ul class="mobile-nav-list">
+        <li>
+          <a href="home.html" class="mobile-nav-link mobile-nav-link-pink">
+            <i data-lucide="home" width="20" height="20"></i>
+            Home
+          </a>
+        </li>
+        <li>
+          <a href="learnhome.html" class="mobile-nav-link mobile-nav-link-purple">
+            <i data-lucide="book-open" width="20" height="20"></i>
+            Learn
+          </a>
+        </li>
+        <li>
+          <a href="practice.html" class="mobile-nav-link mobile-nav-link-purple">
+            <i data-lucide="clipboard-list" width="20" height="20"></i>
+            Practice 
+          </a>
+        </li>
+        <li>
+          <a href="productivity.html" class="mobile-nav-link mobile-nav-link-blue">
+            <i data-lucide="layout-dashboard" width="20" height="20"></i>
+            Tasks
+          </a>
+        </li>
+        <li>
+          <a href="mindhome.html" class="mobile-nav-link mobile-nav-link-teal">
+            <i data-lucide="heart" width="20" height="20"></i>
+            Mind
+          </a>
+        </li>
+        <li>
+          <a href="blog.html" class="mobile-nav-link mobile-nav-link-yellow">
+            <i data-lucide="pen-line" width="20" height="20"></i>
+            Blog
+          </a>
+        </li>
+      </ul>
+    </div>
+  </header>
+
+  <div class="page-container">
+    <div class="header">
+      <h1>Self-Care Checklist ✨</h1>
+      <p class="subtitle">Track your daily self-care activities! 💖</p>
+    </div>
+
+    <!-- Self-Care Checklist -->
+    <div class="card checklist-card">
+      <div class="checklist-header">
+        <h2>Self-Care Checklist ✨</h2>
+        <button class="add-button" id="addTaskButton">
+          <i data-lucide="plus" class="button-icon"></i>
+          Add Task
+        </button>
+      </div>
+
+      <div class="progress-section">
+        <div class="progress-header">
+          <span>Daily Progress</span>
+          <span id="progressText">0/8</span>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+
+      <div class="checklist-items" id="checklistItems">
+        <!-- Checklist items will be inserted by JS -->
+      </div>
+    </div>
+
+    <div class="completion-message" id="completionMessage" style="display: none;">
+      <div class="completion-emoji">🎉</div>
+      <h3>Perfect Day! You&apos;re Amazing! 🌟</h3>
+      <p>You&apos;ve completed all self-care tasks! Keep up the great work! 💪✨</p>
+    </div>
+  </div>
+
+  <!-- Add Task Modal -->
+  <div class="modal" id="addTaskModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Add Self-Care Task</h3>
+        <button class="close-button" id="closeModal">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="taskName">Task Name</label>
+          <input type="text" id="taskName" class="modal-input" placeholder="e.g., Drink water" />
+        </div>
+        <div class="form-group">
+          <label for="taskEmoji">Emoji (optional)</label>
+          <input type="text" id="taskEmoji" class="modal-input" placeholder="e.g., 💧" maxlength="2" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="cancel-button" id="cancelButton">Cancel</button>
+        <button class="save-button" id="saveTaskButton">Save Task</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Task Modal -->
+  <div class="modal" id="editTaskModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Edit Task</h3>
+        <button class="close-button" id="closeEditModal">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="editTaskName">Task Name</label>
+          <input type="text" id="editTaskName" class="modal-input" />
+        </div>
+        <div class="form-group">
+          <label for="editTaskEmoji">Emoji (optional)</label>
+          <input type="text" id="editTaskEmoji" class="modal-input" maxlength="2" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="cancel-button" id="cancelEditButton">Cancel</button>
+        <button class="save-button" id="saveEditButton">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="./JS/selfcarelist.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

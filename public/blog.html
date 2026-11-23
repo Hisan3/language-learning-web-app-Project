@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LearnGlow Blog</title>
+  <link rel="stylesheet" href="./styles/blog.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="page-container">
+    <div class="content-wrapper">
+      <!-- Back to Home Button -->
+      <a href="home.html" class="back-to-home-btn">
+        <i data-lucide="home"></i>
+        <span>Back to Home</span>
+      </a>
+
+      <!-- Header -->
+      <div class="header">
+        <h1>LearnGlow Blog 📝</h1>
+        <p class="header-subtitle">
+          Expert insights on learning techniques, productivity, and mental well-being
+        </p>
+      </div>
+
+      <!-- Search and Filter -->
+      <div class="search-filter-section">
+        <div class="search-container">
+          <i data-lucide="search" class="search-icon"></i>
+          <input 
+            type="text" 
+            id="searchInput" 
+            class="search-input" 
+            placeholder="Search articles..."
+          />
+        </div>
+        <div class="categories-container" id="categoriesContainer">
+          <!-- Categories will be inserted by JS -->
+        </div>
+      </div>
+
+      <!-- Featured Posts -->
+      <div id="featuredSection" class="featured-section">
+        <div class="section-header">
+          <i data-lucide="trending-up" class="section-icon"></i>
+          <h2>Featured Articles</h2>
+        </div>
+        <div class="featured-grid" id="featuredGrid">
+          <!-- Featured posts will be inserted by JS -->
+        </div>
+      </div>
+
+      <!-- All Posts Grid -->
+      <div class="all-posts-section">
+        <h2 id="sectionTitle">All Articles</h2>
+        <div id="postsContainer">
+          <!-- Posts will be inserted by JS -->
+        </div>
+      </div>
+
+      <!-- Newsletter CTA
+      <div class="newsletter-cta">
+        <i data-lucide="brain" class="newsletter-icon"></i>
+        <h2>Stay Updated with Our Newsletter 📬</h2>
+        <p class="newsletter-subtitle">
+          Get the latest articles, learning tips, and exclusive content delivered to your inbox weekly
+        </p>
+        <div class="newsletter-form">
+          <input
+            type="email"
+            placeholder="Enter your email..."
+            class="newsletter-input"
+          />
+          <button class="newsletter-button">Subscribe</button>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+  <script src="./JS/blog.js"></script>
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+  </script>
+</body>
+</html>

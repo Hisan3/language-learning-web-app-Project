@@ -1,0 +1,1086 @@
+<%- include('../partials/header', { pageTitle: 'Badge Management', activePage: 'badges' }) %>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+  * {
+    font-family: 'Poppins', sans-serif;
+  }
+
+  body {
+    background: linear-gradient(135deg, #E0C3FC 0%, #8EC5FC 100%);
+    min-height: 100vh;
+  }
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 30px;
+  }
+
+  .badges-title {
+    font-size: 32px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .badges-subtitle {
+    color: #718096;
+    font-size: 14px;
+  }
+
+  .content-panel {
+    background: white;
+    border-radius: 25px;
+    padding: 40px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.5s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .btn-add-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 12px;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-add-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+  }
+
+  .badges-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+  }
+
+  .badge-card {
+    padding: 25px;
+    border-radius: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .badge-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  }
+
+  .badge-icon-display {
+    font-size: 60px;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .badge-icon-image {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin: 0 auto 10px;
+    display: block;
+    border-radius: 10px;
+  }
+
+  .badge-icon-image.broken {
+    display: none;
+  }
+
+  .badge-icon-fallback {
+    font-size: 60px;
+    display: none;
+  }
+
+  .badge-icon-fallback.show {
+    display: block;
+  }
+
+  .badge-name {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #1f2937;
+  }
+
+  .badge-description {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 15px;
+    line-height: 1.5;
+  }
+
+  .badge-stats {
+    display: inline-block;
+    background: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 15px;
+  }
+
+  .badge-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+  }
+
+  .btn-edit, .btn-delete {
+    flex: 1;
+    padding: 8px 16px;
+    border-radius: 10px;
+    border: none;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .btn-edit {
+    background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+    color: #333;
+  }
+
+  .btn-edit:hover {
+    transform: scale(1.05);
+  }
+
+  .btn-delete {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    color: white;
+  }
+
+  .btn-delete:hover {
+    transform: scale(1.05);
+  }
+
+  /* Modal Styles */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .modal-content {
+    background: white;
+    border-radius: 25px;
+    padding: 30px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
+  }
+
+  @keyframes slideUp {
+    from { 
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+  }
+
+  .modal-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2d3748;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .modal-close {
+    background: #f3f4f6;
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-close:hover {
+    background: #e5e7eb;
+    transform: rotate(90deg);
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    display: block;
+    color: #374151;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #E0E7FF;
+    border-radius: 12px;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+
+  .icon-type-selector {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  .icon-type-btn {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #E0E7FF;
+    border-radius: 10px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 13px;
+  }
+
+  .icon-type-btn.active {
+    border-color: #667eea;
+    background: #EEF2FF;
+    color: #667eea;
+  }
+
+  .icon-input-section {
+    display: none;
+  }
+
+  .icon-input-section.active {
+    display: block;
+  }
+
+  .lucide-icon-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 10px;
+    background: #F7FAFC;
+    border-radius: 10px;
+  }
+
+  .lucide-icon-option {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: white;
+  }
+
+  .lucide-icon-option:hover {
+    border-color: #667eea;
+    background: #EEF2FF;
+  }
+
+  .lucide-icon-option.selected {
+    border-color: #667eea;
+    background: #EEF2FF;
+  }
+
+  .image-upload-container {
+    border: 2px dashed #E0E7FF;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .image-upload-container:hover {
+    border-color: #667eea;
+    background: #F7FAFC;
+  }
+
+  .image-preview {
+    max-width: 100px;
+    max-height: 100px;
+    margin: 10px auto;
+    display: none;
+  }
+
+  .image-preview.show {
+    display: block;
+  }
+
+  .color-picker {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .color-option {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .color-option:hover {
+    border-color: #1f2937;
+    transform: scale(1.1);
+  }
+
+  .color-option.selected {
+    border-color: #1f2937;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px #1f2937;
+  }
+
+  .btn-submit {
+    width: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+  }
+
+  .alert {
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    animation: slideDown 0.3s ease;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .alert-success {
+    background: #d1fae5;
+    color: #065f46;
+    border-left: 4px solid #10b981;
+  }
+
+  .alert-error {
+    background: #fee2e2;
+    color: #991b1b;
+    border-left: 4px solid #ef4444;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    grid-column: 1/-1;
+  }
+
+  .empty-state-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+    opacity: 0.3;
+  }
+
+  .empty-state h3 {
+    color: #4a5568;
+    font-size: 22px;
+    margin-bottom: 12px;
+  }
+
+  .empty-state p {
+    color: #a0aec0;
+    font-size: 14px;
+  }
+
+  /* Gradient backgrounds for badge cards */
+  .gradient-orange {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+  }
+
+  .gradient-blue {
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+  }
+
+  .gradient-peach {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+  }
+
+  .gradient-green {
+    background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+  }
+
+  .gradient-purple {
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+  }
+
+  .gradient-pink {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+  }
+
+  @media (max-width: 768px) {
+    .content-panel {
+      padding: 20px;
+    }
+
+    .badges-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+
+    .modal-content {
+      padding: 20px;
+    }
+
+    .lucide-icon-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>
+
+<div class="content-panel">
+  <div class="page-header">
+    <div>
+      <h1 class="badges-title">🏆 Badges & Achievements</h1>
+      <p class="badges-subtitle">Create and manage achievement badges for learners</p>
+    </div>
+    <button class="btn-add-badge" onclick="openModal()">
+      <span>+</span> Create Badge
+    </button>
+  </div>
+
+  <div id="badges-container" class="badges-grid">
+    <!-- Badges will be loaded here -->
+  </div>
+</div>
+
+<!-- Add/Edit Badge Modal -->
+<div id="badge-modal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title" id="modal-title">🏆 Create New Badge</h2>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+
+    <div id="modal-alert-container"></div>
+
+    <form id="badge-form">
+      <input type="hidden" id="badge-id" name="badge_id">
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name">Badge Name *</label>
+          <input type="text" id="name" name="name" required placeholder="e.g., 30-Day Streak Master">
+        </div>
+        <div class="form-group">
+          <label for="badge_type">Badge Type *</label>
+          <select id="badge_type" name="badge_type" required>
+            <option value="">Select type...</option>
+            <option value="xp">XP Based</option>
+            <option value="lessons">Lesson Completed</option>
+            <option value="streak">Streak Days</option>
+            <option value="pomodoro">Pomodoro Timers</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Icon/Emoji *</label>
+        <div class="icon-type-selector">
+          <button type="button" class="icon-type-btn active" data-type="emoji">
+            😊 Emoji
+          </button>
+          <button type="button" class="icon-type-btn" data-type="lucide">
+            <i data-lucide="star" style="width: 16px; height: 16px;"></i> Lucide Icon
+          </button>
+          <button type="button" class="icon-type-btn" data-type="image">
+            <i data-lucide="image" style="width: 16px; height: 16px;"></i> Image Upload
+          </button>
+          <button type="button" class="icon-type-btn" data-type="link">
+            <i data-lucide="link" style="width: 16px; height: 16px;"></i> Image Link
+          </button>
+        </div>
+
+        <!-- Emoji Input -->
+        <div class="icon-input-section active" id="emoji-section">
+          <input type="text" id="icon-emoji" class="form-input" placeholder="🏆" maxlength="10">
+        </div>
+
+        <!-- Lucide Icon Picker -->
+        <div class="icon-input-section" id="lucide-section">
+          <div class="lucide-icon-grid" id="lucide-icon-grid">
+            <!-- Lucide icons will be populated here -->
+          </div>
+          <input type="hidden" id="icon-lucide">
+        </div>
+
+        <!-- Image Upload -->
+        <div class="icon-input-section" id="image-section">
+          <div class="image-upload-container" onclick="document.getElementById('image-upload').click()">
+            <i data-lucide="upload" style="width: 32px; height: 32px; margin: 0 auto;"></i>
+            <p style="margin-top: 10px; color: #666;">Click to upload image</p>
+            <img id="image-preview" class="image-preview" alt="Preview">
+          </div>
+          <input type="file" id="image-upload" accept="image/*" style="display: none;">
+          <input type="hidden" id="icon-image">
+        </div>
+
+        <!-- Image Link -->
+        <div class="icon-input-section" id="link-section">
+          <input type="url" id="icon-link" class="form-input" placeholder="https://example.com/badge-icon.png">
+        </div>
+
+        <input type="hidden" id="icon" name="icon" required>
+        <input type="hidden" id="icon_type" name="icon_type" value="emoji">
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description *</label>
+        <textarea id="description" name="description" required rows="3" placeholder="Badge description..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="threshold">Threshold *</label>
+        <input type="number" id="threshold" name="threshold" required min="1" placeholder="e.g., 30">
+      </div>
+
+      <div class="form-group">
+        <label>Badge Color (optional)</label>
+        <div class="color-picker">
+          <button type="button" class="color-option selected" data-color="#FF6B6B" style="background: #FF6B6B;"></button>
+          <button type="button" class="color-option" data-color="#4ECDC4" style="background: #4ECDC4;"></button>
+          <button type="button" class="color-option" data-color="#FFD93D" style="background: #FFD93D;"></button>
+          <button type="button" class="color-option" data-color="#6BCF7F" style="background: #6BCF7F;"></button>
+          <button type="button" class="color-option" data-color="#A78BFA" style="background: #A78BFA;"></button>
+          <button type="button" class="color-option" data-color="#F472B6" style="background: #F472B6;"></button>
+          <button type="button" class="color-option" data-color="#38BDF8" style="background: #38BDF8;"></button>
+          <button type="button" class="color-option" data-color="#FB923C" style="background: #FB923C;"></button>
+        </div>
+        <input type="hidden" id="color" name="color" value="#FF6B6B">
+      </div>
+
+      <button type="submit" class="btn-submit">
+        <span id="submit-text">Create Badge</span>
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+  let badges = [];
+  let selectedColor = '#FF6B6B';
+  let editingBadgeId = null;
+  let currentIconType = 'emoji';
+
+  // Popular Lucide icons for badges
+  const lucideIcons = [
+    'trophy', 'award', 'star', 'medal', 'crown', 'target', 'zap', 'flame',
+    'heart', 'bookmark', 'check-circle', 'shield', 'diamond', 'gem', 'gift',
+    'rocket', 'sparkles', 'sun', 'moon', 'coffee', 'book', 'graduation-cap',
+    'brain', 'lightbulb', 'clock', 'calendar', 'timer'
+  ];
+
+  // Initialize Lucide
+  document.addEventListener('DOMContentLoaded', () => {
+    lucide.createIcons();
+    populateLucideIcons();
+  });
+
+  // Populate Lucide icons
+  function populateLucideIcons() {
+    const grid = document.getElementById('lucide-icon-grid');
+    grid.innerHTML = lucideIcons.map(icon => `
+      <div class="lucide-icon-option" data-icon="${icon}" onclick="selectLucideIcon('${icon}')">
+        <i data-lucide="${icon}" style="width: 24px; height: 24px;"></i>
+      </div>
+    `).join('');
+    lucide.createIcons();
+  }
+
+  // Icon type selector
+  document.querySelectorAll('.icon-type-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      document.querySelectorAll('.icon-type-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      const type = btn.dataset.type;
+      currentIconType = type;
+      document.getElementById('icon_type').value = type;
+      
+      // Show/hide appropriate section
+      document.querySelectorAll('.icon-input-section').forEach(section => section.classList.remove('active'));
+      document.getElementById(`${type}-section`).classList.add('active');
+    });
+  });
+
+  // Select Lucide icon
+  function selectLucideIcon(iconName) {
+    document.querySelectorAll('.lucide-icon-option').forEach(opt => opt.classList.remove('selected'));
+    event.currentTarget.classList.add('selected');
+    document.getElementById('icon-lucide').value = iconName;
+    document.getElementById('icon').value = iconName;
+  }
+
+  // Image upload
+  document.getElementById('image-upload').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Show preview immediately
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const preview = document.getElementById('image-preview');
+        preview.src = e.target.result;
+        preview.classList.add('show');
+      };
+      reader.readAsDataURL(file);
+
+      // Upload to server
+      try {
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const response = await fetch('/admin/badges/upload-image', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Store the public URL
+          document.getElementById('icon-image').value = data.url;
+          document.getElementById('icon').value = data.url;
+          console.log('Image uploaded successfully:', data.url);
+        } else {
+          alert('Error uploading image: ' + data.error);
+        }
+      } catch (error) {
+        console.error('Error uploading image:', error);
+        alert('Error uploading image. Please try again.');
+      }
+    }
+  });
+
+  // Color picker functionality
+  document.querySelectorAll('.color-option').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      document.querySelectorAll('.color-option').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedColor = btn.dataset.color;
+      document.getElementById('color').value = selectedColor;
+    });
+  });
+
+  // Update icon value based on active section
+  function updateIconValue() {
+    switch(currentIconType) {
+      case 'emoji':
+        document.getElementById('icon').value = document.getElementById('icon-emoji').value;
+        break;
+      case 'lucide':
+        document.getElementById('icon').value = document.getElementById('icon-lucide').value;
+        break;
+      case 'image':
+        document.getElementById('icon').value = document.getElementById('icon-image').value;
+        break;
+      case 'link':
+        document.getElementById('icon').value = document.getElementById('icon-link').value;
+        break;
+    }
+  }
+
+  // Add event listeners to icon inputs
+  document.getElementById('icon-emoji').addEventListener('input', updateIconValue);
+  document.getElementById('icon-link').addEventListener('input', updateIconValue);
+
+  // Modal functions
+  function openModal(badgeId = null) {
+    const modal = document.getElementById('badge-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const submitText = document.getElementById('submit-text');
+    
+    editingBadgeId = badgeId;
+    
+    if (badgeId) {
+      // Edit mode
+      const badge = badges.find(b => b.id === badgeId);
+      if (badge) {
+        modalTitle.innerHTML = '🏆 Edit Badge';
+        submitText.textContent = 'Update Badge';
+        
+        document.getElementById('badge-id').value = badge.id;
+        document.getElementById('name').value = badge.name;
+        document.getElementById('description').value = badge.description;
+        document.getElementById('badge_type').value = badge.badge_type;
+        document.getElementById('threshold').value = badge.threshold;
+        
+        // Set icon based on type
+        const iconType = badge.icon_type || 'emoji';
+        currentIconType = iconType;
+        document.getElementById('icon_type').value = iconType;
+        
+        // Activate correct icon type button
+        document.querySelectorAll('.icon-type-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.type === iconType);
+        });
+        
+        // Show correct section and set value
+        document.querySelectorAll('.icon-input-section').forEach(section => section.classList.remove('active'));
+        document.getElementById(`${iconType}-section`).classList.add('active');
+        
+        if (iconType === 'emoji') {
+          document.getElementById('icon-emoji').value = badge.icon;
+        } else if (iconType === 'lucide') {
+          document.getElementById('icon-lucide').value = badge.icon;
+          document.querySelectorAll('.lucide-icon-option').forEach(opt => {
+            opt.classList.toggle('selected', opt.dataset.icon === badge.icon);
+          });
+        } else if (iconType === 'image') {
+          const preview = document.getElementById('image-preview');
+          preview.src = badge.icon;
+          preview.classList.add('show');
+          document.getElementById('icon-image').value = badge.icon;
+        } else if (iconType === 'link') {
+          document.getElementById('icon-link').value = badge.icon;
+        }
+        
+        document.getElementById('icon').value = badge.icon;
+        
+        // Set color
+        selectedColor = badge.color || '#FF6B6B';
+        document.getElementById('color').value = selectedColor;
+        document.querySelectorAll('.color-option').forEach(btn => {
+          btn.classList.toggle('selected', btn.dataset.color === selectedColor);
+        });
+      }
+    } else {
+      // Add mode
+      modalTitle.innerHTML = '🏆 Create New Badge';
+      submitText.textContent = 'Create Badge';
+      document.getElementById('badge-form').reset();
+      document.getElementById('badge-id').value = '';
+      
+      // Reset icon type
+      currentIconType = 'emoji';
+      document.getElementById('icon_type').value = 'emoji';
+      document.querySelectorAll('.icon-type-btn').forEach((btn, i) => {
+        btn.classList.toggle('active', i === 0);
+      });
+      document.querySelectorAll('.icon-input-section').forEach((section, i) => {
+        section.classList.toggle('active', i === 0);
+      });
+      
+      // Reset image preview
+      document.getElementById('image-preview').classList.remove('show');
+      
+      // Reset color
+      selectedColor = '#FF6B6B';
+      document.querySelectorAll('.color-option').forEach((btn, i) => {
+        btn.classList.toggle('selected', i === 0);
+      });
+    }
+    
+    modal.classList.add('active');
+    document.getElementById('modal-alert-container').innerHTML = '';
+    
+    // Reinitialize Lucide icons
+    setTimeout(() => lucide.createIcons(), 100);
+  }
+
+  function closeModal() {
+    const modal = document.getElementById('badge-modal');
+    modal.classList.remove('active');
+    editingBadgeId = null;
+  }
+
+  // Load badges
+  async function loadBadges() {
+    try {
+      const response = await fetch('/api/badges/list');
+      const data = await response.json();
+      
+      if (data.success) {
+        badges = data.badges;
+        displayBadges();
+      }
+    } catch (error) {
+      console.error('Error loading badges:', error);
+    }
+  }
+
+  // Get gradient class based on color
+  function getGradientClass(color) {
+    const colorMap = {
+      '#FF6B6B': 'gradient-orange',
+      '#4ECDC4': 'gradient-blue',
+      '#FFD93D': 'gradient-peach',
+      '#6BCF7F': 'gradient-green',
+      '#A78BFA': 'gradient-purple',
+      '#F472B6': 'gradient-pink'
+    };
+    return colorMap[color] || 'gradient-blue';
+  }
+
+  // Display badges
+  function displayBadges() {
+    const container = document.getElementById('badges-container');
+    
+    if (badges.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">🏅</div>
+          <h3>No badges created yet</h3>
+          <p>Click "Create Badge" to create your first achievement badge</p>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = badges.map(badge => {
+      // Debug logging
+      console.log('Rendering badge:', badge.name, 'Icon Type:', badge.icon_type, 'Icon:', badge.icon);
+      
+      const gradientClass = getGradientClass(badge.color || '#FF6B6B');
+      let iconHtml = '';
+      
+      if (badge.icon_type === 'lucide') {
+        iconHtml = `<i data-lucide="${badge.icon}" style="width: 60px; height: 60px; margin: 0 auto; display: block;"></i>`;
+      } else if (badge.icon_type === 'image' || badge.icon_type === 'link') {
+        const imageId = `badge-img-${badge.id}`;
+        iconHtml = `
+          <img 
+            src="${badge.icon}" 
+            alt="${badge.name}" 
+            class="badge-icon-image" 
+            id="${imageId}"
+            onerror="this.style.display='none'; document.getElementById('${imageId}-fallback').classList.add('show');"
+          >
+          <span class="badge-icon-fallback" id="${imageId}-fallback">🏆</span>
+        `;
+      } else {
+        iconHtml = `<span class="badge-icon-display">${badge.icon || '🏆'}</span>`;
+      }
+      
+      return `
+        <div class="badge-card ${gradientClass}">
+          ${iconHtml}
+          <h3 class="badge-name">${badge.name}</h3>
+          <p class="badge-description">${badge.description || 'No description'}</p>
+          <span class="badge-stats">${badge.threshold} ${getBadgeTypeUnit(badge.badge_type)}</span>
+          <div class="badge-actions">
+            <button class="btn-edit" onclick="openModal('${badge.id}')">Edit</button>
+            <button class="btn-delete" onclick="deleteBadge('${badge.id}')">Delete</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+    
+    // Reinitialize Lucide icons
+    lucide.createIcons();
+  }
+
+  // Get badge type unit
+  function getBadgeTypeUnit(type) {
+    const units = {
+      'xp': 'XP',
+      'lessons': 'lessons',
+      'streak': 'days',
+      'pomodoro': 'timers'
+    };
+    return units[type] || '';
+  }
+
+  // Create/Update badge
+  document.getElementById('badge-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    // Update icon value before submitting
+    updateIconValue();
+    
+    const formData = {
+      name: document.getElementById('name').value,
+      description: document.getElementById('description').value,
+      icon: document.getElementById('icon').value,
+      icon_type: document.getElementById('icon_type').value,
+      color: selectedColor,
+      badge_type: document.getElementById('badge_type').value,
+      threshold: parseInt(document.getElementById('threshold').value)
+    };
+
+    if (!formData.icon) {
+      showModalAlert('Please select an icon', 'error');
+      return;
+    }
+
+    // Add badge_id if editing
+    if (editingBadgeId) {
+      formData.badge_id = editingBadgeId;
+    }
+
+    try {
+      const url = editingBadgeId ? `/admin/badges/update/${editingBadgeId}` : '/admin/badges/create';
+      
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        showModalAlert(editingBadgeId ? 'Badge updated successfully!' : 'Badge created successfully!', 'success');
+        setTimeout(() => {
+          closeModal();
+          loadBadges();
+        }, 1500);
+      } else {
+        showModalAlert('Error: ' + data.error, 'error');
+      }
+    } catch (error) {
+      showModalAlert(editingBadgeId ? 'Error updating badge' : 'Error creating badge', 'error');
+      console.error(error);
+    }
+  });
+
+  // Delete badge
+  async function deleteBadge(id) {
+    if (!confirm('Are you sure you want to delete this badge? Users who earned it will lose it.')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/admin/badges/delete/${id}`, {
+        method: 'DELETE'
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        loadBadges();
+      } else {
+        alert('Error: ' + data.error);
+      }
+    } catch (error) {
+      alert('Error deleting badge');
+      console.error(error);
+    }
+  }
+
+  // Show modal alert
+  function showModalAlert(message, type) {
+    const container = document.getElementById('modal-alert-container');
+    container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+    setTimeout(() => {
+      container.innerHTML = '';
+    }, 5000);
+  }
+
+  // Close modal on outside click
+  document.getElementById('badge-modal').addEventListener('click', (e) => {
+    if (e.target.id === 'badge-modal') {
+      closeModal();
+    }
+  });
+
+  // Load badges on page load
+  loadBadges();
+</script>
+
+<%- include('../partials/footer') %>

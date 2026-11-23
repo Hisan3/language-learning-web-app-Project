@@ -1,0 +1,902 @@
+<%- include('../partials/header', { pageTitle: 'Mood Quiz Management', activePage: 'mindcare' }) %>
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Lucide Icons CDN -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+  .quiz-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin-right: 15px;
+  }
+
+  .quiz-image {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    object-fit: cover;
+    margin-right: 15px;
+  }
+
+  .option-item {
+    background: #F7FAFC;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .option-emoji {
+    font-size: 24px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+  }
+
+  .option-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
+    padding: 20px;
+  }
+
+  .modal.active {
+    display: flex;
+  }
+
+  .modal-content {
+    background: white;
+    border-radius: 25px;
+    padding: 30px;
+    max-width: 900px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
+    position: relative;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .close-modal {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 32px;
+    cursor: pointer;
+    color: #a0aec0;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+
+  .close-modal:hover {
+    color: #667eea;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 14px;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #E0E7FF;
+    border-radius: 12px;
+    transition: border-color 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: #667eea;
+  }
+
+  .option-block {
+    background: linear-gradient(135deg, #F7FAFC 0%, #EDF2F7 100%);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 15px;
+    border-left: 4px solid #667eea;
+    position: relative;
+  }
+
+  .btn-remove-option {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .btn-add-option {
+    background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+    color: #333;
+    padding: 10px 20px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: transform 0.2s;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .btn-add-option:hover {
+    transform: scale(1.02);
+  }
+
+  .media-type-selector {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .media-type-btn {
+    padding: 8px 16px;
+    border: 2px solid #E0E7FF;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 13px;
+  }
+
+  .media-type-btn.active {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .badge-active {
+    background: #84fab0;
+    color: #2d3748;
+  }
+
+  .badge-inactive {
+    background: #ffd1dc;
+    color: #c53030;
+  }
+
+  /* Table Styles */
+  .data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+  }
+
+  .data-table thead th {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+  }
+
+  .data-table thead th:first-child {
+    border-radius: 12px 0 0 12px;
+  }
+
+  .data-table thead th:last-child {
+    border-radius: 0 12px 12px 0;
+  }
+
+  .data-table tbody td {
+    background: #F8F9FF;
+    padding: 15px;
+  }
+
+  .data-table tbody tr td:first-child {
+    border-radius: 12px 0 0 12px;
+  }
+
+  .data-table tbody tr td:last-child {
+    border-radius: 0 12px 12px 0;
+  }
+
+  .btn-edit {
+    background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+    color: #333;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    margin-right: 8px;
+    transition: transform 0.2s;
+  }
+
+  .btn-edit:hover {
+    transform: scale(1.05);
+  }
+
+  .btn-delete {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: transform 0.2s;
+  }
+
+  .btn-delete:hover {
+    transform: scale(1.05);
+  }
+
+  .btn-secondary {
+    background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%);
+    color: white;
+  }
+
+  /* Image Upload Styles */
+  .image-upload-container {
+    margin-top: 10px;
+  }
+
+  .upload-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: transform 0.2s;
+    display: inline-block;
+  }
+
+  .upload-btn:hover {
+    transform: scale(1.05);
+  }
+
+  .upload-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .image-preview {
+    margin-top: 10px;
+    position: relative;
+    display: inline-block;
+  }
+
+  .image-preview img {
+    max-width: 200px;
+    max-height: 150px;
+    border-radius: 10px;
+    border: 2px solid #E0E7FF;
+  }
+
+  .remove-image-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .upload-progress {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #667eea;
+  }
+
+  .upload-error {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #ef4444;
+  }
+
+  /* Color Picker Styles */
+  .color-picker-container {
+    margin-top: 10px;
+  }
+
+  .color-slider {
+    width: 100%;
+    height: 50px;
+    border: 2px solid #E0E7FF;
+    border-radius: 12px;
+    cursor: pointer;
+  }
+
+  .color-preview {
+    margin-top: 10px;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+  }
+</style>
+
+<h1 class="header-title">🌸 Mood Quiz Management</h1>
+<p class="header-subtitle">Create and manage mood check-in questions</p>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+  <div class="nav-tabs" style="display: flex; gap: 10px;">
+    <a href="/admin/mindcare" class="nav-tab" style="background: #667eea; color: white; border: 2px solid #667eea; padding: 10px 20px; border-radius: 10px; font-weight: 600; text-decoration: none;">Questions</a>
+    <a href="/admin/mindcare/results" class="nav-tab" style="background: white; color: #667eea; border: 2px solid #667eea; padding: 10px 20px; border-radius: 10px; font-weight: 600; text-decoration: none; transition: all 0.3s;">Results</a>
+  </div>
+</div>
+
+<div class="content-panel">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2 class="panel-title">All Mood Quiz Questions</h2>
+    <button class="btn btn-success" onclick="openAddModal()">+ Add New Question</button>
+  </div>
+
+  <!-- Quiz List Table -->
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Question</th>
+        <th>Options</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="quiz-list">
+      <% if (quizzes && quizzes.length > 0) { %>
+        <% quizzes.forEach(quiz => { %>
+          <tr>
+            <td><strong><%= quiz.question %></strong></td>
+            <td><%= quiz.options.length %> options</td>
+            <td>
+              <span class="badge <%= quiz.status === 'active' ? 'badge-active' : 'badge-inactive' %>">
+                <%= quiz.status %>
+              </span>
+            </td>
+            <td>
+              <button class="btn-edit" onclick="editQuiz(<%= quiz.id %>)">✏️ Edit</button>
+              <button class="btn-delete" onclick="deleteQuiz(<%= quiz.id %>)">🗑️ Delete</button>
+            </td>
+          </tr>
+        <% }) %>
+      <% } else { %>
+        <tr>
+          <td colspan="4" style="text-align: center; padding: 40px; color: #a0aec0;">
+            No quiz questions found. Click "Add New Question" to create one.
+          </td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<!-- Add/Edit Modal -->
+<div id="quizModal" class="modal">
+  <div class="modal-content">
+    <button class="close-modal" onclick="closeModal()">&times;</button>
+    <h2 id="modal-title" style="margin-bottom: 25px; color: #667eea;">Add New Mood Question</h2>
+    
+    <form id="quizForm" onsubmit="saveQuiz(event)">
+      <input type="hidden" id="quiz-id" name="id">
+      
+      <!-- Question Text -->
+      <div class="form-group">
+        <label class="form-label">Question Text *</label>
+        <input type="text" class="form-input" id="question" name="question" required 
+               placeholder="e.g., How are you feeling right now?">
+      </div>
+
+      <!-- Status -->
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-input" id="status" name="status">
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </div>
+
+      <!-- Options Section -->
+      <div class="form-group">
+        <label class="form-label">Answer Options *</label>
+        <div id="options-container">
+          <!-- Options will be dynamically added here -->
+        </div>
+        <button type="button" class="btn-add-option" onclick="addOption()">
+          + Add Option
+        </button>
+      </div>
+
+      <!-- Submit Buttons -->
+      <div style="display: flex; gap: 10px; margin-top: 30px;">
+        <button type="submit" class="btn btn-success" style="flex: 1;">
+          💾 Save Question
+        </button>
+        <button type="button" class="btn btn-secondary" onclick="closeModal()" style="flex: 1;">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+// Initialize Supabase
+const SUPABASE_URL = "https://qtsfceqredvwhwukaugu.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF0c2ZjZXFyZWR2d2h3dWthdWd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI1MDE5NjcsImV4cCI6MjA3ODA3Nzk2N30.iJJ4wcah6BHs_ubjhwG-VU9Nj4XueSq5_Ro4sFm8QF8";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let quizzes = <%- JSON.stringify(quizzes || []) %>;
+let editingQuizId = null;
+let optionCounter = 0;
+let optionImageUrls = {}; // Store uploaded image URLs by option ID
+
+function openAddModal() {
+  editingQuizId = null;
+  optionImageUrls = {};
+  document.getElementById('modal-title').textContent = 'Add New Mood Question';
+  document.getElementById('quizForm').reset();
+  document.getElementById('quiz-id').value = '';
+  document.getElementById('options-container').innerHTML = '';
+  optionCounter = 0;
+  
+  // Add 3 default options
+  addOption();
+  addOption();
+  addOption();
+  
+  document.getElementById('quizModal').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('quizModal').classList.remove('active');
+}
+
+function addOption() {
+  optionCounter++;
+  const randomColor = getRandomGradient();
+  const optionHtml = `
+    <div class="option-block" id="option-${optionCounter}">
+      <button type="button" class="btn-remove-option" onclick="removeOption(${optionCounter})">
+        Remove
+      </button>
+      
+      <div class="form-group">
+        <label class="form-label">Option Text *</label>
+        <input type="text" class="form-input" name="option_text_${optionCounter}" required
+               placeholder="e.g., Happy">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Option Icon</label>
+        <div class="media-type-selector">
+          <button type="button" class="media-type-btn active" onclick="setOptionMediaType(${optionCounter}, 'emoji')">
+            😊 Emoji
+          </button>
+          <button type="button" class="media-type-btn" onclick="setOptionMediaType(${optionCounter}, 'lucide')">
+            🎨 Lucide Icon
+          </button>
+          <button type="button" class="media-type-btn" onclick="setOptionMediaType(${optionCounter}, 'image')">
+            📤 Image
+          </button>
+          <button type="button" class="media-type-btn" onclick="setOptionMediaType(${optionCounter}, 'imageurl')">
+            🔗 Image URL
+          </button>
+        </div>
+        
+        <div id="option-emoji-${optionCounter}" class="media-input">
+          <input type="text" class="form-input" name="option_emoji_${optionCounter}" 
+                 placeholder="Enter emoji (e.g., 😊)">
+        </div>
+        
+        <div id="option-lucide-${optionCounter}" class="media-input" style="display: none;">
+          <input type="text" class="form-input" name="option_lucide_${optionCounter}" 
+                 placeholder="Enter Lucide icon name (e.g., heart, smile)">
+          <small style="color: #718096; display: block; margin-top: 5px;">
+            Browse icons at <a href="https://lucide.dev/icons/" target="_blank">lucide.dev/icons</a>
+          </small>
+        </div>
+        
+        <div id="option-image-${optionCounter}" class="media-input" style="display: none;">
+          <div class="image-upload-container">
+            <input type="file" id="option-image-file-${optionCounter}" accept="image/*" style="display: none;" onchange="uploadOptionImage(${optionCounter})">
+            <button type="button" class="upload-btn" onclick="document.getElementById('option-image-file-${optionCounter}').click()">
+              📤 Upload Image
+            </button>
+            <div id="upload-progress-${optionCounter}" class="upload-progress" style="display: none;"></div>
+            <div id="upload-error-${optionCounter}" class="upload-error" style="display: none;"></div>
+            <div id="image-preview-${optionCounter}" class="image-preview" style="display: none;">
+              <img src="" alt="Option preview">
+              <button type="button" class="remove-image-btn" onclick="removeOptionImage(${optionCounter})">×</button>
+            </div>
+          </div>
+        </div>
+        
+        <div id="option-imageurl-${optionCounter}" class="media-input" style="display: none;">
+          <input type="text" class="form-input" name="option_imageurl_${optionCounter}" 
+                 placeholder="Enter image URL (e.g., https://...)">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Value (1-5) *</label>
+        <input type="number" class="form-input" name="option_value_${optionCounter}" 
+               min="1" max="5" required placeholder="e.g., 5">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Background Color</label>
+        <div class="color-picker-container">
+          <input type="color" class="color-slider" id="option_color_${optionCounter}" 
+                 value="${randomColor}" onchange="updateColorPreview(${optionCounter})">
+          <div class="color-preview" id="color_preview_${optionCounter}" 
+               style="background: ${randomColor};">
+            Preview Background
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.getElementById('options-container').insertAdjacentHTML('beforeend', optionHtml);
+}
+
+function getRandomGradient() {
+  const colors = ['#4ade80', '#60a5fa', '#facc15', '#f97316', '#ef4444', '#ec4899', '#8b5cf6', '#06b6d4'];
+  return colors[Math.floor(Math.random() * colors.length)];
+}
+
+function updateColorPreview(optionId) {
+  const colorInput = document.getElementById(`option_color_${optionId}`);
+  const preview = document.getElementById(`color_preview_${optionId}`);
+  preview.style.background = colorInput.value;
+}
+
+function removeOption(id) {
+  // Clean up image URL if exists
+  if (optionImageUrls[id]) {
+    delete optionImageUrls[id];
+  }
+  document.getElementById(`option-${id}`).remove();
+}
+
+function setOptionMediaType(optionId, type) {
+  const emojiDiv = document.getElementById(`option-emoji-${optionId}`);
+  const lucideDiv = document.getElementById(`option-lucide-${optionId}`);
+  const imageDiv = document.getElementById(`option-image-${optionId}`);
+  const imageUrlDiv = document.getElementById(`option-imageurl-${optionId}`);
+  const buttons = event.target.parentElement.querySelectorAll('.media-type-btn');
+  
+  buttons.forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+  
+  if (type === 'emoji') {
+    emojiDiv.style.display = 'block';
+    lucideDiv.style.display = 'none';
+    imageDiv.style.display = 'none';
+    imageUrlDiv.style.display = 'none';
+  } else if (type === 'lucide') {
+    emojiDiv.style.display = 'none';
+    lucideDiv.style.display = 'block';
+    imageDiv.style.display = 'none';
+    imageUrlDiv.style.display = 'none';
+  } else if (type === 'image') {
+    emojiDiv.style.display = 'none';
+    lucideDiv.style.display = 'none';
+    imageDiv.style.display = 'block';
+    imageUrlDiv.style.display = 'none';
+  } else if (type === 'imageurl') {
+    emojiDiv.style.display = 'none';
+    lucideDiv.style.display = 'none';
+    imageDiv.style.display = 'none';
+    imageUrlDiv.style.display = 'block';
+  }
+}
+
+async function uploadOptionImage(optionId) {
+  const fileInput = document.getElementById(`option-image-file-${optionId}`);
+  const file = fileInput.files[0];
+  
+  if (!file) return;
+  
+  const progressDiv = document.getElementById(`upload-progress-${optionId}`);
+  const errorDiv = document.getElementById(`upload-error-${optionId}`);
+  const previewDiv = document.getElementById(`image-preview-${optionId}`);
+  
+  // Reset states
+  progressDiv.style.display = 'block';
+  progressDiv.textContent = 'Uploading...';
+  errorDiv.style.display = 'none';
+  previewDiv.style.display = 'none';
+  
+  // Create unique filename
+  const timestamp = Date.now();
+  const filename = `options/${timestamp}-${file.name}`;
+  
+  try {
+    // Upload to Supabase Storage
+    const { data, error } = await supabase.storage
+      .from('moodquiz-images')
+      .upload(filename, file);
+    
+    if (error) throw error;
+    
+    // Get public URL
+    const { data: urlData } = supabase.storage
+      .from('moodquiz-images')
+      .getPublicUrl(filename);
+    
+    const publicUrl = urlData.publicUrl;
+    
+    // Store URL
+    optionImageUrls[optionId] = publicUrl;
+    
+    // Show preview
+    const img = previewDiv.querySelector('img');
+    img.src = publicUrl;
+    previewDiv.style.display = 'inline-block';
+    
+    // Hide progress
+    progressDiv.style.display = 'none';
+    
+  } catch (error) {
+    console.error('Upload error:', error);
+    errorDiv.textContent = `Upload failed: ${error.message}`;
+    errorDiv.style.display = 'block';
+    progressDiv.style.display = 'none';
+  }
+}
+
+async function removeOptionImage(optionId) {
+  const previewDiv = document.getElementById(`image-preview-${optionId}`);
+  const fileInput = document.getElementById(`option-image-file-${optionId}`);
+  
+  // Clear the file input
+  fileInput.value = '';
+  
+  // Hide preview
+  previewDiv.style.display = 'none';
+  
+  // Remove URL from storage
+  delete optionImageUrls[optionId];
+}
+
+async function saveQuiz(event) {
+  event.preventDefault();
+  
+  const formData = new FormData(event.target);
+  const question = formData.get('question');
+  const status = formData.get('status');
+  
+  // Collect options
+  const options = [];
+  for (let i = 1; i <= optionCounter; i++) {
+    const optionBlock = document.getElementById(`option-${i}`);
+    if (optionBlock) {
+      const text = formData.get(`option_text_${i}`);
+      const emoji = formData.get(`option_emoji_${i}`) || '';
+      const lucide = formData.get(`option_lucide_${i}`) || '';
+      const imageurl = formData.get(`option_imageurl_${i}`) || '';
+      const value = parseInt(formData.get(`option_value_${i}`));
+      const colorPicker = document.getElementById(`option_color_${i}`);
+      const color = colorPicker ? colorPicker.value : '#667eea';
+      
+      // Get image URL (either from upload or URL input)
+      const uploadedImageUrl = optionImageUrls[i] || '';
+      const imageUrl = uploadedImageUrl || imageurl;
+      
+      options.push({
+        text,
+        emoji: emoji || null,
+        lucide: lucide || null,
+        image: imageUrl || null,
+        value,
+        color
+      });
+    }
+  }
+  
+  if (options.length === 0) {
+    alert('Please add at least one option!');
+    return;
+  }
+  
+  const quizData = {
+    question,
+    options,
+    status
+  };
+  
+  const url = editingQuizId ? `/admin/moodquiz/edit/${editingQuizId}` : '/admin/moodquiz/add';
+  const method = 'POST';
+  
+  try {
+    const response = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(quizData)
+    });
+    
+    if (response.ok) {
+      alert('Quiz question saved successfully!');
+      window.location.reload();
+    } else {
+      const errorData = await response.json();
+      alert(`Error saving quiz question: ${errorData.error || 'Unknown error'}`);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Error saving quiz question');
+  }
+}
+
+async function editQuiz(id) {
+  const quiz = quizzes.find(q => q.id === id);
+  if (!quiz) {
+    alert('Quiz not found!');
+    return;
+  }
+  
+  editingQuizId = id;
+  optionImageUrls = {};
+  document.getElementById('modal-title').textContent = 'Edit Mood Question';
+  document.getElementById('quiz-id').value = id;
+  document.getElementById('question').value = quiz.question;
+  document.getElementById('status').value = quiz.status;
+  
+  // Parse options if they're a JSON string
+  let parsedOptions = quiz.options;
+  if (typeof quiz.options === 'string') {
+    try {
+      parsedOptions = JSON.parse(quiz.options);
+    } catch (e) {
+      console.error('Error parsing options:', e);
+      parsedOptions = [];
+    }
+  }
+  
+  // Clear and add options
+  document.getElementById('options-container').innerHTML = '';
+  optionCounter = 0;
+  
+  parsedOptions.forEach((option, index) => {
+    addOption();
+    const currentId = optionCounter;
+    
+    // Set option text
+    const textInput = document.querySelector(`[name="option_text_${currentId}"]`);
+    if (textInput) textInput.value = option.text;
+    
+    // Set value
+    const valueInput = document.querySelector(`[name="option_value_${currentId}"]`);
+    if (valueInput) valueInput.value = option.value;
+    
+    // Set color
+    const colorPicker = document.getElementById(`option_color_${currentId}`);
+    if (colorPicker) {
+      colorPicker.value = option.color || '#667eea';
+      updateColorPreview(currentId);
+    }
+    
+    // Handle icon type - check in priority: lucide, image, emoji
+    if (option.lucide) {
+      // Lucide icon
+      setOptionMediaType(currentId, 'lucide');
+      const lucideInput = document.querySelector(`[name="option_lucide_${currentId}"]`);
+      if (lucideInput) lucideInput.value = option.lucide;
+    } else if (option.image) {
+      // Image (could be uploaded or URL)
+      setOptionMediaType(currentId, 'image');
+      
+      // Store existing image URL
+      optionImageUrls[currentId] = option.image;
+      
+      // Show preview
+      const previewDiv = document.getElementById(`image-preview-${currentId}`);
+      if (previewDiv) {
+        const img = previewDiv.querySelector('img');
+        img.src = option.image;
+        previewDiv.style.display = 'inline-block';
+      }
+    } else if (option.emoji) {
+      // Emoji (default)
+      setOptionMediaType(currentId, 'emoji');
+      const emojiInput = document.querySelector(`[name="option_emoji_${currentId}"]`);
+      if (emojiInput) emojiInput.value = option.emoji;
+    }
+  });
+  
+  document.getElementById('quizModal').classList.add('active');
+  
+  // Initialize Lucide icons after a short delay
+  setTimeout(() => {
+    if (window.lucide) {
+      lucide.createIcons();
+    }
+  }, 100);
+}
+
+async function deleteQuiz(id) {
+  if (!confirm('Are you sure you want to delete this quiz question?')) return;
+  
+  try {
+    const response = await fetch(`/admin/moodquiz/delete/${id}`, {
+      method: 'POST'
+    });
+    
+    if (response.ok) {
+      alert('Quiz question deleted successfully!');
+      window.location.reload();
+    } else {
+      alert('Error deleting quiz question');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Error deleting quiz question');
+  }
+}
+</script>
+
+<%- include('../partials/footer') %>

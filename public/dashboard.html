@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mood Dashboard</title>
+    <link rel="icon" type="image/png" href="./asset/graph.png">
+  <link rel="stylesheet" href="./styles/dashboard.css">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/lucide.min.js"></script>
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="container">
+
+    <!-- Header -->
+    <div class="header">
+      <h1 class="title">Mood Dashboard 📊</h1>
+      <p class="subtitle">Track your emotional wellness journey</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid stats-cards">
+      <!-- Current Mood -->
+      <div class="card fade-up">
+        <div class="card-header">
+          <h3>Current Mood</h3>
+          <i data-lucide="heart" class="icon heart"></i>
+        </div>
+        <div class="card-body">
+          <p id="latest-status" class="status">No data</p>
+          <p id="latest-score" class="score">Score: 0/0</p>
+        </div>
+      </div>
+
+      <!-- Weekly Average -->
+      <div class="card fade-up delay-1">
+        <div class="card-header">
+          <h3>Weekly Average</h3>
+          <i data-lucide="trending-up" class="icon trending"></i>
+        </div>
+        <div class="card-body">
+          <p id="weekly-average-score" class="status blue">0%</p>
+          <p class="text-gray">Last 7 days</p>
+        </div>
+      </div>
+
+      <!-- Total Check-ins -->
+      <div class="card fade-up delay-2">
+        <div class="card-header">
+          <h3>Total Check-ins</h3>
+          <i data-lucide="calendar" class="icon calendar"></i>
+        </div>
+        <div class="card-body">
+          <p id="total-checkins" class="status purple">0</p>
+          <p class="text-gray">All time</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="grid charts-section">
+      <!-- Mood Trend -->
+      <div class="card fade-left delay-3">
+        <h3 class="chart-title">Mood Trend</h3>
+        <canvas id="moodLineChart" height="250"></canvas>
+      </div>
+
+      <!-- Weekly Overview -->
+      <div class="card fade-right delay-4">
+        <h3 class="chart-title">This Week</h3>
+        <canvas id="weeklyBarChart" height="250"></canvas>
+      </div>
+    </div>
+
+    <!-- Motivational Quote -->
+    <div class="quote-card fade-up delay-5">
+      <div class="quote-icons">
+        <i data-lucide="quote" class="icon"></i>
+        <i data-lucide="sparkles" class="icon"></i>
+      </div>
+      <p id="quote-text" class="quote-text">"You are stronger than you think."</p>
+      <p id="quote-author" class="quote-author">— Unknown</p>
+    </div>
+
+  </div>
+
+  <script src="./JS/dashboard.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

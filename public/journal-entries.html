@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Past Entries - My Journal</title>
+  <link rel="stylesheet" href="./styles/journal.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="entries-page">
+  <!-- Back Button (Sticky on Mobile) -->
+  <a href="journal.html" class="back-button">
+    <i data-lucide="arrow-left" width="18" height="18"></i>
+    <span>Back to Journal</span>
+  </a>
+
+  <!-- Hero Section -->
+  <div class="hero-section hero-entries">
+    <div class="hero-content">
+      <div class="hero-icon">📖</div>
+      <h1 class="hero-title">Past Entries</h1>
+      <p class="hero-subtitle">Reflect on your journey</p>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="page-container">
+    <!-- Filter Section -->
+    <div class="filter-section">
+      <div class="filter-buttons">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="week">This Week</button>
+        <button class="filter-btn" data-filter="month">This Month</button>
+      </div>
+    </div>
+
+    <!-- Entries List -->
+    <div id="entriesList" class="entries-grid">
+      <!-- Entries will be dynamically inserted here -->
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="empty-state">
+      <div class="empty-icon">📝</div>
+      <h3>No journal entries yet</h3>
+      <p>Start writing to capture your thoughts and feelings</p>
+      <a href="journal.html" class="btn btn-primary" style="margin-top: 1.5rem;">
+        <i data-lucide="plus" width="18" height="18"></i>
+        Create First Entry
+      </a>
+    </div>
+  </div>
+
+  <!-- View Entry Modal -->
+  <div id="viewModal" class="modal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <button class="modal-close" id="closeModal">
+        <i data-lucide="x" width="24" height="24"></i>
+      </button>
+      
+      <div class="modal-header">
+        <div class="modal-mood" id="modalMood"></div>
+        <div>
+          <h2 class="modal-title" id="modalTitle"></h2>
+          <div class="modal-date" id="modalDate"></div>
+        </div>
+      </div>
+      
+      <div class="modal-body">
+        <p id="modalContent"></p>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-danger" id="deleteFromModal">
+          <i data-lucide="trash-2" width="18" height="18"></i>
+          Delete Entry
+        </button>
+        <button class="btn btn-secondary" id="closeModalBtn">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="./JS/journal-entries.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

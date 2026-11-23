@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Breathing Exercise</title>
+  <link rel="icon" type="image/png" href="./asset/breathing.png">
+  <link rel="stylesheet" href="./styles/breathing.css" />
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="./JS/breathing.js"></script>
+  <!-- Lucide icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>Breathing Exercises 🌊</h1>
+      <p>Find your calm with guided breathing techniques</p>
+    </div>
+
+    <!-- Exercise Selection -->
+    <div id="exercise-grid" class="exercise-grid"></div>
+
+    <!-- Main Breathing Interface -->
+    <div class="interface">
+      <div class="circle-section">
+        <div class="breathing-circle" id="breathing-circle">
+          <div class="circle-text">
+            <div id="emoji" class="emoji">🫁</div>
+            <p id="phase" class="phase">Ready</p>
+            <p id="time" class="time">0</p>
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="controls">
+          <button id="start-btn" class="btn start"><i data-lucide="play"></i> Start</button>
+          <button id="pause-btn" class="btn pause hidden"><i data-lucide="pause"></i> Pause</button>
+          <button id="reset-btn" class="btn reset"><i data-lucide="rotate-ccw"></i> Reset</button>
+        </div>
+      </div>
+
+      <div class="info-section">
+        <div class="info-card">
+          <h2 id="exercise-name">Select Exercise</h2>
+          <p id="exercise-desc"></p>
+        </div>
+
+        <div class="info-card">
+          <h3>Current Session</h3>
+          <div class="status">
+            <div>
+              <p>Cycles Completed</p>
+              <span id="cycles">0</span>
+            </div>
+            <div>
+              <p>Current Phase</p>
+              <span id="current-phase">-</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <h3>Breathing Pattern</h3>
+          <div id="pattern" class="pattern"></div>
+        </div>
+
+        <div class="info-card">
+          <h3>Benefits</h3>
+          <ul id="benefits"></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tips -->
+    <div class="tips">
+      <h3>💡 Tips for Effective Breathing</h3>
+      <div class="tips-grid">
+        <div>
+          <p class="title">Find Your Position</p>
+          <p>Sit or lie down comfortably with your spine straight</p>
+        </div>
+        <div>
+          <p class="title">Focus on Your Breath</p>
+          <p>Let thoughts pass by without judgment</p>
+        </div>
+        <div>
+          <p class="title">Practice Regularly</p>
+          <p>Even 5 minutes daily can make a difference</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+  </script>
+  
+</body>
+</html>

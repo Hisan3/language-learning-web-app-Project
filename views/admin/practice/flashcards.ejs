@@ -1,0 +1,618 @@
+<%- include('../partials/header', { pageTitle: 'Flashcard Sets Management', activePage: 'flashcards' }) %>
+
+<style>
+  .badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .badge-published {
+    background: #84fab0;
+    color: #2d3748;
+  }
+
+  .badge-scheduled {
+    background: #ffd1dc;
+    color: #c53030;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
+    padding: 20px;
+  }
+
+  .modal.active {
+    display: flex;
+  }
+
+  .modal-content {
+    background: white;
+    border-radius: 25px;
+    padding: 30px;
+    max-width: 800px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
+    position: relative;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #E0E7FF;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    transition: border-color 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: #667eea;
+  }
+
+  .card-block {
+    background: #F7FAFC;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    border-left: 4px solid #f093fb;
+  }
+
+  .close-modal {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 32px;
+    cursor: pointer;
+    color: #a0aec0;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+
+  .close-modal:hover {
+    color: #667eea;
+  }
+
+  .btn-add-card {
+    background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+    color: #333;
+    padding: 10px 20px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: transform 0.2s;
+    margin-bottom: 20px;
+    width: 100%;
+  }
+
+  .btn-add-card:hover {
+    transform: scale(1.02);
+  }
+
+  .btn-remove {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+  }
+</style>
+
+<h1 class="header-title">🎴 Flashcard Sets Management</h1>
+<p class="header-subtitle">Create and manage flashcard sets with scheduling</p>
+
+<div class="content-panel">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2 class="panel-title">All Flashcard Sets</h2>
+    <button class="btn btn-success" onclick="openAddModal()">+ Add New Flashcard Set</button>
+  </div>
+
+  <!-- Filter Section -->
+  <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 20px; margin-bottom: 20px;">
+    <h3 style="color: white; margin: 0 0 15px 0; font-size: 16px; font-weight: 600;">🔍 Filter Flashcard Sets</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+      <div>
+        <label style="display: block; color: white; margin-bottom: 5px; font-size: 14px;">Category</label>
+        <select id="filterCategory" class="form-input" onchange="applyFilters()" style="margin-bottom: 0;">
+          <option value="">All Categories</option>
+          <option value="Student">Student</option>
+          <option value="Professional">Professional</option>
+          <option value="Business">Business</option>
+          <option value="Academic">Academic</option>
+          <option value="Advanced">Advanced</option>
+          <option value="Intermediate">Intermediate</option>
+          <option value="Beginner">Beginner</option>
+        </select>
+      </div>
+      <div>
+        <label style="display: block; color: white; margin-bottom: 5px; font-size: 14px;">Year</label>
+        <select id="filterYear" class="form-input" onchange="applyFilters()" style="margin-bottom: 0;">
+          <option value="">All Years</option>
+        </select>
+      </div>
+      <div>
+        <label style="display: block; color: white; margin-bottom: 5px; font-size: 14px;">Month</label>
+        <select id="filterMonth" class="form-input" onchange="applyFilters()" style="margin-bottom: 0;">
+          <option value="">All Months</option>
+          <option value="01">January</option>
+          <option value="02">February</option>
+          <option value="03">March</option>
+          <option value="04">April</option>
+          <option value="05">May</option>
+          <option value="06">June</option>
+          <option value="07">July</option>
+          <option value="08">August</option>
+          <option value="09">September</option>
+          <option value="10">October</option>
+          <option value="11">November</option>
+          <option value="12">December</option>
+        </select>
+      </div>
+      <div>
+        <label style="display: block; color: white; margin-bottom: 5px; font-size: 14px;">Specific Date</label>
+        <input type="date" id="filterDate" class="form-input" onchange="applyFilters()" style="margin-bottom: 0;">
+      </div>
+      <div style="display: flex; align-items: flex-end;">
+        <button onclick="clearFilters()" class="btn" style="background: white; color: #667eea; width: 100%; margin-bottom: 0;">Clear Filters</button>
+      </div>
+    </div>
+  </div>
+
+  <% if (flashcardSets && flashcardSets.length > 0) { %>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Flashcard Title</th>
+            <th>Category</th>
+            <th>Questions</th>
+            <th>Date Scheduled</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="flashcardTableBody">
+          <% flashcardSets.forEach(set => { %>
+            <tr class="flashcard-row" data-category="<%= set.category %>" data-date="<%= set.date_scheduled %>">
+              <td><strong><%= set.title %></strong></td>
+              <td><%= set.category %></td>
+              <td><%= set.total_questions %> cards</td>
+              <td><%= new Date(set.date_scheduled).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %></td>
+              <td>
+                <span class="badge <%= set.status === 'Published' ? 'badge-published' : 'badge-scheduled' %>">
+                  <%= set.status %>
+                </span>
+              </td>
+              <td>
+                <button 
+                  class="btn edit-flashcard-btn" 
+                  style="padding: 8px 16px; font-size: 14px; margin-right: 5px;" 
+                  data-set-id="<%= set.id %>"
+                  data-set-title="<%= set.title %>"
+                  data-set-category="<%= set.category %>"
+                  data-set-status="<%= set.status %>"
+                  data-set-date="<%= set.date_scheduled %>"
+                  data-set-cards="<%= encodeURIComponent(JSON.stringify(set.cards)) %>">
+                  ✏️ Edit
+                </button>
+                <form action="/admin/practice/flashcards/delete/<%= set.id %>" method="POST" style="display: inline;">
+                  <button type="submit" class="btn btn-danger" onclick="return confirm('Delete this flashcard set?')">🗑️ Delete</button>
+                </form>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+    <div id="noResultsMessage" style="display: none;" class="empty-state">
+      <div class="icon">🔍</div>
+      <p>No flashcard sets match your filters. Try adjusting your search criteria.</p>
+    </div>
+  <% } else { %>
+    <div class="empty-state">
+      <div class="icon">🎴</div>
+      <p>No flashcard sets yet. Click "Add New Flashcard Set" to create your first set!</p>
+    </div>
+  <% } %>
+</div>
+
+<!-- Add Flashcard Set Modal -->
+<div id="addModal" class="modal">
+  <div class="modal-content">
+    <button class="close-modal" onclick="closeAddModal()">&times;</button>
+    <h2 style="font-size: 24px; font-weight: 700; color: #2d3748; margin-bottom: 20px;">🎴 Add New Flashcard Set</h2>
+    
+    <form action="/admin/practice/flashcards/add" method="POST">
+      <label style="display: block; font-weight: 600; color: #4a5568; margin-bottom: 5px;">Flashcard Set Title</label>
+      <input type="text" name="title" class="form-input" placeholder="e.g., Advanced Vocabulary Set 1" required>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div>
+          <label style="display: block; font-weight: 600; color: #4a5568; margin-bottom: 5px;">Category</label>
+          <select name="category" class="form-input" required>
+            <option value="">Select Category</option>
+            <option value="Student">Student</option>
+            <option value="Professional">Professional</option>
+            <option value="Business">Business</option>
+            <option value="Academic">Academic</option>
+            <option value="Advanced">Advanced</option>
+            <option value="Intermediate">Intermediate</option>
+            <option value="Beginner">Beginner</option>
+          </select>
+        </div>
+
+        <div>
+          <label style="display: block; font-weight: 600; color: #4a5568; margin-bottom: 5px;">Status</label>
+          <select name="status" class="form-input" required>
+            <option value="Published">Published</option>
+            <option value="Scheduled">Scheduled</option>
+          </select>
+        </div>
+      </div>
+
+      <label style="display: block; font-weight: 600; color: #4a5568; margin-bottom: 5px;">Date Scheduled</label>
+      <input type="date" name="date_scheduled" class="form-input" required>
+
+      <div style="border-top: 2px solid #E0E7FF; margin: 20px 0; padding-top: 20px;">
+        <h3 style="font-size: 18px; font-weight: 600; color: #4a5568; margin-bottom: 15px;">Flashcards</h3>
+        <div id="cardsContainer">
+          <div class="card-block">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <label style="font-weight: 600; color: #4a5568;">Card 1</label>
+            </div>
+            <label style="display: block; font-weight: 500; color: #4a5568; margin-bottom: 5px;">Word/Phrase</label>
+            <input type="text" name="word[]" class="form-input" placeholder="e.g., Ephemeral" required>
+            
+            <label style="display: block; font-weight: 500; color: #4a5568; margin-bottom: 5px;">Meaning/Definition</label>
+            <textarea name="meaning[]" rows="2" class="form-input" placeholder="e.g., Lasting for a very short time" required></textarea>
+            
+            <label style="display: block; font-weight: 500; color: #4a5568; margin-bottom: 5px;">Example Sentence</label>
+            <textarea name="example[]" rows="2" class="form-input" placeholder="e.g., The beauty of cherry blossoms is ephemeral." required></textarea>
+          </div>
+        </div>
+        <button type="button" class="btn-add-card" onclick="addCard()">+ Add Another Card</button>
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <button type="submit" class="btn" style="flex: 1;">💾 Save Flashcard Set</button>
+        <button type="button" class="btn btn-danger" onclick="closeAddModal()" style="flex: 1;">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Edit Flashcard Set Modal -->
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <button class="close-modal" onclick="closeEditModal()">&times;</button>
+    <h2 style="font-size: 24px; font-weight: 700; color: #2d3748; margin-bottom: 20px;">✏️ Edit Flashcard Set</h2>
+    
+    <form id="editForm" method="POST">
+      <label style="display: block; font-weight: 600; color: #4a5568; margin-bottom: 5px;">Flashcard Set Title</label>
+      <input type="text" name="title" id="edit_title" class="form-input" required>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div>
+          <label style="display: block; font-weight: 600; color: #4a5568; margin-bottom: 5px;">Category</label>
+          <select name="category" id="edit_category" class="form-input" required>
+            <option value="Student">Student</option>
+            <option value="Professional">Professional</option>
+            <option value="Business">Business</option>
+            <option value="Academic">Academic</option>
+            <option value="Advanced">Advanced</option>
+            <option value="Intermediate">Intermediate</option>
+            <option value="Beginner">Beginner</option>
+          </select>
+        </div>
+
+        <div>
+          <label style="display: block; font-weight: 600; color: #4a5568; margin-bottom: 5px;">Status</label>
+          <select name="status" id="edit_status" class="form-input" required>
+            <option value="Published">Published</option>
+            <option value="Scheduled">Scheduled</option>
+          </select>
+        </div>
+      </div>
+
+      <label style="display: block; font-weight: 600; color: #4a5568; margin-bottom: 5px;">Date Scheduled</label>
+      <input type="date" name="date_scheduled" id="edit_date_scheduled" class="form-input" required>
+
+      <div style="border-top: 2px solid #E0E7FF; margin: 20px 0; padding-top: 20px;">
+        <h3 style="font-size: 18px; font-weight: 600; color: #4a5568; margin-bottom: 15px;">Flashcards</h3>
+        <div id="editCardsContainer"></div>
+        <button type="button" class="btn-add-card" onclick="addEditCard()">+ Add Another Card</button>
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <button type="submit" class="btn" style="flex: 1;">💾 Update Flashcard Set</button>
+        <button type="button" class="btn btn-danger" onclick="closeEditModal()" style="flex: 1;">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  let cardCount = 1;
+  let editCardCount = 0;
+
+  // Mobile menu toggle
+  document.getElementById('menuToggle').addEventListener('click', function() {
+    document.getElementById('sidebar').classList.toggle('open');
+  });
+
+  function openAddModal() {
+    document.getElementById('addModal').classList.add('active');
+  }
+
+  function closeAddModal() {
+    document.getElementById('addModal').classList.remove('active');
+    cardCount = 1;
+    document.getElementById('cardsContainer').innerHTML = `
+      <div class="card-block">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <label style="font-weight: 600; color: #4a5568;">Card 1</label>
+        </div>
+        <label style="display: block; font-weight: 500; color: #4a5568; margin-bottom: 5px;">Word/Phrase</label>
+        <input type="text" name="word[]" class="form-input" placeholder="e.g., Ephemeral" required>
+        
+        <label style="display: block; font-weight: 500; color: #4a5568; margin-bottom: 5px;">Meaning/Definition</label>
+        <textarea name="meaning[]" rows="2" class="form-input" placeholder="e.g., Lasting for a very short time" required></textarea>
+        
+        <label style="display: block; font-weight: 500; color: #4a5568; margin-bottom: 5px;">Example Sentence</label>
+        <textarea name="example[]" rows="2" class="form-input" placeholder="e.g., The beauty of cherry blossoms is ephemeral." required></textarea>
+      </div>
+    `;
+  }
+
+  function addCard() {
+    cardCount++;
+    const container = document.getElementById('cardsContainer');
+    const newCard = document.createElement('div');
+    newCard.className = 'card-block';
+    newCard.innerHTML = `
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <label style="font-weight: 600; color: #4a5568;">Card ${cardCount}</label>
+        <button type="button" class="btn-remove" onclick="this.parentElement.parentElement.remove()">Remove</button>
+      </div>
+      <label style="display: block; font-weight: 500; color: #4a5568; margin-bottom: 5px;">Word/Phrase</label>
+      <input type="text" name="word[]" class="form-input" required>
+      
+      <label style="display: block; font-weight: 500; color: #4a5568; margin-bottom: 5px;">Meaning/Definition</label>
+      <textarea name="meaning[]" rows="2" class="form-input" required></textarea>
+      
+      <label style="display: block; font-weight: 500; color: #4a5568; margin-bottom: 5px;">Example Sentence</label>
+      <textarea name="example[]" rows="2" class="form-input" required></textarea>
+    `;
+    container.appendChild(newCard);
+  }
+
+  function openEditModal(set) {
+    console.log('[Frontend] Opening edit modal for set:', set);
+    console.log('[Frontend] Set.cards:', set.cards);
+    console.log('[Frontend] Cards is array:', Array.isArray(set.cards));
+    
+    document.getElementById('edit_title').value = set.title;
+    document.getElementById('edit_category').value = set.category;
+    document.getElementById('edit_status').value = set.status;
+    document.getElementById('edit_date_scheduled').value = set.date_scheduled.split('T')[0];
+    
+    const container = document.getElementById('editCardsContainer');
+    container.innerHTML = '';
+    editCardCount = 0;
+    
+    if (set.cards && Array.isArray(set.cards)) {
+      set.cards.forEach((card, index) => {
+        editCardCount++;
+        const cardBlock = document.createElement('div');
+        cardBlock.className = 'card-block';
+        cardBlock.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <label style="font-weight: 600; color: #4a5568;">Card ${index + 1}</label>
+            ${index > 0 ? '<button type="button" class="btn-remove" onclick="this.parentElement.parentElement.remove()">Remove</button>' : ''}
+          </div>
+          <label style="display: block; font-weight: 500; color: #4a5568; margin-bottom: 5px;">Word/Phrase</label>
+          <input type="text" name="word[]" class="form-input" value="${card.word}" required>
+          
+          <label style="display: block; font-weight: 500; color: #4a5568; margin-bottom: 5px;">Meaning/Definition</label>
+          <textarea name="meaning[]" rows="2" class="form-input" required>${card.meaning}</textarea>
+          
+          <label style="display: block; font-weight: 500; color: #4a5568; margin-bottom: 5px;">Example Sentence</label>
+          <textarea name="example[]" rows="2" class="form-input" required>${card.example}</textarea>
+        `;
+        container.appendChild(cardBlock);
+      });
+      console.log('[Frontend] Added', set.cards.length, 'cards to edit modal');
+    } else {
+      console.error('[Frontend] No cards found in set or cards is not an array!');
+    }
+    
+    // Log form inputs before showing modal
+    setTimeout(() => {
+      const formInputs = container.querySelectorAll('input, textarea');
+      console.log('[Frontend] Total form inputs in container:', formInputs.length);
+      formInputs.forEach((input, idx) => {
+        console.log(`[Frontend] Input ${idx}:`, input.name, '=', input.value?.substring(0, 50));
+      });
+    }, 100);
+    
+    document.getElementById('editForm').action = '/admin/practice/flashcards/edit/' + set.id;
+    document.getElementById('editModal').classList.add('active');
+  }
+
+  function addEditCard() {
+    editCardCount++;
+    const container = document.getElementById('editCardsContainer');
+    const newCard = document.createElement('div');
+    newCard.className = 'card-block';
+    newCard.innerHTML = `
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <label style="font-weight: 600; color: #4a5568;">Card ${editCardCount + 1}</label>
+        <button type="button" class="btn-remove" onclick="this.parentElement.parentElement.remove()">Remove</button>
+      </div>
+      <label style="display: block; font-weight: 500; color: #4a5568; margin-bottom: 5px;">Word/Phrase</label>
+      <input type="text" name="word[]" class="form-input" required>
+      
+      <label style="display: block; font-weight: 500; color: #4a5568; margin-bottom: 5px;">Meaning/Definition</label>
+      <textarea name="meaning[]" rows="2" class="form-input" required></textarea>
+      
+      <label style="display: block; font-weight: 500; color: #4a5568; margin-bottom: 5px;">Example Sentence</label>
+      <textarea name="example[]" rows="2" class="form-input" required></textarea>
+    `;
+    container.appendChild(newCard);
+  }
+
+  function closeEditModal() {
+    document.getElementById('editModal').classList.remove('active');
+  }
+
+  // Add form submission debugger
+  document.addEventListener('DOMContentLoaded', function() {
+    const editForm = document.getElementById('editForm');
+    if (editForm) {
+      editForm.addEventListener('submit', function(e) {
+        console.log('[Frontend] Form submission started');
+        
+        // Get all form inputs
+        const formData = new FormData(editForm);
+        console.log('[Frontend] FormData contents:');
+        for (let [key, value] of formData.entries()) {
+          console.log(`  ${key}: ${value?.substring ? value.substring(0, 50) : value}`);
+        }
+        
+        // Count specific fields
+        const words = formData.getAll('word[]');
+        const meanings = formData.getAll('meaning[]');
+        const examples = formData.getAll('example[]');
+        console.log('[Frontend] word[] count:', words.length);
+        console.log('[Frontend] meaning[] count:', meanings.length);
+        console.log('[Frontend] example[] count:', examples.length);
+        
+        // Check if container has inputs
+        const container = document.getElementById('editCardsContainer');
+        const inputs = container.querySelectorAll('input[name="word[]"], textarea[name="meaning[]"], textarea[name="example[]"]');
+        console.log('[Frontend] Inputs in container:', inputs.length);
+        
+        // Verify inputs are inside form
+        inputs.forEach((input, idx) => {
+          const isInsideForm = editForm.contains(input);
+          console.log(`[Frontend] Input ${idx} inside form:`, isInsideForm, 'name:', input.name);
+        });
+        
+        // Don't prevent submission - let it continue
+      });
+    }
+  });
+
+  // Close modals when clicking outside
+  window.onclick = function(event) {
+    if (event.target.classList.contains('modal')) {
+      event.target.classList.remove('active');
+    }
+  }
+
+  // Filter functions
+  function applyFilters() {
+    const category = document.getElementById('filterCategory').value;
+    const year = document.getElementById('filterYear').value;
+    const month = document.getElementById('filterMonth').value;
+    const date = document.getElementById('filterDate').value;
+    const rows = document.querySelectorAll('.flashcard-row');
+    let hasVisibleRows = false;
+
+    rows.forEach(row => {
+      const rowCategory = row.getAttribute('data-category');
+      const rowDate = row.getAttribute('data-date');
+      const rowYear = new Date(rowDate).getFullYear();
+      const rowMonth = new Date(rowDate).getMonth() + 1; // Months are 0-indexed
+
+      let matchesCategory = !category || rowCategory === category;
+      let matchesYear = !year || rowYear.toString() === year;
+      let matchesMonth = !month || rowMonth.toString().padStart(2, '0') === month;
+      let matchesDate = !date || rowDate === date;
+
+      if (matchesCategory && matchesYear && matchesMonth && matchesDate) {
+        row.style.display = '';
+        hasVisibleRows = true;
+      } else {
+        row.style.display = 'none';
+      }
+    });
+
+    if (!hasVisibleRows) {
+      document.getElementById('noResultsMessage').style.display = 'block';
+    } else {
+      document.getElementById('noResultsMessage').style.display = 'none';
+    }
+  }
+
+  function clearFilters() {
+    document.getElementById('filterCategory').value = '';
+    document.getElementById('filterYear').value = '';
+    document.getElementById('filterMonth').value = '';
+    document.getElementById('filterDate').value = '';
+    applyFilters();
+  }
+
+  // Populate year filter
+  const currentYear = new Date().getFullYear();
+  const yearSelect = document.getElementById('filterYear');
+  for (let i = currentYear; i >= currentYear - 5; i--) { // Show last 5 years
+    const option = document.createElement('option');
+    option.value = i;
+    option.textContent = i;
+    yearSelect.appendChild(option);
+  }
+
+  // Add event listener for edit buttons
+  document.addEventListener('DOMContentLoaded', function() {
+    const editButtons = document.querySelectorAll('.edit-flashcard-btn');
+    editButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const setId = this.getAttribute('data-set-id');
+        const setTitle = this.getAttribute('data-set-title');
+        const setCategory = this.getAttribute('data-set-category');
+        const setStatus = this.getAttribute('data-set-status');
+        const setDate = this.getAttribute('data-set-date');
+        const setCards = JSON.parse(decodeURIComponent(this.getAttribute('data-set-cards')));
+        
+        const set = {
+          id: setId,
+          title: setTitle,
+          category: setCategory,
+          status: setStatus,
+          date_scheduled: setDate,
+          cards: setCards
+        };
+        
+        openEditModal(set);
+      });
+    });
+  });
+</script>
+
+<%- include('../partials/footer') %>

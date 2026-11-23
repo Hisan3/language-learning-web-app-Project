@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog Post - LearnGlow</title>
+  <link rel="stylesheet" href="./styles/blog.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="blog-post-body">
+  <!-- Fixed Back Button for Mobile -->
+  <div class="fixed-back-btn-mobile">
+    <a href="blog.html" class="mobile-back-btn">
+      <i data-lucide="arrow-left"></i>
+    </a>
+  </div>
+
+  <div class="blog-post-container">
+    <!-- Back Button Desktop -->
+    <div class="blog-post-nav">
+      <a href="blog.html" class="blog-post-back-btn">
+        <i data-lucide="arrow-left"></i>
+        <span>Back to Blog</span>
+      </a>
+    </div>
+
+    <!-- Post Content -->
+    <article id="postContainer" class="blog-post-article">
+      <!-- Loading State -->
+      <div class="blog-post-loading">
+        <div class="loading-spinner"></div>
+        <p>Loading article...</p>
+      </div>
+    </article>
+  </div>
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Supabase configuration
+    const SUPABASE_URL = 'https://qtsfceqredvwhwukaugu.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF0c2ZjZXFyZWR2d2h3dWthdWd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzMyMzE0MTQsImV4cCI6MjA0ODgwNzQxNH0.fLe8bLNEoZ67-JIrzWFa4FRhFgBMQQHJwJeZqTiOFys';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Get post ID from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const postId = urlParams.get('id');
+
+    // Helper functions
+    function getCategoryIcon(category) {
+      switch (category) {
+        case 'Learning Tips': return 'book-open';
+        case 'Productivity': return 'target';
+        case 'Well-being': return 'heart';
+        default: return 'sparkles';
+      }
+    }
+
+    function getCategoryColor(category) {
+      switch (category) {
+        case 'Learning Tips': return 'badge-learning';
+        case 'Productivity': return 'badge-productivity';
+        case 'Well-being': return 'badge-wellbeing';
+        default: return '';
+      }
+    }
+
+    async function loadBlogPost() {
+      if (!postId) {
+        showError('No blog post ID provided');
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/blog/posts/${postId}`);
+        const data = await response.json();
+
+        if (data.success && data.post) {
+          displayPost(data.post);
+        } else {
+          showError('Blog post not found');
+        }
+      } catch (error) {
+        console.error('Error loading blog post:', error);
+        showError('Failed to load blog post');
+      }
+    }
+
+    function displayPost(post) {
+      const container = document.getElementById('postContainer');
+      
+      // Format date
+      const postDate = post.published_at ? new Date(post.published_at).toLocaleDateString('en-US', { 
+        month: 'long', 
+        day: 'numeric', 
+        year: 'numeric' 
+      }) : 'Recently published';
+
+      container.innerHTML = `
+        <!-- Featured Image Hero -->
+        ${post.image_url ? `
+          <div class="blog-post-hero-image">
+            <img 
+              src="${post.image_url}" 
+              alt="${post.title}"
+              onerror="this.parentElement.style.display='none'"
+            />
+          </div>
+        ` : ''}
+        
+        <!-- Post Header -->
+        <header class="blog-post-header">
+          <!-- Category Badge -->
+          <div class="blog-post-meta-top">
+            <span class="blog-post-category ${getCategoryColor(post.category)}">
+              <i data-lucide="${getCategoryIcon(post.category)}"></i>
+              ${post.category}
+            </span>
+          </div>
+
+          <!-- Title -->
+          <h1 class="blog-post-title">${post.title}</h1>
+          
+          <!-- Excerpt -->
+          ${post.excerpt ? `
+            <p class="blog-post-excerpt">${post.excerpt}</p>
+          ` : ''}
+
+          <!-- Meta Info -->
+          <div class="blog-post-meta">
+            <div class="blog-post-meta-item">
+              <i data-lucide="calendar"></i>
+              <span>${postDate}</span>
+            </div>
+            <div class="blog-post-meta-item">
+              <i data-lucide="clock"></i>
+              <span>${post.read_time || '5 min read'}</span>
+            </div>
+            <div class="blog-post-meta-item">
+              <i data-lucide="user"></i>
+              <span>LearnGlow Team</span>
+            </div>
+          </div>
+        </header>
+
+        <!-- Divider -->
+        <div class="blog-post-divider"></div>
+
+        <!-- Post Body -->
+        <div class="blog-post-body">
+          ${post.content}
+        </div>
+
+        <!-- Post Footer -->
+        <footer class="blog-post-footer">
+          <div class="blog-post-footer-content">
+            <h3>Enjoyed this article?</h3>
+            <p>Explore more articles on our blog or return to continue learning!</p>
+            <div class="blog-post-footer-actions">
+              <a href="blog.html" class="footer-btn footer-btn-primary">
+                <i data-lucide="arrow-left"></i>
+                View All Articles
+              </a>
+              <a href="home.html" class="footer-btn footer-btn-secondary">
+                <i data-lucide="home"></i>
+                Back to Home
+              </a>
+            </div>
+          </div>
+        </footer>
+      `;
+
+      // Update page title
+      document.title = `${post.title} - LearnGlow Blog`;
+
+      // Re-initialize Lucide icons
+      lucide.createIcons();
+    }
+
+    function showError(message) {
+      const container = document.getElementById('postContainer');
+      container.innerHTML = `
+        <div class="blog-post-error">
+          <div class="error-icon">
+            <i data-lucide="alert-circle"></i>
+          </div>
+          <h2>Oops! Something went wrong</h2>
+          <p>${message}</p>
+          <div class="error-actions">
+            <a href="blog.html" class="footer-btn footer-btn-primary">
+              <i data-lucide="arrow-left"></i>
+              Back to Blog
+            </a>
+            <a href="home.html" class="footer-btn footer-btn-secondary">
+              <i data-lucide="home"></i>
+              Back to Home
+            </a>
+          </div>
+        </div>
+      `;
+      lucide.createIcons();
+    }
+
+    // Load blog post on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      loadBlogPost();
+    });
+  </script>
+</body>
+</html>

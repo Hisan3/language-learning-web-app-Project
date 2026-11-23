@@ -1,0 +1,911 @@
+<%- include('../partials/header', { pageTitle: 'Daily Affirmations Management', activePage: 'mindcare' }) %>
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Lucide Icons CDN -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
+    padding: 20px;
+  }
+
+  .modal.active {
+    display: flex;
+  }
+
+  .modal-content {
+    background: white;
+    border-radius: 25px;
+    padding: 30px;
+    max-width: 700px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
+    position: relative;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .close-modal {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 32px;
+    cursor: pointer;
+    color: #a0aec0;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+
+  .close-modal:hover {
+    color: #667eea;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 14px;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #E0E7FF;
+    border-radius: 12px;
+    transition: border-color 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: #667eea;
+  }
+
+  textarea.form-input {
+    min-height: 100px;
+    resize: vertical;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .badge-quote {
+    background: linear-gradient(135deg, #fce7f3, #e9d5ff);
+    color: #a855f7;
+  }
+
+  .badge-affirmation {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    color: #3b82f6;
+  }
+
+  .badge-active {
+    background: #84fab0;
+    color: #2d3748;
+  }
+
+  .badge-inactive {
+    background: #ffd1dc;
+    color: #c53030;
+  }
+
+  .badge-scheduled {
+    background: #fef3c7;
+    color: #f59e0b;
+  }
+
+  /* Table Styles */
+  .data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+  }
+
+  .data-table thead th {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+  }
+
+  .data-table thead th:first-child {
+    border-radius: 12px 0 0 12px;
+  }
+
+  .data-table thead th:last-child {
+    border-radius: 0 12px 12px 0;
+  }
+
+  .data-table tbody td {
+    background: #F8F9FF;
+    padding: 15px;
+  }
+
+  .data-table tbody tr td:first-child {
+    border-radius: 12px 0 0 12px;
+  }
+
+  .data-table tbody tr td:last-child {
+    border-radius: 0 12px 12px 0;
+  }
+
+  .btn-edit {
+    background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+    color: #333;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    margin-right: 8px;
+    transition: transform 0.2s;
+  }
+
+  .btn-edit:hover {
+    transform: scale(1.05);
+  }
+
+  .btn-delete {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: transform 0.2s;
+  }
+
+  .btn-delete:hover {
+    transform: scale(1.05);
+  }
+
+  .btn-secondary {
+    background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%);
+    color: white;
+  }
+
+  .nav-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+  }
+
+  .nav-tab {
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s;
+    border: 2px solid #667eea;
+  }
+
+  .nav-tab.active {
+    background: #667eea;
+    color: white;
+  }
+
+  .nav-tab:not(.active) {
+    background: white;
+    color: #667eea;
+  }
+
+  .nav-tab:not(.active):hover {
+    background: #f3f4f6;
+  }
+
+  .quote-preview {
+    background: linear-gradient(135deg, #fce7f3, #e9d5ff, #dbeafe);
+    padding: 15px;
+    border-radius: 12px;
+    margin-top: 10px;
+    border-left: 4px solid #a855f7;
+  }
+
+  .quote-text-preview {
+    font-style: italic;
+    color: #1f2937;
+    font-size: 15px;
+    margin-bottom: 8px;
+  }
+
+  .quote-author-preview {
+    color: #6b7280;
+    font-size: 13px;
+  }
+
+  .affirmation-preview {
+    background: linear-gradient(135deg, rgba(233, 213, 255, 0.4), rgba(219, 234, 254, 0.4));
+    padding: 12px;
+    border-radius: 10px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .sparkle-icon {
+    color: #a855f7;
+    width: 20px;
+    height: 20px;
+  }
+
+  .date-indicator {
+    font-size: 12px;
+    color: #f59e0b;
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+
+  .stat-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+  }
+
+  .stat-number {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+
+  .stat-label {
+    font-size: 14px;
+    opacity: 0.9;
+  }
+</style>
+
+<h1 class="header-title">💫 Daily Affirmations & Quotes</h1>
+<p class="header-subtitle">Manage inspirational quotes and daily affirmations</p>
+
+<!-- Statistics Cards -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-number" id="total-quotes">0</div>
+    <div class="stat-label">Total Quotes</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number" id="total-affirmations">0</div>
+    <div class="stat-label">Total Affirmations</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number" id="active-items">0</div>
+    <div class="stat-label">Active Items</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number" id="scheduled-items">0</div>
+    <div class="stat-label">Scheduled Items</div>
+  </div>
+</div>
+
+<!-- Tab Navigation -->
+<div class="nav-tabs">
+  <button class="nav-tab active" onclick="switchTab('quotes')" id="tab-quotes">
+    📖 Quotes
+  </button>
+  <button class="nav-tab" onclick="switchTab('affirmations')" id="tab-affirmations">
+    ✨ Affirmations
+  </button>
+</div>
+
+<!-- Quotes Section -->
+<div class="content-panel" id="quotes-section">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2 class="panel-title">All Inspirational Quotes</h2>
+    <button class="btn btn-success" onclick="openAddQuoteModal()">+ Add New Quote</button>
+  </div>
+
+  <!-- Quotes Table -->
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Quote</th>
+        <th>Author</th>
+        <th>Status</th>
+        <th>Scheduled</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="quotes-list">
+      <tr>
+        <td colspan="5" style="text-align: center; padding: 40px; color: #a0aec0;">
+          Loading quotes...
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Affirmations Section -->
+<div class="content-panel" id="affirmations-section" style="display: none;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2 class="panel-title">All Daily Affirmations</h2>
+    <button class="btn btn-success" onclick="openAddAffirmationModal()">+ Add New Affirmation</button>
+  </div>
+
+  <!-- Affirmations Table -->
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Affirmation Text</th>
+        <th>Status</th>
+        <th>Scheduled</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="affirmations-list">
+      <tr>
+        <td colspan="4" style="text-align: center; padding: 40px; color: #a0aec0;">
+          Loading affirmations...
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Quote Modal -->
+<div id="quoteModal" class="modal">
+  <div class="modal-content">
+    <button class="close-modal" onclick="closeQuoteModal()">&times;</button>
+    <h2 id="quote-modal-title" style="margin-bottom: 25px; color: #667eea;">Add New Quote</h2>
+    
+    <form id="quoteForm" onsubmit="saveQuote(event)">
+      <input type="hidden" id="quote-id" name="id">
+      
+      <!-- Quote Text -->
+      <div class="form-group">
+        <label class="form-label">Quote Text *</label>
+        <textarea class="form-input" id="quote-text" name="text" required 
+                  placeholder="Enter the inspirational quote..."></textarea>
+      </div>
+
+      <!-- Author -->
+      <div class="form-group">
+        <label class="form-label">Author</label>
+        <input type="text" class="form-input" id="quote-author" name="author" 
+               placeholder="e.g., Winston Churchill (Optional)">
+      </div>
+
+      <!-- Schedule Date -->
+      <div class="form-group">
+        <label class="form-label">Schedule Date (Optional)</label>
+        <input type="date" class="form-input" id="quote-date" name="scheduled_date">
+        <small style="color: #718096; display: block; margin-top: 5px;">
+          Leave empty to show randomly, or set a specific date
+        </small>
+      </div>
+
+      <!-- Status -->
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-input" id="quote-status" name="status">
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </div>
+
+      <!-- Preview -->
+      <div class="quote-preview" id="quote-preview">
+        <div class="quote-text-preview" id="quote-preview-text">
+          "Your quote will appear here..."
+        </div>
+        <div class="quote-author-preview" id="quote-preview-author">
+          — Author Name
+        </div>
+      </div>
+
+      <!-- Submit Buttons -->
+      <div style="display: flex; gap: 10px; margin-top: 30px;">
+        <button type="submit" class="btn btn-success" style="flex: 1;">
+          💾 Save Quote
+        </button>
+        <button type="button" class="btn btn-secondary" onclick="closeQuoteModal()" style="flex: 1;">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Affirmation Modal -->
+<div id="affirmationModal" class="modal">
+  <div class="modal-content">
+    <button class="close-modal" onclick="closeAffirmationModal()">&times;</button>
+    <h2 id="affirmation-modal-title" style="margin-bottom: 25px; color: #667eea;">Add New Affirmation</h2>
+    
+    <form id="affirmationForm" onsubmit="saveAffirmation(event)">
+      <input type="hidden" id="affirmation-id" name="id">
+      
+      <!-- Affirmation Text -->
+      <div class="form-group">
+        <label class="form-label">Affirmation Text *</label>
+        <textarea class="form-input" id="affirmation-text" name="text" required 
+                  placeholder="e.g., I am capable of achieving my goals"></textarea>
+      </div>
+
+      <!-- Schedule Date -->
+      <div class="form-group">
+        <label class="form-label">Schedule Date (Optional)</label>
+        <input type="date" class="form-input" id="affirmation-date" name="scheduled_date">
+        <small style="color: #718096; display: block; margin-top: 5px;">
+          Leave empty to show randomly, or set a specific date
+        </small>
+      </div>
+
+      <!-- Status -->
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-input" id="affirmation-status" name="status">
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </div>
+
+      <!-- Preview -->
+      <div class="affirmation-preview" id="affirmation-preview">
+        <i data-lucide="sparkles" class="sparkle-icon"></i>
+        <p id="affirmation-preview-text">Your affirmation will appear here...</p>
+      </div>
+
+      <!-- Submit Buttons -->
+      <div style="display: flex; gap: 10px; margin-top: 30px;">
+        <button type="submit" class="btn btn-success" style="flex: 1;">
+          💾 Save Affirmation
+        </button>
+        <button type="button" class="btn btn-secondary" onclick="closeAffirmationModal()" style="flex: 1;">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+// Initialize Supabase
+const SUPABASE_URL = "https://qtsfceqredvwhwukaugu.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF0c2ZjZXFyZWR2d2h3dWthdWd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI1MDE5NjcsImV4cCI6MjA3ODA3Nzk2N30.iJJ4wcah6BHs_ubjhwG-VU9Nj4XueSq5_Ro4sFm8QF8";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let quotes = [];
+let affirmations = [];
+let editingQuoteId = null;
+let editingAffirmationId = null;
+
+// Tab Switching
+function switchTab(tab) {
+  const quotesSection = document.getElementById('quotes-section');
+  const affirmationsSection = document.getElementById('affirmations-section');
+  const quotesTab = document.getElementById('tab-quotes');
+  const affirmationsTab = document.getElementById('tab-affirmations');
+
+  if (tab === 'quotes') {
+    quotesSection.style.display = 'block';
+    affirmationsSection.style.display = 'none';
+    quotesTab.classList.add('active');
+    affirmationsTab.classList.remove('active');
+  } else {
+    quotesSection.style.display = 'none';
+    affirmationsSection.style.display = 'block';
+    quotesTab.classList.remove('active');
+    affirmationsTab.classList.add('active');
+  }
+}
+
+// Load Data
+async function loadData() {
+  await Promise.all([loadQuotes(), loadAffirmations()]);
+  updateStats();
+}
+
+async function loadQuotes() {
+  try {
+    const { data, error } = await supabase
+      .from('daily_quotes')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    quotes = data || [];
+    renderQuotes();
+  } catch (error) {
+    console.error('Error loading quotes:', error);
+    document.getElementById('quotes-list').innerHTML = `
+      <tr>
+        <td colspan="5" style="text-align: center; padding: 40px; color: #ef4444;">
+          Error loading quotes: ${error.message}
+        </td>
+      </tr>
+    `;
+  }
+}
+
+async function loadAffirmations() {
+  try {
+    const { data, error } = await supabase
+      .from('daily_affirmations')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    affirmations = data || [];
+    renderAffirmations();
+  } catch (error) {
+    console.error('Error loading affirmations:', error);
+    document.getElementById('affirmations-list').innerHTML = `
+      <tr>
+        <td colspan="4" style="text-align: center; padding: 40px; color: #ef4444;">
+          Error loading affirmations: ${error.message}
+        </td>
+      </tr>
+    `;
+  }
+}
+
+function renderQuotes() {
+  const list = document.getElementById('quotes-list');
+  
+  if (quotes.length === 0) {
+    list.innerHTML = `
+      <tr>
+        <td colspan="5" style="text-align: center; padding: 40px; color: #a0aec0;">
+          No quotes found. Click "Add New Quote" to create one.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  list.innerHTML = quotes.map(quote => `
+    <tr>
+      <td>
+        <strong>"${quote.text}"</strong>
+      </td>
+      <td>${quote.author || '<em>Unknown</em>'}</td>
+      <td>
+        <span class="badge ${quote.status === 'active' ? 'badge-active' : 'badge-inactive'}">
+          ${quote.status}
+        </span>
+      </td>
+      <td>
+        ${quote.scheduled_date ? `
+          <span class="badge badge-scheduled">
+            📅 ${new Date(quote.scheduled_date).toLocaleDateString()}
+          </span>
+        ` : '<em style="color: #a0aec0;">Random</em>'}
+      </td>
+      <td>
+        <button class="btn-edit" onclick="editQuote(${quote.id})">✏️ Edit</button>
+        <button class="btn-delete" onclick="deleteQuote(${quote.id})">🗑️ Delete</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function renderAffirmations() {
+  const list = document.getElementById('affirmations-list');
+  
+  if (affirmations.length === 0) {
+    list.innerHTML = `
+      <tr>
+        <td colspan="4" style="text-align: center; padding: 40px; color: #a0aec0;">
+          No affirmations found. Click "Add New Affirmation" to create one.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  list.innerHTML = affirmations.map(affirmation => `
+    <tr>
+      <td><strong>${affirmation.text}</strong></td>
+      <td>
+        <span class="badge ${affirmation.status === 'active' ? 'badge-active' : 'badge-inactive'}">
+          ${affirmation.status}
+        </span>
+      </td>
+      <td>
+        ${affirmation.scheduled_date ? `
+          <span class="badge badge-scheduled">
+            📅 ${new Date(affirmation.scheduled_date).toLocaleDateString()}
+          </span>
+        ` : '<em style="color: #a0aec0;">Random</em>'}
+      </td>
+      <td>
+        <button class="btn-edit" onclick="editAffirmation(${affirmation.id})">✏️ Edit</button>
+        <button class="btn-delete" onclick="deleteAffirmation(${affirmation.id})">🗑️ Delete</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function updateStats() {
+  const totalQuotes = quotes.length;
+  const totalAffirmations = affirmations.length;
+  const activeItems = [...quotes, ...affirmations].filter(item => item.status === 'active').length;
+  const scheduledItems = [...quotes, ...affirmations].filter(item => item.scheduled_date).length;
+
+  document.getElementById('total-quotes').textContent = totalQuotes;
+  document.getElementById('total-affirmations').textContent = totalAffirmations;
+  document.getElementById('active-items').textContent = activeItems;
+  document.getElementById('scheduled-items').textContent = scheduledItems;
+}
+
+// Quote Modal Functions
+function openAddQuoteModal() {
+  editingQuoteId = null;
+  document.getElementById('quote-modal-title').textContent = 'Add New Quote';
+  document.getElementById('quoteForm').reset();
+  document.getElementById('quote-id').value = '';
+  updateQuotePreview();
+  document.getElementById('quoteModal').classList.add('active');
+}
+
+function closeQuoteModal() {
+  document.getElementById('quoteModal').classList.remove('active');
+}
+
+function updateQuotePreview() {
+  const text = document.getElementById('quote-text').value || 'Your quote will appear here...';
+  const author = document.getElementById('quote-author').value || 'Author Name';
+  
+  document.getElementById('quote-preview-text').textContent = `"${text}"`;
+  document.getElementById('quote-preview-author').textContent = `— ${author}`;
+}
+
+// Listen to text changes for preview
+document.addEventListener('DOMContentLoaded', () => {
+  const quoteText = document.getElementById('quote-text');
+  const quoteAuthor = document.getElementById('quote-author');
+  
+  if (quoteText) quoteText.addEventListener('input', updateQuotePreview);
+  if (quoteAuthor) quoteAuthor.addEventListener('input', updateQuotePreview);
+  
+  const affirmationText = document.getElementById('affirmation-text');
+  if (affirmationText) affirmationText.addEventListener('input', updateAffirmationPreview);
+});
+
+async function saveQuote(event) {
+  event.preventDefault();
+  
+  const formData = new FormData(event.target);
+  const quoteData = {
+    text: formData.get('text'),
+    author: formData.get('author') || null,
+    scheduled_date: formData.get('scheduled_date') || null,
+    status: formData.get('status')
+  };
+
+  try {
+    let result;
+    if (editingQuoteId) {
+      const response = await fetch(`/admin/affirmations/quotes/edit/${editingQuoteId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(quoteData)
+      });
+      result = await response.json();
+    } else {
+      const response = await fetch('/admin/affirmations/quotes/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(quoteData)
+      });
+      result = await response.json();
+    }
+
+    if (result.success) {
+      alert('Quote saved successfully!');
+      closeQuoteModal();
+      loadData();
+    } else {
+      throw new Error(result.error || 'Failed to save quote');
+    }
+  } catch (error) {
+    console.error('Error saving quote:', error);
+    alert(`Error saving quote: ${error.message}`);
+  }
+}
+
+async function editQuote(id) {
+  const quote = quotes.find(q => q.id === id);
+  if (!quote) {
+    alert('Quote not found!');
+    return;
+  }
+
+  editingQuoteId = id;
+  document.getElementById('quote-modal-title').textContent = 'Edit Quote';
+  document.getElementById('quote-id').value = id;
+  document.getElementById('quote-text').value = quote.text;
+  document.getElementById('quote-author').value = quote.author || '';
+  document.getElementById('quote-date').value = quote.scheduled_date || '';
+  document.getElementById('quote-status').value = quote.status;
+  
+  updateQuotePreview();
+  document.getElementById('quoteModal').classList.add('active');
+}
+
+async function deleteQuote(id) {
+  if (!confirm('Are you sure you want to delete this quote?')) return;
+
+  try {
+    const response = await fetch(`/admin/affirmations/quotes/delete/${id}`, {
+      method: 'POST'
+    });
+    const result = await response.json();
+
+    if (result.success) {
+      alert('Quote deleted successfully!');
+      loadData();
+    } else {
+      throw new Error(result.error || 'Failed to delete quote');
+    }
+  } catch (error) {
+    console.error('Error deleting quote:', error);
+    alert(`Error deleting quote: ${error.message}`);
+  }
+}
+
+// Affirmation Modal Functions
+function openAddAffirmationModal() {
+  editingAffirmationId = null;
+  document.getElementById('affirmation-modal-title').textContent = 'Add New Affirmation';
+  document.getElementById('affirmationForm').reset();
+  document.getElementById('affirmation-id').value = '';
+  updateAffirmationPreview();
+  document.getElementById('affirmationModal').classList.add('active');
+  
+  setTimeout(() => {
+    if (window.lucide) lucide.createIcons();
+  }, 100);
+}
+
+function closeAffirmationModal() {
+  document.getElementById('affirmationModal').classList.remove('active');
+}
+
+function updateAffirmationPreview() {
+  const text = document.getElementById('affirmation-text').value || 'Your affirmation will appear here...';
+  document.getElementById('affirmation-preview-text').textContent = text;
+  
+  setTimeout(() => {
+    if (window.lucide) lucide.createIcons();
+  }, 50);
+}
+
+async function saveAffirmation(event) {
+  event.preventDefault();
+  
+  const formData = new FormData(event.target);
+  const affirmationData = {
+    text: formData.get('text'),
+    scheduled_date: formData.get('scheduled_date') || null,
+    status: formData.get('status')
+  };
+
+  try {
+    let result;
+    if (editingAffirmationId) {
+      const response = await fetch(`/admin/affirmations/affirmations/edit/${editingAffirmationId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(affirmationData)
+      });
+      result = await response.json();
+    } else {
+      const response = await fetch('/admin/affirmations/affirmations/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(affirmationData)
+      });
+      result = await response.json();
+    }
+
+    if (result.success) {
+      alert('Affirmation saved successfully!');
+      closeAffirmationModal();
+      loadData();
+    } else {
+      throw new Error(result.error || 'Failed to save affirmation');
+    }
+  } catch (error) {
+    console.error('Error saving affirmation:', error);
+    alert(`Error saving affirmation: ${error.message}`);
+  }
+}
+
+async function editAffirmation(id) {
+  const affirmation = affirmations.find(a => a.id === id);
+  if (!affirmation) {
+    alert('Affirmation not found!');
+    return;
+  }
+
+  editingAffirmationId = id;
+  document.getElementById('affirmation-modal-title').textContent = 'Edit Affirmation';
+  document.getElementById('affirmation-id').value = id;
+  document.getElementById('affirmation-text').value = affirmation.text;
+  document.getElementById('affirmation-date').value = affirmation.scheduled_date || '';
+  document.getElementById('affirmation-status').value = affirmation.status;
+  
+  updateAffirmationPreview();
+  document.getElementById('affirmationModal').classList.add('active');
+}
+
+async function deleteAffirmation(id) {
+  if (!confirm('Are you sure you want to delete this affirmation?')) return;
+
+  try {
+    const response = await fetch(`/admin/affirmations/affirmations/delete/${id}`, {
+      method: 'POST'
+    });
+    const result = await response.json();
+
+    if (result.success) {
+      alert('Affirmation deleted successfully!');
+      loadData();
+    } else {
+      throw new Error(result.error || 'Failed to delete affirmation');
+    }
+  } catch (error) {
+    console.error('Error deleting affirmation:', error);
+    alert(`Error deleting affirmation: ${error.message}`);
+  }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
+  loadData();
+  
+  if (window.lucide) {
+    lucide.createIcons();
+  }
+});
+</script>
+
+<%- include('../partials/footer') %>

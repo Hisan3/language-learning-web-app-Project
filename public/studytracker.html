@@ -1,0 +1,331 @@
+<!-- studytracker.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Progress Tracker</title>
+  <link rel="stylesheet" href="./styles/studytracker.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+</head>
+
+<body>
+  <!-- Top Navbar -->
+  <header class="navbar">
+    <div class="navbar-container">
+      <!-- Left: Logo + Navigation -->
+      <div class="navbar-left">
+        <div class="logo">
+          <div class="logo-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 9.75L12 3l9 6.75V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1V9.75z" />
+            </svg>
+          </div>
+          <span class="logo-text">Productivity Hub</span>
+        </div>
+      </div>
+
+          <!-- Desktop Navigation -->
+      <nav class="desktop-nav">
+        <a href="home.html" class="nav-link nav-link-active">
+          <i data-lucide="home" width="16" height="16"></i>
+          Home
+        </a>
+        <a href="learnhome.html" class="nav-link">
+          <i data-lucide="book-open" width="16" height="16"></i>
+          Learn
+        </a>
+        <a href="practice.html" class="nav-link">
+          <i data-lucide="clipboard-list" width="16" height="16"></i>
+          Practice
+        </a>
+
+        <a href="productivity.html" class="nav-link">
+          <i data-lucide="layout-dashboard" width="16" height="16"></i>
+          Tasks
+        </a>
+        <a href="mindhome.html" class="nav-link">
+          <i data-lucide="heart" width="16" height="16"></i>
+          Mind
+        </a>
+        <a href="blog.html" class="nav-link">
+          <i data-lucide="pen-line" width="16" height="16"></i>
+          Blog
+        </a>
+      </nav>
+
+      <!-- Right: Profile + Mobile Menu Button -->
+      <div class="navbar-right">
+        <div class="profile-pill">
+          <div class="profile-initial" id="profile-initial">G</div>
+          <div class="profile-name" id="top-user">Guest</div>
+        </div>
+
+        <!-- Hamburger for mobile -->
+        <button class="menu-btn" id="menu-btn">
+          <i data-lucide="menu" width="24" height="24" id="menu-icon"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown Menu -->
+    <div class="mobile-nav" id="mobile-nav">
+      <!-- Mobile Profile Info -->
+      <div class="mobile-profile-section">
+        <div class="mobile-profile-pill">
+          <div class="mobile-profile-initial" id="mobile-profile-initial">G</div>
+          <div class="mobile-profile-name" id="mobile-user">Guest</div>
+        </div>
+      </div>
+      
+      <ul class="mobile-nav-list">
+        <li>
+          <a href="home.html" class="mobile-nav-link mobile-nav-link-pink">
+            <i data-lucide="home" width="20" height="20"></i>
+            Home
+          </a>
+        </li>
+        <li>
+          <a href="learnhome.html" class="mobile-nav-link mobile-nav-link-purple">
+            <i data-lucide="book-open" width="20" height="20"></i>
+            Learn
+          </a>
+        </li>
+        <li>
+          <a href="practice.html" class="mobile-nav-link mobile-nav-link-purple">
+            <i data-lucide="clipboard-list" width="20" height="20"></i>
+            Practice 
+          </a>
+        </li>
+
+        <li>
+          <a href="productivity.html" class="mobile-nav-link mobile-nav-link-blue">
+            <i data-lucide="layout-dashboard" width="20" height="20"></i>
+            Tasks
+          </a>
+        </li>
+        <li>
+          <a href="mindhome.html" class="mobile-nav-link mobile-nav-link-teal">
+            <i data-lucide="heart" width="20" height="20"></i>
+            Mind
+          </a>
+        </li>
+        <li>
+          <a href="blog.html" class="mobile-nav-link mobile-nav-link-yellow">
+            <i data-lucide="pen-line" width="20" height="20"></i>
+            Blog
+          </a>
+        </li>
+      </ul>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1 class="title">Study Progress Tracker 📊</h1>
+      <p class="subtitle">Track your study time with custom categories! 📚</p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button class="btn btn-primary" id="btnAddSession">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Log Study Time
+      </button>
+      <button class="btn btn-outline" id="btnManageCategories">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+        </svg>
+        Manage Categories
+      </button>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="stats-grid">
+      <div class="stat-card stat-card-blue">
+        <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <h3>Total This Month</h3>
+        <p class="stat-value" id="totalMonthHours">0h</p>
+      </div>
+      <div class="stat-card stat-card-purple">
+        <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="20" x2="12" y2="10"></line>
+          <line x1="18" y1="20" x2="18" y2="4"></line>
+          <line x1="6" y1="20" x2="6" y2="16"></line>
+        </svg>
+        <h3>Study Days</h3>
+        <p class="stat-value" id="studyDaysCount">0</p>
+      </div>
+      <div class="stat-card stat-card-orange">
+        <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        <h3>Categories</h3>
+        <p class="stat-value" id="categoriesCount">0</p>
+      </div>
+    </div>
+
+    <!-- Category Breakdown -->
+    <div class="card category-breakdown" id="categoryBreakdown" style="display: none;">
+      <h2>Study Time by Category 📚</h2>
+      <div id="categoryStatsList"></div>
+    </div>
+
+    <!-- Calendar -->
+    <div class="card calendar-card">
+      <!-- Calendar Navigation -->
+      <div class="calendar-header">
+        <button class="btn-nav" id="btnPrevMonth">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+        <div class="calendar-title">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <h3 id="monthName">November 2025</h3>
+        </div>
+        <button class="btn-nav" id="btnNextMonth">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Calendar Grid -->
+      <div class="calendar-days-header">
+        <div>Sun</div>
+        <div>Mon</div>
+        <div>Tue</div>
+        <div>Wed</div>
+        <div>Thu</div>
+        <div>Fri</div>
+        <div>Sat</div>
+      </div>
+      <div class="calendar-grid" id="calendarGrid"></div>
+    </div>
+
+    <!-- Legend -->
+    <div class="card legend-card" id="legendCard" style="display: none;">
+      <h3>Your Study Categories</h3>
+      <div class="legend-grid" id="legendGrid"></div>
+    </div>
+  </div>
+
+  <!-- Add Session Modal -->
+  <div class="modal" id="modalAddSession">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Add Study Session 📚</h2>
+        <button class="btn-close" id="btnCloseAddSession">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Subject/Category</label>
+          <select id="inputSessionCategory" class="input">
+            <option value="">Select subject</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Duration (minutes)</label>
+          <input type="number" id="inputSessionDuration" class="input" placeholder="60" min="1">
+        </div>
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" id="inputSessionDate" class="input">
+        </div>
+        <button class="btn btn-submit" id="btnSubmitSession">Add Session</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manage Categories Modal -->
+  <div class="modal" id="modalManageCategories">
+    <div class="modal-content modal-large">
+      <div class="modal-header">
+        <h2>Manage Study Categories 🎨</h2>
+        <button class="btn-close" id="btnCloseManageCategories">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- Add New Category -->
+        <div class="card add-category-card">
+          <h3>Add New Category</h3>
+          <div class="input-group">
+            <input type="text" id="inputNewCategoryName" class="input" placeholder="Category name">
+            <button class="btn btn-add" id="btnAddCategory">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </button>
+          </div>
+          <div class="color-picker">
+            <p>Choose Color:</p>
+            <div class="color-palette" id="colorPalette"></div>
+            <div class="selected-color">
+              <span>Selected:</span>
+              <div class="color-preview" id="selectedColorPreview"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Existing Categories -->
+        <div class="existing-categories">
+          <h3>Your Categories</h3>
+          <div id="categoriesList"></div>
+        </div>
+
+        <button class="btn btn-save" id="btnSaveCategories">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            <polyline points="7 3 7 8 15 8"></polyline>
+          </svg>
+          Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Color Picker Modal (for editing category color) -->
+  <div class="modal" id="modalColorPicker">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Choose Color</h2>
+        <button class="btn-close" id="btnCloseColorPicker">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="color-palette" id="editColorPalette"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supabase Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+  <!-- Supabase is initialized in studytracker.js -->
+  <script src="./JS/studytracker.js"></script>
+  <script>
+    lucide.createIcons(); 
+  </script>
+</body>
+
+</html>

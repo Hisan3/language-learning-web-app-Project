@@ -1,0 +1,1256 @@
+<%- include('../partials/header', { pageTitle: 'Lesson Management', activePage: 'lessons' }) %>    
+    
+<style>    
+/* ----------------------------------    
+        LESSON TITLE ICON    
+---------------------------------- */    
+.lesson-title {    
+  font-size: 28px;    
+  font-weight: 700;    
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);    
+  -webkit-background-clip: text;    
+  -webkit-text-fill-color: transparent;    
+  background-clip: text;    
+  display: flex;    
+  align-items: center;    
+  gap: 12px;    
+  margin-bottom: 10px;    
+}    
+    
+.lesson-subtitle {    
+  color: #718096;    
+  margin-bottom: 30px;    
+  font-size: 14px;    
+}    
+    
+/* ----------------------------------    
+          CONTENT PANEL    
+---------------------------------- */    
+.content-panel {    
+  background: white;    
+  border-radius: 25px;    
+  padding: 30px;    
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);    
+  animation: fadeIn 0.5s ease;    
+}    
+    
+@keyframes fadeIn {    
+  from { opacity: 0; transform: translateY(20px); }    
+  to { opacity: 1; transform: translateY(0); }    
+}    
+    
+.panel-header {    
+  display: flex;    
+  justify-content: space-between;    
+  align-items: center;    
+  margin-bottom: 30px;    
+  gap: 15px;    
+  flex-wrap: wrap;    
+}    
+    
+.filter-group {    
+  display: flex;    
+  gap: 12px;    
+  flex-wrap: wrap;    
+}    
+    
+.filter-select {    
+  padding: 12px 16px;    
+  border: 2px solid #E0E7FF;    
+  border-radius: 12px;    
+  font-size: 14px;    
+  font-family: 'Poppins', sans-serif;    
+  background: white;    
+  cursor: pointer;    
+  transition: all 0.3s ease;    
+}    
+    
+.filter-select:focus {    
+  outline: none;    
+  border-color: #667eea;    
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);    
+}    
+    
+.btn-primary {    
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);    
+  color: white;    
+  padding: 12px 24px;    
+  border-radius: 12px;    
+  text-decoration: none;    
+  font-weight: 500;    
+  border: none;    
+  cursor: pointer;    
+  transition: all 0.2s ease;    
+  display: inline-flex;    
+  align-items: center;    
+  gap: 8px;    
+  font-size: 14px;    
+  font-family: 'Poppins', sans-serif;    
+}    
+    
+.btn-primary:hover {    
+  transform: translateY(-2px);    
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);    
+}    
+    
+/* ----------------------------------    
+          TABLE STYLES    
+---------------------------------- */    
+.table-container {    
+  overflow-x: auto;    
+}    
+    
+.data-table {    
+  width: 100%;    
+  border-collapse: separate;    
+  border-spacing: 0 10px;    
+}    
+    
+.data-table th {    
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);    
+  color: white;    
+  padding: 15px;    
+  text-align: left;    
+  font-weight: 600;    
+  font-size: 14px;    
+}    
+    
+.data-table th:first-child {    
+  border-radius: 12px 0 0 12px;    
+}    
+    
+.data-table th:last-child {    
+  border-radius: 0 12px 12px 0;    
+}    
+    
+.data-table td {    
+  background: #F8F9FF;    
+  padding: 15px;    
+  border: none;    
+  font-size: 14px;    
+  color: #4a5568;    
+}    
+    
+.data-table tr td:first-child {    
+  border-radius: 12px 0 0 12px;    
+}    
+    
+.data-table tr td:last-child {    
+  border-radius: 0 12px 12px 0;    
+}    
+    
+.data-table tbody tr {    
+  transition: all 0.2s ease;    
+}    
+    
+.data-table tbody tr:hover td {    
+  background: #eef2ff;    
+  transform: translateY(-2px);    
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);    
+}    
+    
+/* ----------------------------------    
+          BADGES    
+---------------------------------- */    
+.badge {    
+  display: inline-block;    
+  padding: 6px 14px;    
+  border-radius: 20px;    
+  font-size: 12px;    
+  font-weight: 600;    
+}    
+    
+.badge-beginner {    
+  background: #d4f4dd;    
+  color: #27ae60;    
+}    
+    
+.badge-intermediate {    
+  background: #fff3cd;    
+  color: #f59e0b;    
+}    
+    
+.badge-advanced {    
+  background: #ffe4e6;    
+  color: #e11d48;    
+}    
+    
+.badge-student {    
+  background: #e0e7ff;    
+  color: #4f46e5;    
+}    
+    
+.badge-professional {    
+  background: #fce7f3;    
+  color: #db2777;    
+}    
+    
+.badge-active {    
+  background: #84fab0;    
+  color: #2d3748;    
+}    
+
+.badge-draft {    
+  background: #fef3c7;    
+  color: #b45309;    
+}    
+
+.xp-badge {
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  color: #b45309;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+    
+/* ----------------------------------    
+          ACTION BUTTONS    
+---------------------------------- */    
+.action-buttons {    
+  display: flex;    
+  gap: 8px;    
+}    
+    
+.btn-edit {    
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);    
+  color: white;    
+  padding: 8px 16px;    
+  border-radius: 10px;    
+  border: none;    
+  font-size: 13px;    
+  font-weight: 500;    
+  cursor: pointer;    
+  transition: all 0.2s ease;    
+  font-family: 'Poppins', sans-serif;    
+}    
+    
+.btn-edit:hover {    
+  transform: scale(1.05);    
+}    
+    
+.btn-delete {    
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);    
+  color: white;    
+  padding: 8px 16px;    
+  border-radius: 10px;    
+  border: none;    
+  font-size: 13px;    
+  font-weight: 500;    
+  cursor: pointer;    
+  transition: all 0.2s ease;    
+  font-family: 'Poppins', sans-serif;    
+}    
+    
+.btn-delete:hover {    
+  transform: scale(1.05);    
+}    
+    
+/* ----------------------------------    
+          EMPTY STATE    
+---------------------------------- */    
+.empty-state {    
+  text-align: center;    
+  padding: 80px 20px;    
+}    
+    
+.empty-state-icon {    
+  font-size: 80px;    
+  margin-bottom: 20px;    
+  opacity: 0.3;    
+}    
+    
+.empty-state h3 {    
+  color: #4a5568;    
+  font-size: 22px;    
+  margin-bottom: 12px;    
+}    
+    
+.empty-state p {    
+  color: #a0aec0;    
+  font-size: 14px;    
+}    
+    
+/* ----------------------------------    
+          MODAL STYLES    
+---------------------------------- */    
+.modal {    
+  display: none;    
+  position: fixed;    
+  top: 0;    
+  left: 0;    
+  right: 0;    
+  bottom: 0;    
+  background: rgba(0, 0, 0, 0.5);    
+  z-index: 1000;    
+  align-items: center;    
+  justify-content: center;    
+  padding: 20px;    
+}    
+    
+.modal.active {    
+  display: flex;    
+}    
+    
+.modal-content {    
+  background: white;    
+  border-radius: 25px;    
+  padding: 30px;    
+  max-width: 700px;    
+  width: 100%;    
+  max-height: 85vh;    
+  overflow-y: auto;    
+  animation: slideUp 0.3s ease;    
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);    
+}    
+    
+@keyframes slideUp {    
+  from { transform: translateY(50px); opacity: 0; }    
+  to { transform: translateY(0); opacity: 1; }    
+}    
+    
+.modal-header {    
+  font-size: 24px;    
+  font-weight: 700;    
+  color: #2d3748;    
+  margin-bottom: 25px;    
+  display: flex;    
+  align-items: center;    
+  gap: 10px;    
+}    
+    
+/* ----------------------------------    
+          FORM STYLES    
+---------------------------------- */    
+.form-group {    
+  margin-bottom: 20px;    
+}    
+    
+.form-label {    
+  display: block;    
+  font-weight: 600;    
+  color: #4a5568;    
+  margin-bottom: 8px;    
+  font-size: 14px;    
+}    
+    
+.form-input, .form-select, .form-textarea {    
+  width: 100%;    
+  padding: 12px;    
+  border: 2px solid #E0E7FF;    
+  border-radius: 12px;    
+  font-family: 'Poppins', sans-serif;    
+  font-size: 14px;    
+  transition: all 0.3s ease;    
+  background: #fafafa;    
+}    
+    
+.form-input:focus, .form-select:focus, .form-textarea:focus {    
+  outline: none;    
+  border-color: #667eea;    
+  background: white;    
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);    
+}    
+    
+.form-textarea {    
+  resize: vertical;    
+  min-height: 100px;    
+}    
+    
+.required {    
+  color: #e11d48;    
+}    
+    
+.form-actions {    
+  display: flex;    
+  gap: 10px;    
+  margin-top: 25px;    
+  padding-top: 20px;    
+  border-top: 2px solid #f0f0f0;    
+}    
+    
+.btn-submit {    
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);    
+  color: white;    
+  padding: 12px 24px;    
+  border-radius: 12px;    
+  border: none;    
+  cursor: pointer;    
+  transition: all 0.2s ease;    
+  font-weight: 500;    
+  font-family: 'Poppins', sans-serif;    
+  flex: 1;    
+}    
+    
+.btn-submit:hover {    
+  transform: scale(1.05);    
+}    
+    
+.btn-cancel {    
+  background: linear-gradient(135deg, #ffa62b 0%, #ff6b6b 100%);    
+  color: white;    
+  padding: 12px 24px;    
+  border-radius: 12px;    
+  border: none;    
+  cursor: pointer;    
+  transition: all 0.2s ease;    
+  font-weight: 500;    
+  font-family: 'Poppins', sans-serif;    
+}    
+    
+.btn-cancel:hover {    
+  transform: scale(1.05);    
+}    
+    
+.current-image {    
+  margin-top: 10px;    
+}    
+    
+.current-image img {    
+  max-width: 150px;    
+  border-radius: 8px;    
+  border: 2px solid #e9ecef;    
+}
+
+.form-hint {
+  font-size: 12px;
+  color: #718096;
+  margin-top: 4px;
+  font-style: italic;
+}
+    
+/* Responsive */    
+@media (max-width: 768px) {    
+  .panel-header {    
+    flex-direction: column;    
+    align-items: stretch;    
+  }    
+    
+  .filter-group {    
+    width: 100%;    
+  }    
+    
+  .filter-select {    
+    flex: 1;    
+  }    
+    
+  .modal-content {    
+    padding: 20px;    
+  }    
+}    
+</style>    
+    
+<div class="content-panel">    
+  <h1 class="lesson-title">📚 Lesson Management</h1>    
+  <p class="lesson-subtitle">Manage all English lessons for students and professionals</p>    
+    
+  <div class="panel-header">    
+    <div class="filters">    
+      <select class="filter-select" id="categoryFilter">    
+        <option value="">All Categories</option>    
+        <option value="student">Student Path</option>    
+        <option value="professional">Professional Path</option>    
+      </select>    
+          
+      <select class="filter-select" id="difficultyFilter">    
+        <option value="">All Levels</option>    
+        <option value="beginner">Beginner</option>    
+        <option value="intermediate">Intermediate</option>    
+        <option value="advanced">Advanced</option>    
+      </select>    
+    </div>    
+    
+    <button class="btn-primary" onclick="openAddModal()">    
+      + Add New Lesson    
+    </button>    
+  </div>    
+    
+  <% if (lessons.length > 0) { %>    
+    <div class="table-container">    
+      <table class="data-table">    
+        <thead>    
+          <tr>    
+            <th>Title</th>    
+            <th>Category</th>
+            <th>Subcategory</th>    
+            <th>Level</th>
+            <th>XP</th>
+            <th>Exercises</th>    
+            <th>Status</th>    
+            <th>Actions</th>    
+          </tr>    
+        </thead>    
+        <tbody id="lessonsTable">    
+          <% lessons.forEach(lesson => { %>    
+            <tr data-category="<%= lesson.category || 'student' %>" data-difficulty="<%= lesson.difficulty || 'beginner' %>">    
+              <td><strong><%= lesson.title %></strong></td>    
+              <td>    
+                <% if (lesson.category === 'student') { %>    
+                  <span class="badge badge-student">Student</span>    
+                <% } else { %>    
+                  <span class="badge badge-professional">Professional</span>    
+                <% } %>    
+              </td>
+              <td>
+                <%= lesson.subcategory || '-' %>
+              </td>    
+              <td>    
+                <% if (lesson.difficulty === 'beginner') { %>    
+                  <span class="badge badge-beginner">Beginner</span>    
+                <% } else if (lesson.difficulty === 'intermediate') { %>    
+                  <span class="badge badge-intermediate">Intermediate</span>    
+                <% } else if (lesson.difficulty === 'advanced') { %>    
+                  <span class="badge badge-advanced">Advanced</span>    
+                <% } else { %>    
+                  <span class="badge badge-beginner">Beginner</span>    
+                <% } %>    
+              </td>
+              <td>
+                <span class="xp-badge">⭐ <%= lesson.xp || 0 %> XP</span>
+              </td>
+              <td>
+                <% if (lesson.exercises && Array.isArray(lesson.exercises)) { %>
+                  <%= lesson.exercises.length %>
+                <% } else { %>
+                  0
+                <% } %>
+              </td>    
+              <td>    
+                <% if (lesson.status === 'published') { %>    
+                  <span class="badge badge-active">Published</span>    
+                <% } else { %>    
+                  <span class="badge badge-draft">Draft</span>    
+                <% } %>    
+              </td>    
+              <td>    
+                <div class="action-buttons">    
+                  <button class="btn-edit" onclick='openEditModal(<%= JSON.stringify(lesson) %>)'>Edit</button>    
+                  <form action="/admin/lessons/delete/<%= lesson.id %>" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this lesson?');">    
+                    <button type="submit" class="btn-delete">Delete</button>    
+                  </form>    
+                </div>    
+              </td>    
+            </tr>    
+          <% }) %>    
+        </tbody>    
+      </table>    
+    </div>    
+  <% } else { %>    
+    <div class="empty-state">    
+      <div class="empty-state-icon">📚</div>    
+      <h3>No lessons found</h3>    
+      <p>Click "+ Add New Lesson" to create your first lesson</p>    
+    </div>    
+  <% } %>    
+</div>    
+    
+<!-- Add Lesson Modal -->    
+<div id="addLessonModal" class="modal">    
+  <div class="modal-content">    
+    <h2 class="modal-header">📚 Add New Lesson</h2>    
+    <form action="/admin/lessons/add" method="POST" enctype="multipart/form-data">    
+          
+      <div class="form-group">    
+        <label for="add_title" class="form-label">Lesson Title <span class="required">*</span></label>    
+        <input     
+          type="text"     
+          id="add_title"     
+          name="title"     
+          class="form-input"     
+          placeholder="e.g., Business Email Writing Basics"     
+          required    
+        >    
+      </div>    
+    
+      <div class="form-group">    
+        <label for="add_category" class="form-label">Category <span class="required">*</span></label>    
+        <select id="add_category" name="category" class="form-select" required>    
+          <option value="">Select Category</option>    
+          <option value="student">Student Path</option>    
+          <option value="professional">Professional Path</option>    
+        </select>    
+      </div>    
+    
+      <div class="form-group">    
+        <label for="add_difficulty" class="form-label">Difficulty Level <span class="required">*</span></label>    
+        <select id="add_difficulty" name="difficulty" class="form-select" required>    
+          <option value="beginner">Beginner</option>    
+          <option value="intermediate">Intermediate</option>    
+          <option value="advanced">Advanced</option>    
+        </select>    
+      </div>
+
+      <div class="form-group">
+        <label for="add_subcategory" class="form-label">Subcategory (Optional)</label>
+        <select
+          id="add_subcategory"
+          name="subcategory"
+          class="form-select"
+        >
+          <option value="">Select Subcategory</option>
+        </select>
+        <p class="form-hint">Select existing subcategory or type a custom one below. Lessons with same subcategory will be grouped together.</p>
+      </div>
+
+      <div class="form-group" id="add_custom_subcategory_group" style="display: none;">
+        <label for="add_custom_subcategory" class="form-label">Custom Subcategory</label>
+        <input
+          type="text"
+          id="add_custom_subcategory"
+          class="form-input"
+          placeholder="Enter new subcategory name"
+        >
+        
+        <div style="margin-top: 15px;">
+          <label class="form-label">Choose Icon/Image</label>
+          
+          <div style="margin-bottom: 10px;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+              <input type="radio" name="icon_type" value="emoji" checked>
+              <span>📝 Emoji</span>
+            </label>
+            <input
+              type="text"
+              id="icon_emoji"
+              class="form-input"
+              placeholder="Enter emoji (e.g., 📚)"
+              style="margin-top: 8px; margin-left: 28px;"
+            >
+          </div>
+
+          <div style="margin-bottom: 10px;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+              <input type="radio" name="icon_type" value="image_url">
+              <span>🔗 Image URL</span>
+            </label>
+            <input
+              type="url"
+              id="icon_image_url"
+              class="form-input"
+              placeholder="https://example.com/icon.png"
+              style="margin-top: 8px; margin-left: 28px;"
+              disabled
+            >
+          </div>
+
+          <div style="margin-bottom: 10px;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+              <input type="radio" name="icon_type" value="lucide">
+              <span>⚡ Lucide Icon</span>
+            </label>
+            <input
+              type="text"
+              id="icon_lucide"
+              class="form-input"
+              placeholder="Icon name (e.g., book, briefcase)"
+              style="margin-top: 8px; margin-left: 28px;"
+              disabled
+            >
+            <p class="form-hint" style="margin-left: 28px;">Browse icons at: <a href="https://lucide.dev/icons" target="_blank" style="color: #667eea;">lucide.dev/icons</a></p>
+          </div>
+
+          <div style="margin-bottom: 10px;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+              <input type="radio" name="icon_type" value="image_upload">
+              <span>📤 Upload Image</span>
+            </label>
+            <input
+              type="file"
+              id="icon_image_upload"
+              class="form-input"
+              accept="image/*"
+              style="margin-top: 8px; margin-left: 28px;"
+              disabled
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="add_xp" class="form-label">XP Reward <span class="required">*</span></label>
+        <input 
+          type="number" 
+          id="add_xp" 
+          name="xp" 
+          class="form-input" 
+          placeholder="e.g., 50"
+          min="0"
+          step="10"
+          value="50"
+          required
+        >
+        <p class="form-hint">Experience points awarded upon completing this lesson (Recommended: Beginner=50, Intermediate=75, Advanced=100)</p>
+      </div>
+
+      <div class="form-group">
+        <label for="add_status" class="form-label">Status <span class="required">*</span></label>
+        <select id="add_status" name="status" class="form-select" required>
+          <option value="published">Published</option>
+          <option value="draft">Draft</option>
+        </select>
+      </div>
+
+      <div class="form-group">    
+        <label for="add_description" class="form-label">Short Description <span class="required">*</span></label>    
+        <textarea     
+          id="add_description"     
+          name="description"     
+          class="form-textarea"     
+          placeholder="Brief description of what students will learn..."    
+          required    
+        ></textarea>    
+      </div>    
+
+      <div class="form-group">    
+        <label for="add_content" class="form-label">Lesson Content <span class="required">*</span></label>    
+        <textarea     
+          id="add_content"     
+          name="content"     
+          class="form-textarea"     
+          placeholder="Full lesson content (supports HTML formatting)...    "    
+          rows="8"    
+          required    
+        ></textarea>    
+      </div>    
+
+      <div class="form-group">
+        <label for="add_exercises" class="form-label">Exercises (JSON Format)</label>
+        <textarea
+          id="add_exercises"
+          name="exercises"
+          class="form-textarea"
+          placeholder='Paste exercises JSON here, e.g.:
+[
+  {
+    "type": "sentence",
+    "question": "What is the plural of cat?",
+    "options": ["cats", "cates", "cat&#39;s", "caties"],
+    "correct": 0
+  }
+]'
+          rows="10"
+          style="font-family: 'Courier New', monospace; font-size: 12px;"
+        ></textarea>
+        <p class="form-hint">Optional: Add exercises in JSON format. Leave empty to add later via SQL.</p>
+      </div>
+
+      <div class="form-group">    
+        <label for="add_image_file" class="form-label">Upload Lesson Image (Optional)</label>    
+        <input     
+          type="file"     
+          id="add_image_file"     
+          name="image_file"     
+          accept="image/*"     
+          class="form-input"    
+        >    
+      </div>    
+
+      <div class="form-group">
+        <label for="add_image_url" class="form-label">Or Image URL (Optional)</label>
+        <input
+          type="url"
+          id="add_image_url"
+          name="image_url"
+          class="form-input"
+          placeholder="https://example.com/image.jpg"
+          pattern="https?://.*|^$"
+        >
+      </div>
+
+      <div class="form-actions">    
+        <button type="submit" class="btn-submit">💾 Save Lesson</button>    
+        <button type="button" class="btn-cancel" onclick="closeAddModal()">Cancel</button>    
+      </div>    
+    </form>    
+  </div>    
+</div>    
+
+<!-- Edit Lesson Modal -->    
+<div id="editLessonModal" class="modal">    
+  <div class="modal-content">    
+    <h2 class="modal-header">✏️ Edit Lesson</h2>    
+    <form id="editLessonForm" method="POST" enctype="multipart/form-data">    
+
+      <div class="form-group">    
+        <label for="edit_title" class="form-label">Lesson Title <span class="required">*</span></label>    
+        <input     
+          type="text"     
+          id="edit_title"     
+          name="title"     
+          class="form-input"     
+          required    
+        >    
+      </div>    
+
+      <div class="form-group">    
+        <label for="edit_category" class="form-label">Category <span class="required">*</span></label>    
+        <select id="edit_category" name="category" class="form-select" required>    
+          <option value="">Select Category</option>    
+          <option value="student">Student Path</option>    
+          <option value="professional">Professional Path</option>    
+        </select>    
+      </div>    
+
+      <div class="form-group">    
+        <label for="edit_difficulty" class="form-label">Difficulty Level <span class="required">*</span></label>    
+        <select id="edit_difficulty" name="difficulty" class="form-select" required>    
+          <option value="beginner">Beginner</option>    
+          <option value="intermediate">Intermediate</option>    
+          <option value="advanced">Advanced</option>    
+        </select>    
+      </div>
+
+      <div class="form-group">
+        <label for="edit_subcategory" class="form-label">Subcategory (Optional)</label>
+        <input
+          type="text"
+          id="edit_subcategory"
+          name="subcategory"
+          class="form-input"
+          list="subcategories"
+          placeholder="Select or type a new subcategory"
+        >
+        <p class="form-hint">Select existing or type new subcategory. Lessons with same subcategory will be grouped together.</p>
+      </div>
+
+      <div class="form-group">
+        <label for="edit_xp" class="form-label">XP Reward <span class="required">*</span></label>
+        <input 
+          type="number" 
+          id="edit_xp" 
+          name="xp" 
+          class="form-input" 
+          min="0"
+          step="10"
+          required
+        >
+        <p class="form-hint">Experience points awarded upon completing this lesson</p>
+      </div>
+
+      <div class="form-group">
+        <label for="edit_status" class="form-label">Status <span class="required">*</span></label>
+        <select id="edit_status" name="status" class="form-select" required>
+          <option value="published">Published</option>
+          <option value="draft">Draft</option>
+        </select>
+      </div>
+
+      <div class="form-group">    
+        <label for="edit_description" class="form-label">Short Description <span class="required">*</span></label>    
+        <textarea     
+          id="edit_description"     
+          name="description"     
+          class="form-textarea"    
+          required    
+        ></textarea>    
+      </div>    
+
+      <div class="form-group">    
+        <label for="edit_content" class="form-label">Lesson Content <span class="required">*</span></label>    
+        <textarea     
+          id="edit_content"     
+          name="content"     
+          class="form-textarea"     
+          rows="8"    
+          required    
+        ></textarea>    
+      </div>    
+
+      <div class="form-group">
+        <label for="edit_exercises" class="form-label">Exercises (JSON Format)</label>
+        <textarea
+          id="edit_exercises"
+          name="exercises"
+          class="form-textarea"
+          placeholder='Paste exercises JSON here...'
+          rows="10"
+          style="font-family: 'Courier New', monospace; font-size: 12px;"
+        ></textarea>
+        <p class="form-hint">Edit exercises in JSON format. Leave empty to keep unchanged. <a href="/CORRECT_LESSON_FORMAT.md" target="_blank" style="color: #667eea;">See examples</a></p>
+      </div>
+
+      <div id="currentImageContainer" class="form-group" style="display: none;">    
+        <label class="form-label">Current Image</label>    
+        <div class="current-image">    
+          <img id="current_image_preview" src="" alt="Current lesson image">    
+        </div>    
+      </div>    
+
+      <div class="form-group">    
+        <label for="edit_image_file" class="form-label">Change Image (Optional)</label>    
+        <input     
+          type="file"     
+          id="edit_image_file"     
+          name="image_file"     
+          accept="image/*"     
+          class="form-input"    
+        >    
+      </div>    
+
+      <div class="form-group">
+        <label for="edit_image_url" class="form-label">Or Image URL (Optional)</label>
+        <input
+          type="url"
+          id="edit_image_url"
+          name="image_url"
+          class="form-input"
+          pattern="https?://.*|^$"
+        >
+      </div>
+
+      <div class="form-actions">    
+        <button type="submit" class="btn-submit">💾 Update Lesson</button>    
+        <button type="button" class="btn-cancel" onclick="closeEditModal()">Cancel</button>    
+      </div>    
+    </form>    
+  </div>    
+</div>    
+
+<script>    
+  // Filter functionality    
+  const categoryFilter = document.getElementById('categoryFilter');    
+  const difficultyFilter = document.getElementById('difficultyFilter');    
+  const tableRows = document.querySelectorAll('#lessonsTable tr');    
+    
+  function filterLessons() {    
+    const selectedCategory = categoryFilter.value;    
+    const selectedDifficulty = difficultyFilter.value;    
+    
+    tableRows.forEach(row => {    
+      const rowCategory = row.getAttribute('data-category');    
+      const rowDifficulty = row.getAttribute('data-difficulty');    
+    
+      const categoryMatch = !selectedCategory || rowCategory === selectedCategory;    
+      const difficultyMatch = !selectedDifficulty || rowDifficulty === selectedDifficulty;    
+    
+      row.style.display = (categoryMatch && difficultyMatch) ? '' : 'none';    
+    });    
+  }    
+    
+  categoryFilter.addEventListener('change', filterLessons);    
+  difficultyFilter.addEventListener('change', filterLessons);    
+    
+  // Modal functions    
+  function openAddModal() {    
+    document.getElementById('addLessonModal').classList.add('active');    
+  }    
+    
+  function closeAddModal() {    
+    document.getElementById('addLessonModal').classList.remove('active');    
+  }    
+    
+  function openEditModal(lesson) {    
+    document.getElementById('edit_title').value = lesson.title || '';    
+    document.getElementById('edit_category').value = lesson.category || '';    
+    document.getElementById('edit_difficulty').value = lesson.difficulty || 'beginner';
+    document.getElementById('edit_subcategory').value = lesson.subcategory || '';
+    document.getElementById('edit_xp').value = lesson.xp || 50;    
+    document.getElementById('edit_status').value = lesson.status || 'published';
+    document.getElementById('edit_description').value = lesson.description || '';    
+    document.getElementById('edit_content').value = lesson.content || '';    
+    document.getElementById('edit_image_url').value = lesson.image_url || '';
+    
+    // Populate exercises field with formatted JSON
+    if (lesson.exercises && Array.isArray(lesson.exercises) && lesson.exercises.length > 0) {
+      document.getElementById('edit_exercises').value = JSON.stringify(lesson.exercises, null, 2);
+    } else {
+      document.getElementById('edit_exercises').value = '';
+    }
+        
+    // Show current image if exists    
+    if (lesson.image_url) {    
+      document.getElementById('currentImageContainer').style.display = 'block';    
+      document.getElementById('current_image_preview').src = lesson.image_url;    
+    } else {    
+      document.getElementById('currentImageContainer').style.display = 'none';    
+    }    
+        
+    // Set form action    
+    document.getElementById('editLessonForm').action = '/admin/lessons/edit/' + lesson.id;    
+        
+    document.getElementById('editLessonModal').classList.add('active');    
+  }    
+    
+  function closeEditModal() {    
+    document.getElementById('editLessonModal').classList.remove('active');    
+  }    
+    
+  // Close modals when clicking outside    
+  document.querySelectorAll('.modal').forEach(modal => {    
+    modal.addEventListener('click', (e) => {    
+      if (e.target === modal) {    
+        modal.classList.remove('active');    
+      }    
+    });    
+  });    
+    
+  // Close modals with Escape key    
+  document.addEventListener('keydown', (e) => {    
+    if (e.key === 'Escape') {    
+      closeAddModal();    
+      closeEditModal();    
+    }    
+  });
+  
+  // Populate subcategories datalist with unique values from existing lessons
+  function populateSubcategories() {
+    const lessons = <%- JSON.stringify(lessons) %>;
+    const studentSubcategories = <%- JSON.stringify(studentSubcategories) %>;
+    const professionalSubcategories = <%- JSON.stringify(professionalSubcategories) %>;
+    
+    // Update datalist for edit modal
+    const datalist = document.getElementById('subcategories');
+    if (!datalist) {
+      const newDatalist = document.createElement('datalist');
+      newDatalist.id = 'subcategories';
+      document.body.appendChild(newDatalist);
+    }
+    
+    const allSubcategories = new Set([...studentSubcategories, ...professionalSubcategories]);
+    const editDatalist = document.getElementById('subcategories');
+    editDatalist.innerHTML = '';
+    Array.from(allSubcategories).sort().forEach(subcat => {
+      const option = document.createElement('option');
+      option.value = subcat;
+      editDatalist.appendChild(option);
+    });
+  }
+  
+  // Function to update subcategory options based on selected category
+  function updateSubcategoryOptions(categoryValue, subcategorySelectId) {
+    const subcategorySelect = document.getElementById(subcategorySelectId);
+    const studentSubcategories = <%- JSON.stringify(studentSubcategories) %>;
+    const professionalSubcategories = <%- JSON.stringify(professionalSubcategories) %>;
+    
+    // Clear existing options
+    subcategorySelect.innerHTML = '<option value="">Select Subcategory</option>';
+    
+    if (!categoryValue) {
+      subcategorySelect.disabled = true;
+      return;
+    }
+    
+    subcategorySelect.disabled = false;
+    
+    // Get appropriate subcategories based on category
+    const subcategories = categoryValue === 'student' ? studentSubcategories : professionalSubcategories;
+    
+    // Add existing subcategories
+    subcategories.forEach(subcat => {
+      const option = document.createElement('option');
+      option.value = subcat;
+      option.textContent = subcat;
+      subcategorySelect.appendChild(option);
+    });
+    
+    // Add "+ Add Category" option
+    const addOption = document.createElement('option');
+    addOption.value = 'custom';
+    addOption.textContent = '+ Add Category';
+    addOption.style.fontWeight = 'bold';
+    addOption.style.color = '#667eea';
+    subcategorySelect.appendChild(addOption);
+  }
+  
+  // Populate on page load
+  populateSubcategories();
+
+  // Add category change listener for Add modal
+  document.getElementById('add_category').addEventListener('change', function() {
+    updateSubcategoryOptions(this.value, 'add_subcategory');
+    // Hide custom input when category changes
+    document.getElementById('add_custom_subcategory_group').style.display = 'none';
+  });
+
+  // Add subcategory selection change event listener for Add modal
+  document.getElementById('add_subcategory').addEventListener('change', function() {
+    const selectedValue = this.value;
+    const customGroup = document.getElementById('add_custom_subcategory_group');
+    if (selectedValue === 'custom') {
+      customGroup.style.display = 'block';
+    } else {
+      customGroup.style.display = 'none';
+    }
+  });
+  
+  // Before form submission, handle custom subcategory
+  document.querySelector('#addLessonModal form').addEventListener('submit', async function(e) {
+    const subcategorySelect = document.getElementById('add_subcategory');
+    const customSubcategory = document.getElementById('add_custom_subcategory');
+    
+    // 🔍 DEBUG: Log exercises before submission
+    const exercisesField = document.getElementById('add_exercises');
+    console.log('🔍 [Form Submit] Exercises field value:', exercisesField.value);
+    console.log('🔍 [Form Submit] Exercises length:', exercisesField.value.length);
+    console.log('🔍 [Form Submit] Subcategory select value:', subcategorySelect.value);
+    
+    if (subcategorySelect.value === 'custom') {
+      if (!customSubcategory.value.trim()) {
+        e.preventDefault();
+        alert('Please enter a custom subcategory name');
+        return false;
+      }
+      
+      e.preventDefault();
+      
+      const submitButton = this.querySelector('.btn-submit');
+      const originalText = submitButton.textContent;
+      submitButton.disabled = true;
+      submitButton.textContent = '⏳ Saving...';
+      
+      try {
+        // Save the subcategory with icon first
+        const category = document.getElementById('add_category').value;
+        await saveSubcategoryWithIcon(customSubcategory.value.trim(), category);
+        
+        // Create a new FormData with all form fields
+        const formData = new FormData(this);
+        
+        // 🔍 DEBUG: Check if exercises is in FormData
+        console.log('🔍 [Custom Subcategory] FormData exercises:', formData.get('exercises'));
+        for (let [key, value] of formData.entries()) {
+          if (key === 'exercises') {
+            console.log('🔍 [Custom Subcategory] Found exercises in FormData:', value.substring(0, 100));
+          }
+        }
+        
+        // Remove the subcategory select (since it has value 'custom')
+        formData.delete('subcategory');
+        
+        // Add the actual subcategory name
+        formData.append('subcategory', customSubcategory.value.trim());
+        
+        // Submit via fetch
+        const response = await fetch(this.action, {
+          method: 'POST',
+          body: formData
+        });
+        
+        if (response.ok) {
+          // Redirect to lessons page
+          window.location.href = '/admin/lessons';
+        } else {
+          throw new Error('Failed to save lesson');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error saving lesson. Please try again.');
+        submitButton.disabled = false;
+        submitButton.textContent = originalText;
+      }
+    } else {
+      // 🔍 DEBUG: Normal form submission (no custom subcategory)
+      console.log('🔍 [Normal Submit] Form will submit normally');
+      console.log('🔍 [Normal Submit] Exercises value:', exercisesField.value.substring(0, 100));
+    }
+  });
+  
+  // Handle icon type radio button changes
+  document.querySelectorAll('input[name="icon_type"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+      // Disable all icon inputs
+      document.getElementById('icon_emoji').disabled = true;
+      document.getElementById('icon_image_url').disabled = true;
+      document.getElementById('icon_lucide').disabled = true;
+      document.getElementById('icon_image_upload').disabled = true;
+      
+      // Enable the selected one
+      if (this.value === 'emoji') {
+        document.getElementById('icon_emoji').disabled = false;
+        document.getElementById('icon_emoji').focus();
+      } else if (this.value === 'image_url') {
+        document.getElementById('icon_image_url').disabled = false;
+        document.getElementById('icon_image_url').focus();
+      } else if (this.value === 'lucide') {
+        document.getElementById('icon_lucide').disabled = false;
+        document.getElementById('icon_lucide').focus();
+      } else if (this.value === 'image_upload') {
+        document.getElementById('icon_image_upload').disabled = false;
+      }
+    });
+  });
+  
+  // Function to save subcategory with icon
+  async function saveSubcategoryWithIcon(name, category) {
+    const iconType = document.querySelector('input[name="icon_type"]:checked').value;
+    let iconValue = '';
+    
+    console.log('Saving subcategory:', name, category, iconType);
+    console.log('Current page URL:', window.location.href);
+    console.log('Current page pathname:', window.location.pathname);
+    
+    if (iconType === 'emoji') {
+      iconValue = document.getElementById('icon_emoji').value;
+      console.log('Emoji value:', iconValue);
+    } else if (iconType === 'image_url') {
+      iconValue = document.getElementById('icon_image_url').value;
+      console.log('Image URL:', iconValue);
+    } else if (iconType === 'lucide') {
+      iconValue = document.getElementById('icon_lucide').value;
+      console.log('Lucide icon:', iconValue);
+    } else if (iconType === 'image_upload') {
+      // Handle file upload
+      const fileInput = document.getElementById('icon_image_upload');
+      if (fileInput.files.length > 0) {
+        console.log('Uploading icon image file');
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('category', category);
+        formData.append('icon_type', iconType);
+        formData.append('icon_image', fileInput.files[0]);
+        
+        const url = `${window.location.origin}/admin/subcategories/add`;
+        console.log('Posting to URL:', url);
+        
+        const response = await fetch(url, {
+          method: 'POST',
+          body: formData
+        });
+        
+        if (!response.ok) {
+          const text = await response.text();
+          console.error('Server response:', text);
+          throw new Error(`Server returned ${response.status}: ${text}`);
+        }
+        
+        const result = await response.json();
+        console.log('Subcategory save result:', result);
+        return result;
+      }
+    }
+    
+    // For non-file uploads
+    console.log('Sending subcategory data:', { name, category, icon_type: iconType, icon_value: iconValue });
+    const url = `${window.location.origin}/admin/subcategories/add`;
+    console.log('Posting to URL:', url);
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name,
+        category,
+        icon_type: iconType,
+        icon_value: iconValue,
+        icon_lucide: iconType === 'lucide' ? iconValue : ''
+      })
+    });
+    
+    if (!response.ok) {
+      const text = await response.text();
+      console.error('Server response:', text);
+      throw new Error(`Server returned ${response.status}: ${text}`);
+    }
+    
+    const result = await response.json();
+    console.log('Subcategory save result:', result);
+    return result;
+  }
+</script>    
+    
+<%- include('../partials/footer') %>

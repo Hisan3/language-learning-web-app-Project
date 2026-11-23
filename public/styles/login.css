@@ -1,0 +1,624 @@
+/* ========================================
+   DESIGN TOKENS / STYLE PANEL
+   ======================================== */
+:root {
+  /* Primary Colors */
+  --color-primary: #C85A54;           /* Warm terracotta red */
+  --color-primary-light: #D67F7A;     /* Lighter terracotta */
+  --color-primary-dark: #A94841;      /* Darker terracotta */
+  
+  /* Accent Colors */
+  --color-accent: #F4E4D7;            /* Warm cream */
+  --color-accent-dark: #E8D4C4;       /* Darker cream */
+  
+  /* Background Colors */
+  --color-bg-page: #F8EDE3;           /* Warm beige background */
+  --color-bg-card: #C85A54;           /* Card uses primary color */
+  --color-bg-input: rgba(255, 255, 255, 0.3); /* Semi-transparent white */
+  --color-bg-button: #F4E4D7;         /* Cream button */
+  --color-bg-cloud: #F4E4D7;          /* Decorative clouds */
+  
+  /* Text Colors */
+  --color-text-primary: #8B3A32;      /* Dark warm red */
+  --color-text-light: #FFFFFF;        /* White text */
+  --color-text-label: rgba(255, 255, 255, 0.9); /* Semi-transparent white */
+  
+  /* Border Radius */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 28px;
+  
+  /* Spacing */
+  --spacing-xs: 6px;
+  --spacing-sm: 10px;
+  --spacing-md: 14px;
+  --spacing-lg: 18px;
+  --spacing-xl: 24px;
+  --spacing-2xl: 32px;
+  
+  /* Typography */
+  --font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-weight-normal: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  
+  /* Shadows */
+  --shadow-soft: 0 6px 20px rgba(0, 0, 0, 0.1);
+  --shadow-medium: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* ========================================
+   RESET & BASE STYLES
+   ======================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ========================================
+   BACK BUTTON COMPONENT
+   ======================================== */
+.back-button {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: transparent;
+  color: var(--color-text-primary);
+  text-decoration: none;
+  font-weight: var(--font-weight-semibold);
+  font-size: 14px;
+  border-radius: var(--radius-sm);
+  transition: all 0.3s ease;
+  z-index: 100;
+}
+
+.back-button:hover {
+  background: rgba(200, 90, 84, 0.1);
+  transform: translateX(-4px);
+}
+
+.back-button svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ========================================
+   PAGE LAYOUT
+   ======================================== */
+.page-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-page);
+  padding: 80px 20px 40px;
+}
+
+.content-wrapper {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+/* ========================================
+   MAIN HEADING
+   ======================================== */
+.main-heading {
+  font-size: 32px;
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-text-primary);
+  text-align: center;
+  line-height: 1.2;
+  margin: 0;
+}
+
+/* ========================================
+   CARD COMPONENT
+   ======================================== */
+.card {
+  width: 100%;
+  background: var(--color-bg-card);
+  padding: 24px 20px;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-medium);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ========================================
+   ILLUSTRATION COMPONENT (Replaceable)
+   ======================================== */
+.illustration-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 16px;
+  margin-top: -8px;
+}
+
+.illustration {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 10px;
+  transition: transform 0.3s ease;
+}
+
+.illustration:hover {
+  transform: scale(1.05) rotate(2deg);
+}
+
+/* ========================================
+   FORM COMPONENTS
+   ======================================== */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-label);
+  margin-bottom: 2px;
+}
+
+/* INPUT COMPONENT */
+.input {
+  width: 100%;
+  height: 48px;
+  padding: 12px 16px;
+  background: var(--color-bg-input);
+  border: 2px solid transparent;
+  border-radius: var(--radius-lg);
+  font-size: 14px;
+  font-family: var(--font-family);
+  color: var(--color-text-light);
+  outline: none;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.input:focus {
+  background: rgba(255, 255, 255, 0.4);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* PRIMARY BUTTON COMPONENT */
+.submit-button {
+  width: 100%;
+  height: 50px;
+  background: var(--color-bg-button);
+  color: var(--color-text-primary);
+  border: none;
+  border-radius: var(--radius-lg);
+  font-size: 16px;
+  font-weight: var(--font-weight-extrabold);
+  font-family: var(--font-family);
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 6px;
+  box-shadow: var(--shadow-soft);
+}
+
+.submit-button:hover {
+  background: var(--color-accent-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+}
+
+.submit-button:active {
+  transform: translateY(0);
+}
+
+.submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ========================================
+   DIVIDER
+   ======================================== */
+.divider {
+  text-align: center;
+  margin: 14px 0;
+  position: relative;
+  color: var(--color-text-label);
+  font-size: 13px;
+  font-weight: var(--font-weight-semibold);
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 42%;
+  height: 1.5px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+}
+
+.divider::before {
+  left: 0;
+}
+
+.divider::after {
+  right: 0;
+}
+
+/* ========================================
+   GOOGLE BUTTON COMPONENT
+   ======================================== */
+.google-button {
+  width: 100%;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--color-bg-button);
+  border: none;
+  border-radius: var(--radius-lg);
+  font-size: 14px;
+  font-weight: var(--font-weight-bold);
+  font-family: var(--font-family);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-soft);
+}
+
+.google-button:hover {
+  background: var(--color-accent-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+}
+
+.google-button:active {
+  transform: translateY(0);
+}
+
+.google-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ========================================
+   DECORATIVE CLOUDS
+   ======================================== */
+.cloud {
+  position: absolute;
+  bottom: -25px;
+  width: 110px;
+  height: 55px;
+  background: var(--color-bg-cloud);
+  border-radius: 100px;
+  opacity: 0.7;
+}
+
+.cloud::before,
+.cloud::after {
+  content: '';
+  position: absolute;
+  background: var(--color-bg-cloud);
+  border-radius: 50%;
+}
+
+.cloud::before {
+  width: 55px;
+  height: 55px;
+  top: -28px;
+  left: 15px;
+}
+
+.cloud::after {
+  width: 70px;
+  height: 70px;
+  top: -35px;
+  right: 15px;
+}
+
+.cloud-left {
+  left: -35px;
+}
+
+.cloud-right {
+  right: -35px;
+}
+
+/* ========================================
+   TOAST NOTIFICATIONS
+   ======================================== */
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toast {
+  background: white;
+  padding: 12px 18px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-medium);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 260px;
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: var(--font-weight-semibold);
+  animation: slideIn 0.3s ease-out;
+  transition: all 0.3s ease;
+}
+
+.toast.success {
+  border-left: 4px solid #10b981;
+  color: #065f46;
+}
+
+.toast.error {
+  border-left: 4px solid #ef4444;
+  color: #991b1b;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* ========================================
+   RESPONSIVE BREAKPOINTS
+   ======================================== */
+
+/* Large Laptops & Desktops (1200px+) */
+@media (min-width: 1200px) {
+  .content-wrapper {
+    max-width: 400px;
+  }
+  
+  .main-heading {
+    font-size: 36px;
+  }
+
+  .card {
+    padding: 28px 24px;
+  }
+
+  .illustration {
+    width: 110px;
+    height: 110px;
+  }
+}
+
+/* Tablets (768px to 1024px) */
+@media (max-width: 1024px) {
+  .page-container {
+    padding: 70px 20px 40px;
+  }
+
+  .content-wrapper {
+    max-width: 360px;
+  }
+
+  .main-heading {
+    font-size: 30px;
+  }
+  
+  .card {
+    padding: 22px 18px;
+  }
+  
+  .illustration {
+    width: 95px;
+    height: 95px;
+  }
+
+  .input {
+    height: 46px;
+    font-size: 13px;
+  }
+
+  .submit-button {
+    height: 48px;
+    font-size: 15px;
+  }
+
+  .google-button {
+    height: 46px;
+    font-size: 13px;
+  }
+}
+
+/* Mobile (480px and below) */
+@media (max-width: 480px) {
+  .page-container {
+    padding: 60px 16px 30px;
+  }
+  
+  .content-wrapper {
+    max-width: 100%;
+    gap: 12px;
+  }
+  
+  .main-heading {
+    font-size: 26px;
+  }
+  
+  .card {
+    padding: 20px 16px;
+    border-radius: var(--radius-lg);
+  }
+  
+  .illustration {
+    width: 85px;
+    height: 85px;
+  }
+  
+  .submit-button {
+    height: 46px;
+    font-size: 15px;
+  }
+  
+  .google-button {
+    height: 44px;
+    font-size: 13px;
+  }
+  
+  .input {
+    height: 44px;
+    font-size: 13px;
+    padding: 10px 14px;
+  }
+  
+  .back-button {
+    top: 10px;
+    left: 10px;
+    padding: 7px 10px;
+    font-size: 13px;
+  }
+
+  .back-button svg {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .cloud {
+    width: 90px;
+    height: 45px;
+  }
+  
+  .cloud::before {
+    width: 45px;
+    height: 45px;
+    top: -22px;
+  }
+  
+  .cloud::after {
+    width: 55px;
+    height: 55px;
+    top: -28px;
+  }
+  
+  .toast-container {
+    top: 12px;
+    right: 12px;
+    left: 12px;
+  }
+  
+  .toast {
+    min-width: auto;
+    width: 100%;
+    font-size: 13px;
+  }
+
+  .form {
+    gap: 12px;
+  }
+
+  .form-group {
+    gap: 5px;
+  }
+}
+
+/* Extra small devices (360px and below) */
+@media (max-width: 360px) {
+  .page-container {
+    padding: 55px 12px 25px;
+  }
+
+  .main-heading {
+    font-size: 24px;
+  }
+  
+  .card {
+    padding: 18px 14px;
+  }
+  
+  .illustration {
+    width: 75px;
+    height: 75px;
+  }
+  
+  .form {
+    gap: 10px;
+  }
+
+  .input {
+    height: 42px;
+    font-size: 12px;
+    padding: 9px 12px;
+  }
+
+  .submit-button {
+    height: 44px;
+    font-size: 14px;
+  }
+
+  .google-button {
+    height: 42px;
+    font-size: 12px;
+  }
+
+  .back-button {
+    top: 8px;
+    left: 8px;
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+
+  .back-button span {
+    display: none;
+  }
+
+  .back-button svg {
+    width: 16px;
+    height: 16px;
+  }
+}

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Track - English Learning App</title>
+    <link rel="stylesheet" href="./styles/professional.css">
+    <link rel="stylesheet" href="./styles/gamification.css">
+</head>
+<body>
+    <!-- <button class="back-btn" onclick="window.location.href='learnhome.html'">
+        ← 
+    </button> -->
+
+    <div id="app">
+        <!-- Word of the Day Modal -->
+        <div id="wordOfDayModal" class="modal hidden">
+            <div class="modal-backdrop"></div>
+            <div class="modal-content word-of-day-card">
+                <button class="modal-close" onclick="closeWordOfDay()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="text-center">
+                    <svg class="sparkle-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L15 8.5L22 12L15 15.5L12 22L9 15.5L2 12L9 8.5L12 2Z"/>
+                    </svg>
+                    <h2>Word of the Day! 🌟</h2>
+                    <div class="word-display">
+                        <h1 id="wordOfDayWord" class="word-title"></h1>
+                        <p id="wordOfDayMeaning" class="word-meaning"></p>
+                        <div class="word-example">
+                            <p id="wordOfDayExample"></p>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-full" onclick="closeWordOfDay()">
+                        Start Learning! 🚀
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div id="mainContent"></div>
+    </div>
+
+    <!-- Supabase Connection -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Load timezone utilities first -->
+    <script src="./JS/timezone-utils.js"></script>
+    <!-- Gamification Systems -->
+    <script src="./JS/streak-system.js"></script>
+    <script src="./JS/badge-system.js"></script>
+    <script src="./JS/stats-system.js"></script>
+    <script src="./JS/professional.js"></script>
+</body>
+</html>

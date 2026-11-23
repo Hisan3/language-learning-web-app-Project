@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LearnGlow — Landing</title>
+
+  <!-- Tailwind CDN (keeps all Tailwind utility classes) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Confetti Library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <!-- small extra utilities & fonts -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --accent-from:#A78BFA;
+      --accent-via:#FBB6CE;
+      --accent-to:#BAE6FD;
+    }
+    body{font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
+    
+    /* ========== SCROLL-TRIGGERED ANIMATIONS ========== */
+    
+    /* Floating emoji animations */
+    @keyframes floatA { 0% { transform: translateY(0) rotate(0deg) } 50% { transform: translateY(-20px) rotate(10deg);} 100% { transform: translateY(0) rotate(0deg)} }
+    @keyframes floatB { 0% { transform: translateY(0) rotate(0deg) } 50% { transform: translateY(20px) rotate(-10deg);} 100% { transform: translateY(0) rotate(0deg)} }
+    @keyframes floatC { 0% { transform: translateY(0) rotate(0deg) } 50% { transform: translateY(-15px) rotate(15deg);} 100% { transform: translateY(0) rotate(0deg)} }
+    @keyframes floatD { 0% { transform: translateY(0) rotate(0deg) } 50% { transform: translateY(25px) rotate(-15deg);} 100% { transform: translateY(0) rotate(0deg)} }
+    @keyframes floatE { 0% { transform: translateY(0) rotate(0deg) } 50% { transform: translateY(-20px) rotate(12deg);} 100% { transform: translateY(0) rotate(0deg)} }
+
+    /* Hero Section - Staggered Entrance */
+    .hero-badge { 
+      opacity: 0; 
+      transform: translateY(32px); 
+      transition: opacity 350ms ease-out, transform 350ms ease-out; 
+    }
+    .hero-badge.visible { opacity: 1; transform: translateY(0); }
+
+    .hero-heading { 
+      opacity: 0; 
+      transform: translateY(32px); 
+      transition: opacity 350ms ease-out 80ms, transform 350ms ease-out 80ms; 
+    }
+    .hero-heading.visible { opacity: 1; transform: translateY(0); }
+
+    .hero-text { 
+      opacity: 0; 
+      transform: translateY(32px); 
+      transition: opacity 350ms ease-out 160ms, transform 350ms ease-out 160ms; 
+    }
+    .hero-text.visible { opacity: 1; transform: translateY(0); }
+
+    .hero-button { 
+      opacity: 0; 
+      transform: translateY(32px); 
+      transition: opacity 350ms ease-out 240ms, transform 350ms ease-out 240ms; 
+    }
+    .hero-button.visible { opacity: 1; transform: translateY(0); }
+
+    .hero-stars { 
+      opacity: 0; 
+      transform: translateY(24px); 
+      transition: opacity 300ms ease-out 320ms, transform 300ms ease-out 320ms; 
+    }
+    .hero-stars.visible { opacity: 1; transform: translateY(0); }
+
+    .hero-image-wrapper { 
+      opacity: 0; 
+      transform: translateY(40px); 
+      transition: opacity 400ms ease-out 100ms, transform 400ms ease-out 100ms; 
+    }
+    .hero-image-wrapper.visible { opacity: 1; transform: translateY(0); }
+
+    /* Section Headings - Fade + Slide Up */
+    .section-heading { 
+      opacity: 0; 
+      transform: translateY(28px); 
+      transition: opacity 350ms ease-out, transform 350ms ease-out; 
+    }
+    .section-heading.visible { opacity: 1; transform: translateY(0); }
+
+    /* Feature Cards - Staggered with Icon Scale */
+    .feature-card { 
+      opacity: 0; 
+      transform: translateY(24px); 
+      transition: opacity 350ms ease-out, transform 350ms ease-out; 
+    }
+    .feature-card.visible { opacity: 1; transform: translateY(0); }
+    
+    .feature-card:nth-child(1) { transition-delay: 0ms; }
+    .feature-card:nth-child(2) { transition-delay: 80ms; }
+    .feature-card:nth-child(3) { transition-delay: 160ms; }
+    .feature-card:nth-child(4) { transition-delay: 240ms; }
+
+    .feature-icon { 
+      transform: scale(0.92); 
+      transition: transform 300ms ease-out; 
+    }
+    .feature-card.visible .feature-icon { transform: scale(1); }
+
+    /* Progress Cards - Staggered */
+    .progress-card { 
+      opacity: 0; 
+      transform: translateY(28px); 
+      transition: opacity 350ms ease-out, transform 350ms ease-out; 
+    }
+    .progress-card.visible { opacity: 1; transform: translateY(0); }
+    
+    .progress-card:nth-child(1) { transition-delay: 0ms; }
+    .progress-card:nth-child(2) { transition-delay: 90ms; }
+    .progress-card:nth-child(3) { transition-delay: 180ms; }
+
+    /* XP Card - Smooth entrance with scale */
+    .xp-card { 
+      opacity: 0; 
+      transform: translateY(32px) scale(0.96); 
+      transition: opacity 400ms ease-out, transform 400ms ease-out; 
+    }
+    .xp-card.visible { opacity: 1; transform: translateY(0) scale(1); }
+
+    /* Progress bar smooth animation */
+    .progress-bar { 
+      width: 0; 
+      transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+    }
+
+    /* XP bar animation - Same as progress bars for consistency */
+    .xp-fill { 
+      width: 0; 
+      transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+    }
+
+    /* Why Choose Cards - Sequential */
+    .why-card { 
+      opacity: 0; 
+      transform: translateY(24px); 
+      transition: opacity 280ms ease-out, transform 280ms ease-out; 
+    }
+    .why-card.visible { opacity: 1; transform: translateY(0); }
+    
+    .why-card:nth-child(1) { transition-delay: 0ms; }
+    .why-card:nth-child(2) { transition-delay: 70ms; }
+    .why-card:nth-child(3) { transition-delay: 140ms; }
+    .why-card:nth-child(4) { transition-delay: 210ms; }
+
+    .why-icon { 
+      transform: scale(0.9); 
+      transition: transform 250ms ease-out; 
+    }
+    .why-card.visible .why-icon { transform: scale(1); }
+
+    /* Decorative Image - Smooth fade */
+    .decorative-image { 
+      opacity: 0; 
+      transform: scale(0.95); 
+      transition: opacity 300ms ease-out, transform 300ms ease-out; 
+    }
+    .decorative-image.visible { opacity: 0.9; transform: scale(1); }
+
+    /* Hover effects */
+    .scale-hover { 
+      transition: transform 180ms ease, box-shadow 180ms ease; 
+    }
+    .scale-hover:hover { 
+      transform: translateY(-10px) scale(1.03); 
+      box-shadow: 0 18px 40px rgba(15,23,42,.12); 
+    }
+
+    /* Hero image styling */
+    .hero-image { 
+      border-radius: 1.25rem; 
+      overflow: hidden; 
+      box-shadow: 0 30px 60px rgba(2,6,23,0.08); 
+    }
+
+    /* Mobile-specific optimizations */
+    @media (max-width: 768px) {
+      .progress-card, .xp-card, .why-card, .decorative-image, .section-heading {
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-[#F8EDE3] overflow-x-hidden">
+
+  <!-- Floating background elements -->
+  <div class="pointer-events-none fixed inset-0 overflow-hidden z-0">
+    <div class="hidden sm:block absolute top-10 sm:top-20 left-5 sm:left-10 text-4xl sm:text-6xl opacity-20" style="animation: floatA 4s linear infinite;"></div>
+    <div class="hidden sm:block absolute top-20 sm:top-40 right-10 sm:right-20 text-3xl sm:text-5xl opacity-20" style="animation: floatB 5s linear 0.5s infinite;">🌸</div>
+    <div class="absolute bottom-20 sm:bottom-40 left-1/4 text-3xl sm:text-5xl opacity-20" style="animation: floatC 4.5s linear 1s infinite;">💫</div>
+    <div class="hidden sm:block absolute top-40 sm:top-60 right-1/3 text-2xl sm:text-4xl opacity-20" style="animation: floatD 5.5s linear 1.5s infinite;">📚</div>
+    <div class="hidden sm:block absolute bottom-10 sm:bottom-20 right-5 sm:right-10 text-3xl sm:text-5xl opacity-20" style="animation: floatE 4s linear 2s infinite;">🎯</div>
+  </div>
+
+  <!-- Page content -->
+  <div class="relative z-10">
+
+    <!-- Header -->
+    <header class="relative z-10 px-4 sm:px-6 py-4 sm:py-6">
+      <nav class="max-w-7xl mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-2 sm:gap-3 transition-transform duration-600" style="transform-origin:left;">
+          <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center" style="background:linear-gradient(135deg,var(--accent-from),var(--accent-via));">
+            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2l1.8 3.6L17.6 7l-3.8 1.4L12 12l-1.8-3.6L6.4 7l3.8-1.4L12 2z" fill="white"/>
+            </svg>
+          </div>
+          <span class="text-xl sm:text-2xl text-[#4A5568] font-semibold">LearnGlow</span>
+        </div>
+
+        <div class="flex items-center gap-2 sm:gap-3">
+          <button id="navLogin" class="rounded-full px-4 sm:px-6 py-1.5 sm:py-2 text-sm sm:text-base text-[#4A5568] hover:bg-[#E9D5FF] transition-all duration-300 bg-transparent">Login</button>
+          <button id="navSignup" class="rounded-full px-4 sm:px-6 py-1.5 sm:py-2 text-sm sm:text-base text-white" style="background:linear-gradient(90deg,var(--accent-from),var(--accent-via)); box-shadow:0 6px 20px rgba(167,139,250,0.12);">Sign Up</button>
+        </div>
+      </nav>
+    </header>
+
+    <!-- ========== HERO SECTION ========== -->
+    <section class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-8 sm:pt-12 md:pt-16 pb-8 sm:pb-12 md:pb-16">
+      <div class="grid lg:grid-cols-2 gap-8 sm:gap-10 md:gap-12 items-center">
+        <!-- Left Content -->
+        <div class="text-center lg:text-left flex flex-col items-center lg:items-start">
+          <!-- Badge -->
+          <div class="hero-badge inline-block mb-4 sm:mb-4 px-4 py-2 bg-[#E9D5FF] rounded-full">
+            <span class="text-[#4A5568] text-xs sm:text-sm md:text-base font-medium">✨ All-in-One Learning Platform</span>
+          </div>
+
+          <!-- Heading -->
+          <h1 class="hero-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-4 sm:mb-6 text-[#4A5568] leading-tight font-extrabold max-w-full lg:max-w-none">
+            Learn Smarter,<br>Live Better 
+            <span class="hidden sm:inline">💫</span>
+          </h1>
+
+          <!-- Text -->
+          <p class="hero-text text-base sm:text-lg md:text-xl text-[#6B7280] mb-6 sm:mb-8 max-w-xl mx-auto lg:mx-0 px-2 sm:px-0">
+            Boost your English, Productivity & Mind — All in one beautiful app.
+            Track progress, earn rewards, and grow every day! 🌱
+          </p>
+
+          <!-- Button Container -->
+          <div class="hero-button flex flex-col items-center lg:items-start gap-4 w-full lg:w-auto">
+            <button id="ctaStart" class="w-full sm:w-auto max-w-xs sm:max-w-none rounded-full px-8 py-4 text-base sm:text-lg text-white font-semibold" style="background:linear-gradient(90deg,var(--accent-from),var(--accent-via),var(--accent-to)); box-shadow:0 18px 40px rgba(167,139,250,0.14);">
+              Start Your Journey 🚀
+              <span class="inline-block ml-2" aria-hidden>➜</span>
+            </button>
+
+            <!-- Stars -->
+            <div class="hero-stars flex items-center justify-center lg:justify-start gap-1">
+              <svg class="w-4 h-4 sm:w-5 sm:h-5 fill-[#FDE68A]" viewBox="0 0 20 20"><path d="M10 1.5l1.95 3.95 4.35.63-3.15 3.07.74 4.34L10 12.9 6.11 13.49l.74-4.34L3.7 5.98l4.35-.63L10 1.5z"/></svg>
+              <svg class="w-4 h-4 sm:w-5 sm:h-5 fill-[#FDE68A]" viewBox="0 0 20 20"><path d="M10 1.5l1.95 3.95 4.35.63-3.15 3.07.74 4.34L10 12.9 6.11 13.49l.74-4.34L3.7 5.98l4.35-.63L10 1.5z"/></svg>
+              <svg class="w-4 h-4 sm:w-5 sm:h-5 fill-[#FDE68A]" viewBox="0 0 20 20"><path d="M10 1.5l1.95 3.95 4.35.63-3.15 3.07.74 4.34L10 12.9 6.11 13.49l.74-4.34L3.7 5.98l4.35-.63L10 1.5z"/></svg>
+              <svg class="w-4 h-4 sm:w-5 sm:h-5 fill-[#FDE68A]" viewBox="0 0 20 20"><path d="M10 1.5l1.95 3.95 4.35.63-3.15 3.07.74 4.34L10 12.9 6.11 13.49l.74-4.34L3.7 5.98l4.35-.63L10 1.5z"/></svg>
+              <svg class="w-4 h-4 sm:w-5 sm:h-5 fill-[#FDE68A]" viewBox="0 0 20 20"><path d="M10 1.5l1.95 3.95 4.35.63-3.15 3.07.74 4.34L10 12.9 6.11 13.49l.74-4.34L3.7 5.98l4.35-.63L10 1.5z"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Image -->
+        <div class="hero-image-wrapper relative order-first lg:order-last max-w-lg mx-auto lg:max-w-none w-full">
+          <div class="hero-image relative rounded-3xl overflow-hidden">
+            <img src="./asset/2.png" alt="Student learning" class="w-full h-auto block">
+            <div class="absolute inset-0 bg-gradient-to-t from-[#A78BFA]/30 to-transparent"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== GAMIFIED LEARNING SECTION ========== -->
+    <section class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16 md:py-20">
+      <!-- Section Heading -->
+      <div class="section-heading text-center mb-8 sm:mb-10 md:mb-12 max-w-3xl mx-auto">
+        <h2 class="text-2xl sm:text-3xl md:text-4xl mb-3 sm:mb-4 text-[#4A5568] px-4">🎮 Learn Like a Game</h2>
+        <p class="text-sm sm:text-base md:text-lg lg:text-xl text-[#6B7280] px-6 sm:px-4">Interactive, fun, and rewarding learning experience</p>
+      </div>
+
+      <!-- Progress Cards -->
+      <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
+        <div class="progress-card p-6 sm:p-8 bg-white rounded-3xl shadow-lg scale-hover" data-progress-card>
+          <div class="feature-icon text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-4">🎓</div>
+          <h3 class="text-lg sm:text-xl mb-2 text-[#4A5568]">English Flashcards</h3>
+          <p class="text-sm sm:text-base text-[#6B7280] mb-3 sm:mb-4">Interactive vocabulary & grammar</p>
+          <div class="h-3 bg-[#F3E8FF] rounded-full overflow-hidden">
+            <div class="progress-bar h-full rounded-full" data-target="75" style="width:0; background:linear-gradient(90deg,#BAE6FD,#A78BFA)"></div>
+          </div>
+          <p class="text-xs sm:text-sm text-[#9CA3AF] mt-2">75% Complete • +150 XP</p>
+        </div>
+
+        <div class="progress-card p-6 sm:p-8 bg-white rounded-3xl shadow-lg scale-hover" data-progress-card>
+          <div class="feature-icon text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-4">🔥</div>
+          <h3 class="text-lg sm:text-xl mb-2 text-[#4A5568]">Productivity Streaks</h3>
+          <p class="text-sm sm:text-base text-[#6B7280] mb-3 sm:mb-4">Track tasks & Pomodoro sessions</p>
+          <div class="h-3 bg-[#F3E8FF] rounded-full overflow-hidden">
+            <div class="progress-bar h-full rounded-full" data-target="75" style="width:0; background:linear-gradient(90deg,#FBB6CE,#FDE68A)"></div>
+          </div>
+          <p class="text-xs sm:text-sm text-[#9CA3AF] mt-2">75% Complete • +150 XP</p>
+        </div>
+
+        <div class="progress-card p-6 sm:p-8 bg-white rounded-3xl shadow-lg scale-hover sm:col-span-2 md:col-span-1" data-progress-card>
+          <div class="feature-icon text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-4">🧘‍♀</div>
+          <h3 class="text-lg sm:text-xl mb-2 text-[#4A5568]">MindCare Breathing</h3>
+          <p class="text-sm sm:text-base text-[#6B7280] mb-3 sm:mb-4">Stress relief & meditation</p>
+          <div class="h-3 bg-[#F3E8FF] rounded-full overflow-hidden">
+            <div class="progress-bar h-full rounded-full" data-target="75" style="width:0; background:linear-gradient(90deg,#A7F3D0,#BAE6FD)"></div>
+          </div>
+          <p class="text-xs sm:text-sm text-[#9CA3AF] mt-2">75% Complete • +150 XP</p>
+        </div>
+      </div>
+
+      <!-- XP Card -->
+      <div class="xp-card mt-8 sm:mt-10 md:mt-12 bg-white rounded-3xl p-6 sm:p-8 shadow-lg" id="xpCard">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-4">
+          <div class="flex items-center gap-3 w-full sm:w-auto">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg,var(--accent-from),var(--accent-via));">
+              <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" viewBox="0 0 24 24" fill="none"><path d="M12 2l1.8 3.6L17.6 7l-3.8 1.4L12 12l-1.8-3.6L6.4 7l3.8-1.4L12 2z" fill="white"/></svg>
+            </div>
+            <div class="flex-1">
+              <p class="text-[#4A5568] text-sm sm:text-base">Level 12 Scholar</p>
+              <p class="text-xs sm:text-sm text-[#9CA3AF]">1,250 / 1,500 XP to Level 13</p>
+            </div>
+          </div>
+          <div class="text-3xl sm:text-4xl" style="animation: floatA 2s linear infinite;">✨</div>
+        </div>
+
+        <div class="h-3 sm:h-4 bg-[#F3E8FF] rounded-full overflow-hidden">
+          <div id="xpFill" class="xp-fill h-full rounded-full" style="width:0; background:linear-gradient(90deg,var(--accent-from),var(--accent-via),var(--accent-to));"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== DECORATIVE IMAGE ========== -->
+    <div class="w-full flex justify-center items-center m-0 p-0">
+      <img 
+        src="./asset/3.png" 
+        alt="Learning decoration" 
+        class="decorative-image w-72 h-auto sm:w-80 md:w-96 lg:w-[500px] xl:w-[600px] m-0 p-0 block object-contain" 
+        style="display:block;"
+      >
+    </div>
+
+    <!-- ========== WHY CHOOSE SECTION ========== -->
+    <section class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16 md:py-20">
+      <!-- Section Heading -->
+      <div class="section-heading text-center mb-8 sm:mb-10 md:mb-12">
+        <h2 class="text-2xl sm:text-3xl md:text-4xl mb-3 sm:mb-4 text-[#4A5568]">Why Choose LearnGlow? ✨</h2>
+        <p class="text-base sm:text-lg md:text-xl text-[#6B7280] px-4">Everything you need to grow, in one beautiful place</p>
+      </div>
+
+      <!-- Feature Cards -->
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div class="why-card p-5 sm:p-6 rounded-3xl shadow-lg bg-[#DDD6FE] scale-hover">
+          <div class="why-icon w-12 h-12 sm:w-14 sm:h-14 bg-white rounded-2xl flex items-center justify-center mb-3 sm:mb-4 text-[#4A5568]">✨</div>
+          <h3 class="text-base sm:text-lg mb-2 text-[#4A5568]">All-in-One Learning</h3>
+          <p class="text-sm sm:text-base text-[#6B7280]">English, Productivity & MindCare in one app</p>
+        </div>
+
+        <div class="why-card p-5 sm:p-6 rounded-3xl shadow-lg bg-[#FBB6CE] scale-hover">
+          <div class="why-icon w-12 h-12 sm:w-14 sm:h-14 bg-white rounded-2xl flex items-center justify-center mb-3 sm:mb-4 text-[#4A5568]">📈</div>
+          <h3 class="text-base sm:text-lg mb-2 text-[#4A5568]">Track Progress</h3>
+          <p class="text-sm sm:text-base text-[#6B7280]">Streaks, XP, badges & detailed analytics</p>
+        </div>
+
+        <div class="why-card p-5 sm:p-6 rounded-3xl shadow-lg bg-[#A7F3D0] scale-hover">
+          <div class="why-icon w-12 h-12 sm:w-14 sm:h-14 bg-white rounded-2xl flex items-center justify-center mb-3 sm:mb-4 text-[#4A5568]">💗</div>
+          <h3 class="text-base sm:text-lg mb-2 text-[#4A5568]">Mind Wellness</h3>
+          <p class="text-sm sm:text-base text-[#6B7280]">Take care of your mental health daily</p>
+        </div>
+
+        <div class="why-card p-5 sm:p-6 rounded-3xl shadow-lg bg-[#FDE68A] scale-hover">
+          <div class="why-icon w-12 h-12 sm:w-14 sm:h-14 bg-white rounded-2xl flex items-center justify-center mb-3 sm:mb-4 text-[#4A5568]">🎯</div>
+          <h3 class="text-base sm:text-lg mb-2 text-[#4A5568]">Personalized Path</h3>
+          <p class="text-sm sm:text-base text-[#6B7280]">Student or Professional learning tracks</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    // ========== SCROLL-TRIGGERED ANIMATION SYSTEM ==========
+    (function(){
+      
+      // Universal threshold - works on all devices
+      const observerConfig = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      };
+      
+      const observerConfigEarly = {
+        threshold: 0.01,
+        rootMargin: '100px 0px -20px 0px'
+      };
+      
+      // Hero Section - Load Animation (Staggered)
+      setTimeout(() => {
+        document.querySelector('.hero-badge')?.classList.add('visible');
+        document.querySelector('.hero-heading')?.classList.add('visible');
+        document.querySelector('.hero-text')?.classList.add('visible');
+        document.querySelector('.hero-button')?.classList.add('visible');
+        document.querySelector('.hero-stars')?.classList.add('visible');
+        document.querySelector('.hero-image-wrapper')?.classList.add('visible');
+      }, 100);
+
+      // Section Headings Observer - Works on all devices
+      const headingObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            console.log('Heading visible:', entry.target.querySelector('h2')?.textContent);
+            entry.target.classList.add('visible');
+            headingObserver.unobserve(entry.target);
+          }
+        });
+      }, observerConfig);
+
+      document.querySelectorAll('.section-heading').forEach(el => {
+        headingObserver.observe(el);
+      });
+
+      // Progress Cards Observer - Works on all devices
+      const progressCardsAnimated = new Set();
+      const progressObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !progressCardsAnimated.has(entry.target)) {
+            console.log('Progress card visible');
+            entry.target.classList.add('visible');
+            
+            const progressBar = entry.target.querySelector('.progress-bar');
+            const target = parseInt(progressBar.getAttribute('data-target'), 10);
+            
+            setTimeout(() => {
+              progressBar.style.width = `${target}%`;
+            }, 80);
+
+            setTimeout(() => {
+              triggerConfetti(progressBar);
+            }, 900);
+
+            progressCardsAnimated.add(entry.target);
+            progressObserver.unobserve(entry.target);
+          }
+        });
+      }, observerConfig);
+
+      document.querySelectorAll('.progress-card').forEach(card => {
+        progressObserver.observe(card);
+      });
+
+      // XP Card Observer - Works on all devices with same timing as progress bars
+      let xpAnimated = false;
+      const xpObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !xpAnimated) {
+            console.log('XP card visible');
+            entry.target.classList.add('visible');
+            
+            const xpFill = document.getElementById('xpFill');
+            setTimeout(() => {
+              xpFill.style.width = '83%';
+            }, 80);
+
+            setTimeout(() => {
+              triggerConfetti(xpFill);
+            }, 900);
+
+            xpAnimated = true;
+            xpObserver.unobserve(entry.target);
+          }
+        });
+      }, observerConfig);
+
+      const xpCard = document.getElementById('xpCard');
+      if (xpCard) xpObserver.observe(xpCard);
+
+      // Decorative Image Observer - Triggers BEFORE Why Choose cards
+      let imageAnimated = false;
+      const imageObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !imageAnimated) {
+            console.log('Decorative image visible');
+            entry.target.classList.add('visible');
+            imageAnimated = true;
+            imageObserver.unobserve(entry.target);
+            
+            // Trigger Why Choose section after image appears
+            setTimeout(() => {
+              triggerWhyChooseAnimation();
+            }, 400);
+          }
+        });
+      }, observerConfigEarly);
+
+      const decorativeImage = document.querySelector('.decorative-image');
+      if (decorativeImage) imageObserver.observe(decorativeImage);
+
+      // Why Choose Cards - Triggered after decorative image
+      let whyCardsTriggered = false;
+      function triggerWhyChooseAnimation() {
+        if (whyCardsTriggered) return;
+        whyCardsTriggered = true;
+        
+        console.log('Why Choose cards triggering');
+        
+        const whyCards = document.querySelectorAll('.why-card');
+        const whyHeading = document.querySelectorAll('.section-heading')[1]; // Second heading
+        
+        if (whyHeading) {
+          whyHeading.classList.add('visible');
+        }
+        
+        whyCards.forEach((card, index) => {
+          setTimeout(() => {
+            card.classList.add('visible');
+          }, index * 70);
+        });
+      }
+
+      // Fallback observer for Why Choose section (in case user scrolls very fast)
+      const whyFallbackObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !whyCardsTriggered) {
+            console.log('Why Choose fallback triggered');
+            triggerWhyChooseAnimation();
+          }
+        });
+      }, { threshold: 0.01, rootMargin: '0px 0px 100px 0px' });
+
+      document.querySelectorAll('.why-card').forEach(card => {
+        whyFallbackObserver.observe(card);
+      });
+
+      // Confetti function
+      function triggerConfetti(element) {
+        if (!window.confetti) return; // Safety check
+        
+        const rect = element.getBoundingClientRect();
+        const x = (rect.left + rect.width / 2) / window.innerWidth;
+        const y = (rect.top + rect.height / 2) / window.innerHeight;
+
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { x: x, y: y },
+          colors: ['#A78BFA', '#FBB6CE', '#BAE6FD', '#A7F3D0', '#FDE68A']
+        });
+      }
+
+      // Navigation Links
+      const goLogin = () => window.location.href = 'login.html';
+      const goSignup = () => window.location.href = 'signup.html';
+
+      document.getElementById('navLogin').addEventListener('click', goLogin);
+      document.getElementById('navSignup').addEventListener('click', goSignup);
+      document.getElementById('ctaStart').addEventListener('click', goSignup);
+
+      // Keyboard accessibility
+      ['navLogin','navSignup','ctaStart'].forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.addEventListener('keydown', (e) => { if(e.key==='Enter') el.click(); });
+      });
+
+    })();
+  </script>
+</body>
+</html>

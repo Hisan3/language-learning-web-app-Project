@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MindCare - Your Mental Well-being</title>
+  <link rel="stylesheet" href="./styles/mindhome.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <!-- Top Navbar -->
+  <header class="navbar">
+    <div class="navbar-container">
+      <!-- Left: Logo + Navigation -->
+      <div class="navbar-left">
+        <div class="logo">
+          <div class="logo-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 9.75L12 3l9 6.75V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1V9.75z" />
+            </svg>
+          </div>
+          <span class="logo-text">learnGlow</span>
+        </div>
+      </div>
+
+               <!-- Desktop Navigation -->
+      <nav class="desktop-nav">
+        <a href="home.html" class="nav-link nav-link-active">
+          <i data-lucide="home" width="16" height="16"></i>
+          Home
+        </a>
+        <a href="learnhome.html" class="nav-link">
+          <i data-lucide="book-open" width="16" height="16"></i>
+          Learn
+        </a>
+        <a href="practice.html" class="nav-link">
+          <i data-lucide="clipboard-list" width="16" height="16"></i>
+          Practice
+        </a>
+
+        <a href="productivity.html" class="nav-link">
+          <i data-lucide="layout-dashboard" width="16" height="16"></i>
+          Tasks
+        </a>
+        <a href="mindhome.html" class="nav-link">
+          <i data-lucide="heart" width="16" height="16"></i>
+          Mind
+        </a>
+        <a href="blog.html" class="nav-link">
+          <i data-lucide="pen-line" width="16" height="16"></i>
+          Blog
+        </a>
+      </nav>
+
+      <!-- Right: Profile + Mobile Menu Button -->
+      <div class="navbar-right">
+        <a href="profile.html" class="profile-pill" title="View Profile">
+          <div class="profile-initial" id="profile-initial">U</div>
+          <div class="profile-name" id="top-user">User</div>
+        </a>
+
+        <!-- Hamburger for mobile -->
+        <button class="menu-btn" id="menu-btn">
+          <i data-lucide="menu" width="24" height="24" id="menu-icon"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown Menu -->
+    <div class="mobile-nav" id="mobile-nav">
+      <!-- Mobile Profile Info -->
+      <div class="mobile-profile-section">
+        <a href="profile.html" class="mobile-profile-pill">
+          <div class="mobile-profile-initial" id="mobile-profile-initial">U</div>
+          <div class="mobile-profile-name" id="mobile-user">User</div>
+        </a>
+      </div>
+      
+      <ul class="mobile-nav-list">
+        <li>
+          <a href="home.html" class="mobile-nav-link mobile-nav-link-pink">
+            <i data-lucide="home" width="20" height="20"></i>
+            Home
+          </a>
+        </li>
+        <li>
+          <a href="learnhome.html" class="mobile-nav-link mobile-nav-link-purple">
+            <i data-lucide="book-open" width="20" height="20"></i>
+            Learn
+          </a>
+        </li>
+        <li>
+          <a href="practice.html" class="mobile-nav-link mobile-nav-link-purple">
+            <i data-lucide="clipboard-list" width="20" height="20"></i>
+            Practice 
+          </a>
+        </li>
+
+        <li>
+          <a href="productivity.html" class="mobile-nav-link mobile-nav-link-blue">
+            <i data-lucide="layout-dashboard" width="20" height="20"></i>
+            Tasks
+          </a>
+        </li>
+        <li>
+          <a href="mindhome.html" class="mobile-nav-link mobile-nav-link-teal">
+            <i data-lucide="heart" width="20" height="20"></i>
+            Mind
+          </a>
+        </li>
+        <li>
+          <a href="blog.html" class="mobile-nav-link mobile-nav-link-yellow">
+            <i data-lucide="pen-line" width="20" height="20"></i>
+            Blog
+          </a>
+        </li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="page-container">
+    <!-- Header -->
+    <div class="header">
+      <h1>MindCare 🌸</h1>
+      <p class="subtitle">Your mental well-being matters! 💖</p>
+    </div>
+
+    <!-- Cards Grid -->
+    <div class="cards-grid">
+      <!-- Mood Check Card -->
+      <a href="moodquiz.html" class="card card-mood">
+        <div class="card-emoji">😊</div>
+        <h2 class="card-title">Mood Check</h2>
+        <p class="card-desc">Track your daily emotions</p>
+      </a>
+
+      <!-- Mood Dashboard Card -->
+      <a href="dashboard.html" class="card card-dashboard">
+        <div class="card-emoji">📊</div>
+        <h2 class="card-title">Mood Analytics</h2>
+        <p class="card-desc">View your weekly mood trends</p>
+      </a>
+
+      <!-- Stress Check Card
+      <a href="stresscheck.html" class="card card-stress">
+        <div class="card-emoji">😌</div>
+        <h2 class="card-title">Stress Check</h2>
+        <p class="card-desc">How are you feeling today?</p>
+      </a> -->
+
+      <!-- Breathing Card -->
+      <a href="breathing.html" class="card card-breathing">
+        <div class="card-emoji">🧘‍♀️</div>
+        <h2 class="card-title">Breathing</h2>
+        <p class="card-desc">Guided relaxation exercise</p>
+      </a>
+
+      <!-- Self-Care Card -->
+      <a href="selfcarelist.html" class="card card-selfcare">
+        <div class="card-emoji">✨</div>
+        <h2 class="card-title">Self-Care</h2>
+        <p class="card-desc">Daily wellness checklist</p>
+      </a>
+
+      <!-- Daily Affirmations Card -->
+      <a href="affirmation.html" class="card card-affirmation">
+        <div class="card-emoji">💫</div>
+        <h2 class="card-title">Daily Affirmations</h2>
+        <p class="card-desc">Positive thoughts for your day</p>
+      </a>
+
+      <!-- Journal Card -->
+      <a href="journal.html" class="card card-journal">
+        <div class="card-emoji">📔</div>
+        <h2 class="card-title">Journal</h2>
+        <p class="card-desc">Write your thoughts & feelings</p>
+      </a>
+    </div>
+
+    <!-- Inspirational Quote Footer -->
+    <div class="motivation-footer">
+      <i data-lucide="sparkles" class="motivation-icon"></i>
+      <div class="motivation-content">
+        <p class="motivation-text">"Take care of your mind, and your mind will take care of you." 💜</p>
+        <p class="motivation-subtext">Remember: Self-care isn't selfish! 🌸</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="./JS/mindhome.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

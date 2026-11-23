@@ -1,0 +1,86 @@
+<%- include('partials/header', { pageTitle: 'Dashboard', activePage: 'dashboard' }) %>
+
+<!-- Dashboard Content -->
+<h1 class="header-title">Welcome Back, Admin! 👋</h1>
+<p class="header-subtitle">Here's what's happening with LearnGlow today</p>
+
+<!-- Stats Grid -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
+  <div style="background: white; border-radius: 20px; padding: 25px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); transition: transform 0.3s ease; display: flex; align-items: center; justify-content: space-between;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+    <div>
+      <p style="color: #a0aec0; font-size: 14px; margin-bottom: 8px;">Total Users</p>
+      <h3 style="font-size: 32px; font-weight: 700; color: #667eea; margin-bottom: 5px;"><%= stats.totalUsers %></h3>
+      <span style="color: #48bb78; font-size: 12px;">↑ 12% from last month</span>
+    </div>
+    <div style="font-size: 48px;">👥</div>
+  </div>
+
+  <div style="background: white; border-radius: 20px; padding: 25px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); transition: transform 0.3s ease; display: flex; align-items: center; justify-content: space-between;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+    <div>
+      <p style="color: #a0aec0; font-size: 14px; margin-bottom: 8px;">Active Lessons</p>
+      <h3 style="font-size: 32px; font-weight: 700; color: #f687b3; margin-bottom: 5px;"><%= stats.activeLessons %></h3>
+      <span style="color: #48bb78; font-size: 12px;">↑ 5 new this week</span>
+    </div>
+    <div style="font-size: 48px;">📚</div>
+  </div>
+
+  <div style="background: white; border-radius: 20px; padding: 25px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); transition: transform 0.3s ease; display: flex; align-items: center; justify-content: space-between;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+    <div>
+      <p style="color: #a0aec0; font-size: 14px; margin-bottom: 8px;">Total Practice Sets</p>
+      <h3 style="font-size: 32px; font-weight: 700; color: #4fd1c5; margin-bottom: 5px;"><%= stats.totalQuizzes %></h3>
+      <span style="color: #48bb78; font-size: 12px;">↑ 23% this week</span>
+    </div>
+    <div style="font-size: 48px;">📝</div>
+  </div>
+
+  <div style="background: white; border-radius: 20px; padding: 25px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); transition: transform 0.3s ease; display: flex; align-items: center; justify-content: space-between;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+    <div>
+      <p style="color: #a0aec0; font-size: 14px; margin-bottom: 8px;">Active Streaks</p>
+      <h3 style="font-size: 32px; font-weight: 700; color: #f6ad55; margin-bottom: 5px;"><%= stats.activeStreaks %></h3>
+      <span style="color: #48bb78; font-size: 12px;">🔥 Avg: 15 days</span>
+    </div>
+    <div style="font-size: 48px;">🔥</div>
+  </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="content-panel">
+  <h2 class="panel-title">Quick Actions</h2>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+    <a href="/admin/lessons" class="btn">+ Add New Lesson</a>
+    <a href="/admin/practice/quizzes" class="btn">+ Add New Quiz</a>
+    <a href="/admin/badges" class="btn btn-success">🏆 Create Badge</a>
+    <a href="/admin/affirmations" class="btn btn-success">💭 Add Quote</a>
+  </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="content-panel">
+  <h2 class="panel-title">Recent Activity</h2>
+  <div style="padding: 15px; background: #F7FAFC; border-radius: 12px; margin-bottom: 12px; display: flex; align-items: center;">
+    <div style="font-size: 24px; margin-right: 15px;">👤</div>
+    <div style="flex: 1;">
+      <p style="font-weight: 600; color: #2d3748; margin-bottom: 3px;">New user registered</p>
+      <span style="font-size: 14px; color: #718096;">User joined LearnGlow</span>
+    </div>
+    <span style="font-size: 12px; color: #a0aec0;">2 min ago</span>
+  </div>
+  <div style="padding: 15px; background: #F7FAFC; border-radius: 12px; margin-bottom: 12px; display: flex; align-items: center;">
+    <div style="font-size: 24px; margin-right: 15px;">📚</div>
+    <div style="flex: 1;">
+      <p style="font-weight: 600; color: #2d3748; margin-bottom: 3px;">Lesson completed</p>
+      <span style="font-size: 14px; color: #718096;">User completed a lesson</span>
+    </div>
+    <span style="font-size: 12px; color: #a0aec0;">5 min ago</span>
+  </div>
+  <div style="padding: 15px; background: #F7FAFC; border-radius: 12px; margin-bottom: 12px; display: flex; align-items: center;">
+    <div style="font-size: 24px; margin-right: 15px;">🏆</div>
+    <div style="flex: 1;">
+      <p style="font-weight: 600; color: #2d3748; margin-bottom: 3px;">Badge earned</p>
+      <span style="font-size: 14px; color: #718096;">User earned "30-Day Streak Master"</span>
+    </div>
+    <span style="font-size: 12px; color: #a0aec0;">12 min ago</span>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

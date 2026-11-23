@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Journal - MindCare</title>
+  <link rel="stylesheet" href="./styles/journal.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <!-- Back Button (Sticky on Mobile) -->
+  <a href="mindhome.html" class="back-button">
+    <i data-lucide="arrow-left" width="18" height="18"></i>
+    <span>Back to Mind Home</span>
+  </a>
+
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-content">
+      <div class="hero-icon">📔</div>
+      <h1 class="hero-title">My Journal</h1>
+      <p class="hero-subtitle">Write your thoughts and feelings</p>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="page-container">
+    <!-- New Entry Card -->
+    <div class="entry-card-container">
+      <div class="card-header">
+        <h2>New Journal Entry</h2>
+        <div class="date-display" id="currentDate"></div>
+      </div>
+
+      <!-- Emotion Selector -->
+      <div class="emotion-section">
+        <label class="emotion-label">How are you feeling?</label>
+        <div class="emotion-options">
+          <button class="emotion-btn" data-mood="great" title="Great">
+            <span class="emotion-emoji">😄</span>
+          </button>
+          <button class="emotion-btn" data-mood="good" title="Good">
+            <span class="emotion-emoji">🙂</span>
+          </button>
+          <button class="emotion-btn" data-mood="okay" title="Okay">
+            <span class="emotion-emoji">😐</span>
+          </button>
+          <button class="emotion-btn" data-mood="sad" title="Sad">
+            <span class="emotion-emoji">😔</span>
+          </button>
+          <button class="emotion-btn" data-mood="anxious" title="Anxious">
+            <span class="emotion-emoji">😰</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Title Input -->
+      <div class="input-group">
+        <label for="entryTitle" class="input-label">Title (optional)</label>
+        <input 
+          type="text" 
+          id="entryTitle" 
+          class="text-input" 
+          placeholder="What's on your mind?"
+        >
+      </div>
+
+      <!-- Thoughts Textarea -->
+      <div class="input-group">
+        <label for="entryContent" class="input-label">Your Thoughts</label>
+        <textarea 
+          id="entryContent" 
+          class="textarea-input" 
+          rows="8" 
+          placeholder="Write freely... no judgment, just you and your thoughts 💭"
+        ></textarea>
+      </div>
+
+      <!-- Action Buttons (Sticky on Mobile) -->
+      <div class="action-buttons">
+        <button class="btn btn-primary" id="saveEntry">
+          <i data-lucide="save" width="18" height="18"></i>
+          Save Entry
+        </button>
+        <button class="btn btn-secondary" id="clearEntry">
+          <i data-lucide="x" width="18" height="18"></i>
+          Clear
+        </button>
+      </div>
+    </div>
+
+    <!-- View Past Entries Button -->
+    <div class="past-entries-section">
+      <a href="journal-entries.html" class="view-entries-btn">
+        <span>View Past Entries</span>
+        <i data-lucide="arrow-right" width="20" height="20"></i>
+      </a>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="./JS/journal.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

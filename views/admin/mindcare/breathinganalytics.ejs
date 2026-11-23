@@ -1,0 +1,347 @@
+<%- include('../partials/header', { pageTitle: 'Breathing Analytics', activePage: 'mindcare' }) %>
+
+<!-- Chart.js for visualizations -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<style>
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+
+  .stat-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 25px;
+    border-radius: 20px;
+    color: white;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+  }
+
+  .stat-card h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    opacity: 0.9;
+  }
+
+  .stat-card .stat-value {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+
+  .stat-card .stat-label {
+    font-size: 12px;
+    opacity: 0.8;
+  }
+
+  .stat-card.green {
+    background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+  }
+
+  .stat-card.orange {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  }
+
+  .stat-card.blue {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  }
+
+  .stat-card.purple {
+    background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+  }
+
+  .chart-container {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  }
+
+  .chart-container h3 {
+    margin-bottom: 20px;
+    color: #667eea;
+    font-weight: 600;
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+  }
+
+  .data-table thead th {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+  }
+
+  .data-table thead th:first-child {
+    border-radius: 12px 0 0 12px;
+  }
+
+  .data-table thead th:last-child {
+    border-radius: 0 12px 12px 0;
+  }
+
+  .data-table tbody td {
+    background: #F8F9FF;
+    padding: 15px;
+  }
+
+  .data-table tbody tr td:first-child {
+    border-radius: 12px 0 0 12px;
+  }
+
+  .data-table tbody tr td:last-child {
+    border-radius: 0 12px 12px 0;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .badge-478 {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+  }
+
+  .badge-box {
+    background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+    color: #2d3748;
+  }
+
+  .badge-coherent {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    color: white;
+  }
+
+  .badge-default {
+    background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%);
+    color: white;
+  }
+
+  .btn-delete {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: transform 0.2s;
+  }
+
+  .btn-delete:hover {
+    transform: scale(1.05);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #a0aec0;
+  }
+
+  .empty-state i {
+    font-size: 64px;
+    margin-bottom: 20px;
+    opacity: 0.5;
+  }
+</style>
+
+<h1 class="header-title">🌊 Breathing Analytics</h1>
+<p class="header-subtitle">Monitor user breathing exercise sessions and statistics</p>
+
+<!-- Navigation Tabs -->
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+  <div class="nav-tabs" style="display: flex; gap: 10px;">
+    <a href="/admin/mindcare" class="nav-tab" style="background: white; color: #667eea; border: 2px solid #667eea; padding: 10px 20px; border-radius: 10px; font-weight: 600; text-decoration: none;">Mood Quiz</a>
+    <a href="/admin/mindcare/results" class="nav-tab" style="background: white; color: #667eea; border: 2px solid #667eea; padding: 10px 20px; border-radius: 10px; font-weight: 600; text-decoration: none;">Mood Results</a>
+    <a href="/admin/mindcare/breathinganalytics" class="nav-tab" style="background: #667eea; color: white; border: 2px solid #667eea; padding: 10px 20px; border-radius: 10px; font-weight: 600; text-decoration: none;">Breathing Analytics</a>
+  </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <h3>Total Sessions</h3>
+    <div class="stat-value"><%= stats.total %></div>
+    <div class="stat-label">breathing sessions</div>
+  </div>
+  <div class="stat-card green">
+    <h3>Total Cycles</h3>
+    <div class="stat-value"><%= stats.totalCycles %></div>
+    <div class="stat-label">breathing cycles</div>
+  </div>
+  <div class="stat-card orange">
+    <h3>Total Duration</h3>
+    <div class="stat-value"><%= Math.floor(stats.totalDuration / 60) %></div>
+    <div class="stat-label">minutes practiced</div>
+  </div>
+  <div class="stat-card blue">
+    <h3>Avg Duration</h3>
+    <div class="stat-value"><%= stats.avgDuration %></div>
+    <div class="stat-label">seconds per session</div>
+  </div>
+  <div class="stat-card purple">
+    <h3>Most Popular</h3>
+    <div class="stat-value" style="font-size: 18px; margin-top: 10px;"><%= stats.mostPopular %></div>
+    <div class="stat-label">exercise type</div>
+  </div>
+</div>
+
+<!-- Charts -->
+<div class="chart-container">
+  <h3>📊 Exercise Type Distribution</h3>
+  <canvas id="exerciseChart" height="80"></canvas>
+</div>
+
+<!-- Sessions Table -->
+<div class="content-panel">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2 class="panel-title">All Breathing Sessions</h2>
+    <span style="color: #718096; font-size: 14px;"><%= stats.total %> total sessions</span>
+  </div>
+
+  <% if (sessions && sessions.length > 0) { %>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>User ID</th>
+          <th>Exercise Type</th>
+          <th>Cycles</th>
+          <th>Duration</th>
+          <th>Pattern</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% sessions.forEach(session => { %>
+          <tr>
+            <td><code style="font-size: 11px; color: #667eea;"><%= session.user_id.substring(0, 8) %>...</code></td>
+            <td>
+              <% 
+                let badgeClass = 'badge-default';
+                if (session.exercise_type.includes('4-7-8')) badgeClass = 'badge-478';
+                else if (session.exercise_type.includes('Box')) badgeClass = 'badge-box';
+                else if (session.exercise_type.includes('Coherent')) badgeClass = 'badge-coherent';
+              %>
+              <span class="badge <%= badgeClass %>"><%= session.exercise_type %></span>
+            </td>
+            <td><strong><%= session.cycles_completed %></strong> cycles</td>
+            <td><%= Math.floor(session.duration_seconds / 60) %>m <%= session.duration_seconds % 60 %>s</td>
+            <td style="font-size: 12px; color: #718096;"><%= session.breathing_pattern || 'N/A' %></td>
+            <td style="font-size: 13px;">
+              <%= new Date(session.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %>
+              <br>
+              <span style="font-size: 11px; color: #a0aec0;">
+                <%= new Date(session.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) %>
+              </span>
+            </td>
+            <td>
+              <button class="btn-delete" onclick="deleteSession('<%= session.id %>')">🗑️ Delete</button>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } else { %>
+    <div class="empty-state">
+      <div style="font-size: 64px; margin-bottom: 20px;">🌊</div>
+      <h3 style="color: #667eea; margin-bottom: 10px;">No breathing sessions yet</h3>
+      <p>Breathing session data will appear here once users start practicing.</p>
+    </div>
+  <% } %>
+</div>
+
+<script>
+// Exercise Type Chart
+const ctx = document.getElementById('exerciseChart').getContext('2d');
+const exerciseData = <%- JSON.stringify(stats.exerciseTypeCounts) %>;
+const labels = Object.keys(exerciseData);
+const data = Object.values(exerciseData);
+
+// Generate colors
+const colors = [
+  'rgba(102, 126, 234, 0.8)',
+  'rgba(132, 250, 176, 0.8)',
+  'rgba(250, 112, 154, 0.8)',
+  'rgba(79, 172, 254, 0.8)',
+  'rgba(161, 140, 209, 0.8)'
+];
+
+const borderColors = [
+  'rgba(102, 126, 234, 1)',
+  'rgba(132, 250, 176, 1)',
+  'rgba(250, 112, 154, 1)',
+  'rgba(79, 172, 254, 1)',
+  'rgba(161, 140, 209, 1)'
+];
+
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: labels.length > 0 ? labels : ['No Data'],
+    datasets: [{
+      label: 'Sessions',
+      data: data.length > 0 ? data : [0],
+      backgroundColor: colors,
+      borderColor: borderColors,
+      borderWidth: 2,
+      borderRadius: 10
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: {
+        display: false
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          stepSize: 1
+        }
+      }
+    }
+  }
+});
+
+// Delete session function
+async function deleteSession(id) {
+  if (!confirm('Are you sure you want to delete this breathing session?')) return;
+  
+  try {
+    const response = await fetch(`/admin/breathinganalytics/delete/${id}`, {
+      method: 'POST'
+    });
+    
+    if (response.ok) {
+      alert('✅ Breathing session deleted successfully!');
+      window.location.reload();
+    } else {
+      alert('❌ Error deleting session');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('❌ Error deleting session');
+  }
+}
+</script>
+
+<%- include('../partials/footer') %>

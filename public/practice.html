@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Practice 📚</title>
+    <link rel="stylesheet" href="./styles/practice.css">
+    <link rel="stylesheet" href="./styles/xp-notifications.css">
+    <link rel="stylesheet" href="./styles/gamification.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Back Button -->
+        <a href="home.html" class="back-button">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </a>
+
+        <!-- 1. Mascot image at the top -->
+        <div class="mascot-section">
+            <img src="./asset/practice.png" alt="Practice Mascot" class="mascot-image" />
+        </div>
+
+        <!-- 2. Page title -->
+        <h1 class="main-title">English Practice</h1>
+        
+        <!-- 3. Subtitle -->
+        <p class="main-subtitle">Improve your vocabulary and language skills</p>
+
+        <!-- 4. Practice sets header (Tabs) -->
+        <div class="tabs-list">
+            <button class="tab-trigger active" data-tab="flashcards">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                </svg>
+                Flashcards
+            </button>
+            <button class="tab-trigger" data-tab="quiz">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                    <path d="M4 22h16"></path>
+                    <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                    <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                    <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+                </svg>
+                Quiz
+            </button>
+            <button class="tab-trigger" data-tab="exercise">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 20h9"></path>
+                    <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                </svg>
+                Exercise
+            </button>
+            <button class="tab-trigger" data-tab="fillblanks">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                Fill Blanks
+            </button>
+            <button class="tab-trigger" data-tab="analytics">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"></path>
+                    <path d="M9 18h6"></path>
+                    <path d="M10 22h4"></path>
+                </svg>
+                Analytics
+            </button>
+        </div>
+
+        <!-- Content sections -->
+        <div class="tabs-container">
+            <!-- Flashcards Tab -->
+            <div class="tab-content active" id="flashcards">
+                <div class="flashcard-container">
+                    <div class="card flashcard-card">
+                        <div class="flashcard-header">
+                            <span class="badge" id="flashcard-category">Advanced</span>
+                            <span class="flashcard-counter" id="flashcard-counter">1 / 5</span>
+                        </div>
+
+                        <div class="flashcard-body" id="flashcard-body">
+                            <div class="flashcard-front">
+                                <h2 id="flashcard-word">Ephemeral</h2>
+                                <p class="flashcard-hint">Click to reveal meaning</p>
+                            </div>
+                        </div>
+
+                        <div class="flashcard-controls">
+                            <button class="btn btn-outline" id="prev-btn">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="15 18 9 12 15 6"></polyline>
+                                </svg>
+                                Previous
+                            </button>
+                            <button class="btn btn-ghost" id="flip-btn">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                                    <path d="M3 3v5h5"></path>
+                                    <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path>
+                                    <path d="M16 16h5v5"></path>
+                                </svg>
+                                Flip
+                            </button>
+                            <button class="btn btn-outline" id="next-btn">
+                                Next
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card tip-card">
+                        <p>💡 Tip: Use spacebar to flip cards and arrow keys to navigate</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Tab -->
+            <div class="tab-content" id="quiz">
+                <div class="card quiz-card">
+                    <div id="quiz-content">
+                        <div class="quiz-header">
+                            <h3>Vocabulary Quiz 🎯</h3>
+                            <span class="quiz-progress" id="quiz-progress">0 / 4 answered</span>
+                        </div>
+
+                        <div id="quiz-questions"></div>
+
+                        <button class="btn btn-primary full-width" id="submit-quiz" disabled>Submit Quiz</button>
+                    </div>
+
+                    <div id="quiz-results" style="display: none;">
+                        <div class="results-header">
+                            <div class="trophy-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                                    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                                    <path d="M4 22h16"></path>
+                                    <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                                    <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                                    <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+                                </svg>
+                            </div>
+                            <h2>Quiz Complete! 🎉</h2>
+                            <p id="quiz-score"></p>
+                        </div>
+
+                        <div id="quiz-answers"></div>
+
+                        <button class="btn btn-primary" id="retry-quiz">Try Again</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sentence Building Exercise Tab -->
+            <div class="tab-content" id="exercise">
+                <div class="card exercise-card">
+                    <div id="exercise-content">
+                        <div class="exercise-header">
+                            <h3>Sentence Building Exercise ✏️</h3>
+                            <span class="exercise-progress" id="exercise-progress">Question 1 / 5</span>
+                        </div>
+
+                        <div class="exercise-instruction">
+                            <p>Arrange the words to form a correct sentence:</p>
+                        </div>
+
+                        <div class="exercise-question" id="exercise-question"></div>
+
+                        <div class="word-bank" id="word-bank"></div>
+
+                        <div class="sentence-builder" id="sentence-builder">
+                            <div class="drop-zone" id="drop-zone">
+                                <p class="drop-hint">Drag words here to build your sentence</p>
+                            </div>
+                        </div>
+
+                        <div class="exercise-controls">
+                            <button class="btn btn-outline" id="clear-sentence">Clear</button>
+                            <button class="btn btn-primary" id="check-sentence">Check Answer</button>
+                        </div>
+
+                        <div id="exercise-feedback" class="exercise-feedback"></div>
+
+                        <div class="exercise-navigation">
+                            <button class="btn btn-outline" id="prev-exercise" disabled>Previous</button>
+                            <button class="btn btn-outline" id="next-exercise">Next Question</button>
+                        </div>
+                    </div>
+
+                    <div id="exercise-results" style="display: none;">
+                        <div class="results-header">
+                            <div class="trophy-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                                    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                                    <path d="M4 22h16"></path>
+                                    <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                                    <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                                    <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+                                </svg>
+                            </div>
+                            <h2>Exercise Complete! 🎉</h2>
+                            <p id="exercise-score"></p>
+                        </div>
+
+                        <button class="btn btn-primary" id="retry-exercise">Try Again</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fill in the Blanks Tab -->
+            <div class="tab-content" id="fillblanks">
+                <div class="card fillblanks-card">
+                    <div id="fillblanks-content">
+                        <div class="quiz-header">
+                            <h3>Fill in the Blanks 📝</h3>
+                            <span class="quiz-progress" id="fillblanks-progress">0 / 5 answered</span>
+                        </div>
+
+                        <div id="fillblanks-questions"></div>
+
+                        <button class="btn btn-primary full-width" id="submit-fillblanks" disabled>Submit Answers</button>
+                    </div>
+
+                    <div id="fillblanks-results" style="display: none;">
+                        <div class="results-header">
+                            <div class="trophy-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                                    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                                    <path d="M4 22h16"></path>
+                                    <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                                    <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                                    <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+                                </svg>
+                            </div>
+                            <h2>Exercise Complete! 🎉</h2>
+                            <p id="fillblanks-score"></p>
+                        </div>
+
+                        <div id="fillblanks-answers"></div>
+
+                        <button class="btn btn-primary" id="retry-fillblanks">Try Again</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Tab -->
+            <div class="tab-content" id="analytics">
+                <div class="analytics-grid">
+                    <div class="card chart-card">
+                        <h3>Weekly Performance Report</h3>
+                        <canvas id="weeklyChart"></canvas>
+                    </div>
+
+                    <div class="card chart-card">
+                        <h3>Time by Category</h3>
+                        <canvas id="categoryChart"></canvas>
+                        <div class="custom-legend" id="category-legend"></div>
+                    </div>
+                </div>
+
+                <div class="card motivational-card">
+                    <h3>💪 Stay Motivated</h3>
+                    <div class="quote-container">
+                        <div class="quote-icon">❝</div>
+                        <p class="quote-text" id="motivational-quote">Loading...</p>
+                        <button class="btn btn-ghost btn-small" id="new-quote">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
+                                <path d="M21 3v5h-5"></path>
+                                <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
+                                <path d="M3 21v-5h5"></path>
+                            </svg>
+                            New Quote
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load timezone utilities first -->
+    <script src="./JS/timezone-utils.js"></script>
+    <script src="./JS/streak-system.js"></script>
+    <script src="./JS/badge-system.js"></script>
+    <script src="./JS/stats-system.js"></script>
+    <script src="./JS/xp-system.js"></script>
+    <script src="./JS/practice.js"></script>
+</body>
+</html>

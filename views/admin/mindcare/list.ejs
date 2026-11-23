@@ -1,0 +1,689 @@
+<%- include('./partials/header', { pageTitle: 'Mood Quiz Management', activePage: 'mindcare' }) %>
+
+<style>
+  .quiz-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin-right: 15px;
+  }
+
+  .quiz-image {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    object-fit: cover;
+    margin-right: 15px;
+  }
+
+  .option-item {
+    background: #F7FAFC;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .option-emoji {
+    font-size: 24px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+  }
+
+  .option-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
+    padding: 20px;
+  }
+
+  .modal.active {
+    display: flex;
+  }
+
+  .modal-content {
+    background: white;
+    border-radius: 25px;
+    padding: 30px;
+    max-width: 900px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
+    position: relative;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .close-modal {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 32px;
+    cursor: pointer;
+    color: #a0aec0;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+
+  .close-modal:hover {
+    color: #667eea;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 14px;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #E0E7FF;
+    border-radius: 12px;
+    transition: border-color 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: #667eea;
+  }
+
+  .option-block {
+    background: linear-gradient(135deg, #F7FAFC 0%, #EDF2F7 100%);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 15px;
+    border-left: 4px solid #667eea;
+    position: relative;
+  }
+
+  .btn-remove-option {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .btn-add-option {
+    background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+    color: #333;
+    padding: 10px 20px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: transform 0.2s;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .btn-add-option:hover {
+    transform: scale(1.02);
+  }
+
+  .media-type-selector {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .media-type-btn {
+    padding: 8px 16px;
+    border: 2px solid #E0E7FF;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 13px;
+  }
+
+  .media-type-btn.active {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+  }
+
+  .media-preview {
+    margin-top: 10px;
+    padding: 10px;
+    background: #F7FAFC;
+    border-radius: 8px;
+    display: none;
+  }
+
+  .media-preview.show {
+    display: block;
+  }
+
+  .preview-emoji {
+    font-size: 48px;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .preview-image {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 8px;
+    margin: 10px auto;
+    display: block;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .badge-active {
+    background: #84fab0;
+    color: #2d3748;
+  }
+
+  .badge-inactive {
+    background: #ffd1dc;
+    color: #c53030;
+  }
+
+  /* Table Styles */
+  .data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+  }
+
+  .data-table thead th {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+  }
+
+  .data-table thead th:first-child {
+    border-radius: 12px 0 0 12px;
+  }
+
+  .data-table thead th:last-child {
+    border-radius: 0 12px 12px 0;
+  }
+
+  .data-table tbody td {
+    background: #F8F9FF;
+    padding: 15px;
+  }
+
+  .data-table tbody tr td:first-child {
+    border-radius: 12px 0 0 12px;
+  }
+
+  .data-table tbody tr td:last-child {
+    border-radius: 0 12px 12px 0;
+  }
+
+  .btn-edit {
+    background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+    color: #333;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    margin-right: 8px;
+    transition: transform 0.2s;
+  }
+
+  .btn-edit:hover {
+    transform: scale(1.05);
+  }
+
+  .btn-delete {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: transform 0.2s;
+  }
+
+  .btn-delete:hover {
+    transform: scale(1.05);
+  }
+
+  .btn-secondary {
+    background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%);
+    color: white;
+  }
+</style>
+
+<h1 class="header-title">🌸 Mood Quiz Management</h1>
+<p class="header-subtitle">Create and manage mood check-in questions</p>
+
+<div class="content-panel">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2 class="panel-title">All Mood Quiz Questions</h2>
+    <button class="btn btn-success" onclick="openAddModal()">+ Add New Question</button>
+  </div>
+
+  <!-- Quiz List Table -->
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Icon/Image</th>
+        <th>Question</th>
+        <th>Options</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="quiz-list">
+      <% if (quizzes && quizzes.length > 0) { %>
+        <% quizzes.forEach(quiz => { %>
+          <tr>
+            <td>
+              <% if (quiz.icon_type === 'emoji') { %>
+                <div class="quiz-icon" style="background: <%= quiz.icon_color || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' %>;">
+                  <%= quiz.icon_value %>
+                </div>
+              <% } else if (quiz.icon_type === 'image') { %>
+                <img src="<%= quiz.icon_value %>" alt="Quiz Icon" class="quiz-image">
+              <% } else { %>
+                <div class="quiz-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                  😊
+                </div>
+              <% } %>
+            </td>
+            <td><strong><%= quiz.question %></strong></td>
+            <td><%= quiz.options.length %> options</td>
+            <td>
+              <span class="badge <%= quiz.status === 'active' ? 'badge-active' : 'badge-inactive' %>">
+                <%= quiz.status %>
+              </span>
+            </td>
+            <td>
+              <button class="btn-edit" onclick="editQuiz(<%= quiz.id %>)">✏️ Edit</button>
+              <button class="btn-delete" onclick="deleteQuiz(<%= quiz.id %>)">🗑️ Delete</button>
+            </td>
+          </tr>
+        <% }) %>
+      <% } else { %>
+        <tr>
+          <td colspan="5" style="text-align: center; padding: 40px; color: #a0aec0;">
+            No quiz questions found. Click "Add New Question" to create one.
+          </td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<!-- Add/Edit Modal -->
+<div id="quizModal" class="modal">
+  <div class="modal-content">
+    <button class="close-modal" onclick="closeModal()">&times;</button>
+    <h2 id="modal-title" style="margin-bottom: 25px; color: #667eea;">Add New Mood Question</h2>
+    
+    <form id="quizForm" onsubmit="saveQuiz(event)">
+      <input type="hidden" id="quiz-id" name="id">
+      
+      <!-- Question Text -->
+      <div class="form-group">
+        <label class="form-label">Question Text *</label>
+        <input type="text" class="form-input" id="question" name="question" required 
+               placeholder="e.g., How are you feeling right now?">
+      </div>
+
+      <!-- Question Icon/Image -->
+      <div class="form-group">
+        <label class="form-label">Question Icon/Image (Optional)</label>
+        <div class="media-type-selector">
+          <button type="button" class="media-type-btn active" onclick="setQuestionMediaType('emoji')">
+            😊 Emoji
+          </button>
+          <button type="button" class="media-type-btn" onclick="setQuestionMediaType('image')">
+            🖼️ Image
+          </button>
+        </div>
+        
+        <div id="question-emoji-input" class="media-input">
+          <input type="text" class="form-input" id="question-icon-emoji" 
+                 placeholder="Enter emoji (e.g., 😊)">
+          <input type="color" class="form-input" id="question-icon-color" 
+                 value="#667eea" style="height: 50px;">
+        </div>
+        
+        <div id="question-image-input" class="media-input" style="display: none;">
+          <input type="text" class="form-input" id="question-icon-image" 
+                 placeholder="Enter image URL">
+          <small style="color: #718096;">Or upload to Supabase storage and paste URL here</small>
+        </div>
+      </div>
+
+      <!-- Status -->
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-input" id="status" name="status">
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </div>
+
+      <!-- Options Section -->
+      <div class="form-group">
+        <label class="form-label">Answer Options *</label>
+        <div id="options-container">
+          <!-- Options will be dynamically added here -->
+        </div>
+        <button type="button" class="btn-add-option" onclick="addOption()">
+          + Add Option
+        </button>
+      </div>
+
+      <!-- Submit Buttons -->
+      <div style="display: flex; gap: 10px; margin-top: 30px;">
+        <button type="submit" class="btn btn-success" style="flex: 1;">
+          💾 Save Question
+        </button>
+        <button type="button" class="btn btn-secondary" onclick="closeModal()" style="flex: 1;">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+let quizzes = <%- JSON.stringify(quizzes || []) %>;
+let editingQuizId = null;
+let optionCounter = 0;
+let questionMediaType = 'emoji';
+
+function setQuestionMediaType(type) {
+  questionMediaType = type;
+  document.querySelectorAll('.media-type-btn').forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+  
+  if (type === 'emoji') {
+    document.getElementById('question-emoji-input').style.display = 'block';
+    document.getElementById('question-image-input').style.display = 'none';
+  } else {
+    document.getElementById('question-emoji-input').style.display = 'none';
+    document.getElementById('question-image-input').style.display = 'block';
+  }
+}
+
+function openAddModal() {
+  editingQuizId = null;
+  document.getElementById('modal-title').textContent = 'Add New Mood Question';
+  document.getElementById('quizForm').reset();
+  document.getElementById('quiz-id').value = '';
+  document.getElementById('options-container').innerHTML = '';
+  optionCounter = 0;
+  
+  // Add 3 default options
+  addOption();
+  addOption();
+  addOption();
+  
+  document.getElementById('quizModal').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('quizModal').classList.remove('active');
+}
+
+function addOption() {
+  optionCounter++;
+  const optionHtml = `
+    <div class="option-block" id="option-${optionCounter}">
+      <button type="button" class="btn-remove-option" onclick="removeOption(${optionCounter})">
+        Remove
+      </button>
+      
+      <div class="form-group">
+        <label class="form-label">Option Text *</label>
+        <input type="text" class="form-input" name="option_text_${optionCounter}" required
+               placeholder="e.g., Happy">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Option Icon</label>
+        <div class="media-type-selector">
+          <button type="button" class="media-type-btn active" onclick="setOptionMediaType(${optionCounter}, 'emoji')">
+            😊 Emoji
+          </button>
+          <button type="button" class="media-type-btn" onclick="setOptionMediaType(${optionCounter}, 'image')">
+            🖼️ Image
+          </button>
+        </div>
+        
+        <div id="option-emoji-${optionCounter}" class="media-input">
+          <input type="text" class="form-input" name="option_emoji_${optionCounter}" 
+                 placeholder="Enter emoji (e.g., 😊)">
+        </div>
+        
+        <div id="option-image-${optionCounter}" class="media-input" style="display: none;">
+          <input type="text" class="form-input" name="option_image_${optionCounter}" 
+                 placeholder="Enter image URL">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Value (1-5) *</label>
+        <input type="number" class="form-input" name="option_value_${optionCounter}" 
+               min="1" max="5" required placeholder="e.g., 5">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Color/Gradient</label>
+        <input type="text" class="form-input" name="option_color_${optionCounter}" 
+               placeholder="e.g., linear-gradient(to right, #4ade80, #10b981)">
+      </div>
+    </div>
+  `;
+  
+  document.getElementById('options-container').insertAdjacentHTML('beforeend', optionHtml);
+}
+
+function removeOption(id) {
+  document.getElementById(`option-${id}`).remove();
+}
+
+function setOptionMediaType(optionId, type) {
+  const emojiDiv = document.getElementById(`option-emoji-${optionId}`);
+  const imageDiv = document.getElementById(`option-image-${optionId}`);
+  const buttons = event.target.parentElement.querySelectorAll('.media-type-btn');
+  
+  buttons.forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+  
+  if (type === 'emoji') {
+    emojiDiv.style.display = 'block';
+    imageDiv.style.display = 'none';
+  } else {
+    emojiDiv.style.display = 'none';
+    imageDiv.style.display = 'block';
+  }
+}
+
+async function saveQuiz(event) {
+  event.preventDefault();
+  
+  const formData = new FormData(event.target);
+  const question = formData.get('question');
+  const status = formData.get('status');
+  
+  // Get question icon
+  let iconType = questionMediaType;
+  let iconValue = '';
+  let iconColor = '';
+  
+  if (iconType === 'emoji') {
+    iconValue = document.getElementById('question-icon-emoji').value || '😊';
+    iconColor = document.getElementById('question-icon-color').value;
+  } else {
+    iconValue = document.getElementById('question-icon-image').value;
+  }
+  
+  // Collect options
+  const options = [];
+  for (let i = 1; i <= optionCounter; i++) {
+    const optionBlock = document.getElementById(`option-${i}`);
+    if (optionBlock) {
+      const text = formData.get(`option_text_${i}`);
+      const emoji = formData.get(`option_emoji_${i}`) || '';
+      const image = formData.get(`option_image_${i}`) || '';
+      const value = parseInt(formData.get(`option_value_${i}`));
+      const color = formData.get(`option_color_${i}`) || '';
+      
+      options.push({
+        text,
+        emoji: emoji || null,
+        image: image || null,
+        value,
+        color
+      });
+    }
+  }
+  
+  const quizData = {
+    question,
+    icon_type: iconType,
+    icon_value: iconValue,
+    icon_color: iconColor,
+    options,
+    status
+  };
+  
+  const url = editingQuizId ? `/admin/moodquiz/edit/${editingQuizId}` : '/admin/moodquiz/add';
+  const method = 'POST';
+  
+  try {
+    const response = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(quizData)
+    });
+    
+    if (response.ok) {
+      alert('Quiz question saved successfully!');
+      window.location.reload();
+    } else {
+      alert('Error saving quiz question');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Error saving quiz question');
+  }
+}
+
+async function editQuiz(id) {
+  const quiz = quizzes.find(q => q.id === id);
+  if (!quiz) return;
+  
+  editingQuizId = id;
+  document.getElementById('modal-title').textContent = 'Edit Mood Question';
+  document.getElementById('quiz-id').value = id;
+  document.getElementById('question').value = quiz.question;
+  document.getElementById('status').value = quiz.status;
+  
+  // Set question icon
+  if (quiz.icon_type === 'emoji') {
+    setQuestionMediaType('emoji');
+    document.getElementById('question-icon-emoji').value = quiz.icon_value;
+    document.getElementById('question-icon-color').value = quiz.icon_color || '#667eea';
+  } else if (quiz.icon_type === 'image') {
+    setQuestionMediaType('image');
+    document.getElementById('question-icon-image').value = quiz.icon_value;
+  }
+  
+  // Clear and add options
+  document.getElementById('options-container').innerHTML = '';
+  optionCounter = 0;
+  
+  quiz.options.forEach(option => {
+    addOption();
+    const currentId = optionCounter;
+    document.querySelector(`[name="option_text_${currentId}"]`).value = option.text;
+    document.querySelector(`[name="option_emoji_${currentId}"]`).value = option.emoji || '';
+    document.querySelector(`[name="option_image_${currentId}"]`).value = option.image || '';
+    document.querySelector(`[name="option_value_${currentId}"]`).value = option.value;
+    document.querySelector(`[name="option_color_${currentId}"]`).value = option.color || '';
+  });
+  
+  document.getElementById('quizModal').classList.add('active');
+}
+
+async function deleteQuiz(id) {
+  if (!confirm('Are you sure you want to delete this quiz question?')) return;
+  
+  try {
+    const response = await fetch(`/admin/moodquiz/delete/${id}`, {
+      method: 'POST'
+    });
+    
+    if (response.ok) {
+      alert('Quiz question deleted successfully!');
+      window.location.reload();
+    } else {
+      alert('Error deleting quiz question');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Error deleting quiz question');
+  }
+}
+</script>
+
+<%- include('./partials/footer') %>

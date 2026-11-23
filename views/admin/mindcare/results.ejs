@@ -1,0 +1,618 @@
+<%- include('../partials/header', { pageTitle: 'Mood Quiz Results', activePage: 'mindcare' }) %>
+
+<style>
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+
+  .stat-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    text-align: center;
+  }
+
+  .stat-card h3 {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+    opacity: 0.9;
+  }
+
+  .stat-card .stat-value {
+    font-size: 42px;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .filter-bar {
+    background: linear-gradient(135deg, #F7FAFC 0%, #EDF2F7 100%);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter-input {
+    padding: 10px 15px;
+    border: 2px solid #E0E7FF;
+    border-radius: 10px;
+    flex: 1;
+    min-width: 200px;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .filter-input:focus {
+    outline: none;
+    border-color: #667eea;
+  }
+
+  .filter-select {
+    padding: 10px 15px;
+    border: 2px solid #E0E7FF;
+    border-radius: 10px;
+    background: white;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+  }
+
+  .data-table thead th {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+  }
+
+  .data-table thead th:first-child {
+    border-radius: 12px 0 0 12px;
+  }
+
+  .data-table thead th:last-child {
+    border-radius: 0 12px 12px 0;
+  }
+
+  .data-table tbody td {
+    background: #F8F9FF;
+    padding: 15px;
+  }
+
+  .data-table tbody tr td:first-child {
+    border-radius: 12px 0 0 12px;
+  }
+
+  .data-table tbody tr td:last-child {
+    border-radius: 0 12px 12px 0;
+  }
+
+  .data-table tbody tr:hover td {
+    background: #EDF2F7;
+  }
+
+  .mood-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .mood-excellent {
+    background: linear-gradient(135deg, #4ade80 0%, #10b981 100%);
+    color: white;
+  }
+
+  .mood-good {
+    background: linear-gradient(135deg, #60a5fa 0%, #06b6d4 100%);
+    color: white;
+  }
+
+  .mood-average {
+    background: linear-gradient(135deg, #facc15 0%, #f97316 100%);
+    color: white;
+  }
+
+  .mood-poor {
+    background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
+    color: white;
+  }
+
+  .mood-critical {
+    background: linear-gradient(135deg, #ef4444 0%, #ec4899 100%);
+    color: white;
+  }
+
+  .btn-view {
+    background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+    color: #333;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    margin-right: 8px;
+    transition: transform 0.2s;
+  }
+
+  .btn-view:hover {
+    transform: scale(1.05);
+  }
+
+  .btn-delete {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: transform 0.2s;
+  }
+
+  .btn-delete:hover {
+    transform: scale(1.05);
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
+    padding: 20px;
+  }
+
+  .modal.active {
+    display: flex;
+  }
+
+  .modal-content {
+    background: white;
+    border-radius: 25px;
+    padding: 30px;
+    max-width: 800px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .close-modal {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 32px;
+    cursor: pointer;
+    color: #a0aec0;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+
+  .close-modal:hover {
+    color: #667eea;
+  }
+
+  .answer-item {
+    background: linear-gradient(135deg, #F7FAFC 0%, #EDF2F7 100%);
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    border-left: 4px solid #667eea;
+  }
+
+  .answer-question {
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+
+  .answer-response {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+  }
+
+  .answer-emoji {
+    font-size: 24px;
+  }
+
+  .answer-text {
+    font-size: 15px;
+    color: #4a5568;
+  }
+
+  .answer-value {
+    margin-left: auto;
+    background: #667eea;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #a0aec0;
+  }
+
+  .empty-state svg {
+    width: 100px;
+    height: 100px;
+    opacity: 0.3;
+    margin-bottom: 20px;
+  }
+
+  .nav-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+  }
+
+  .nav-tab {
+    background: white;
+    color: #667eea;
+    border: 2px solid #667eea;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+  }
+
+  .nav-tab:hover {
+    background: #667eea;
+    color: white;
+  }
+
+  .score-bar {
+    width: 100%;
+    height: 8px;
+    background: #E0E7FF;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 5px;
+  }
+
+  .score-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    border-radius: 10px;
+    transition: width 0.3s;
+  }
+</style>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+  <div>
+    <h1 class="header-title">📊 Mood Quiz Results</h1>
+    <p class="header-subtitle">View and analyze user mood check-in responses</p>
+  </div>
+  <div class="nav-tabs">
+    <a href="/admin/mindcare" class="nav-tab">Questions</a>
+    <a href="/admin/mindcare/results" class="nav-tab" style="background: #667eea; color: white;">Results</a>
+  </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <h3>Total Responses</h3>
+    <p class="stat-value"><%= stats.total %></p>
+  </div>
+  <div class="stat-card">
+    <h3>Average Score</h3>
+    <p class="stat-value"><%= stats.avgScore %></p>
+  </div>
+  <div class="stat-card">
+    <h3>Average Mood</h3>
+    <p class="stat-value"><%= stats.avgPercentage %>%</p>
+  </div>
+</div>
+
+<div class="content-panel">
+  <!-- Filter Bar -->
+  <div class="filter-bar">
+    <input type="text" id="searchInput" class="filter-input" placeholder="🔍 Search by user email...">
+    <select id="moodFilter" class="filter-select">
+      <option value="all">All Moods</option>
+      <option value="excellent">Excellent (80-100%)</option>
+      <option value="good">Good (60-79%)</option>
+      <option value="average">Average (40-59%)</option>
+      <option value="poor">Poor (20-39%)</option>
+      <option value="critical">Critical (0-19%)</option>
+    </select>
+    <select id="dateFilter" class="filter-select">
+      <option value="all">All Time</option>
+      <option value="today">Today</option>
+      <option value="week">This Week</option>
+      <option value="month">This Month</option>
+    </select>
+  </div>
+
+  <!-- Results Table -->
+  <% if (results && results.length > 0) { %>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>User Email</th>
+          <th>Score</th>
+          <th>Mood Level</th>
+          <th>Completed At</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="resultsTableBody">
+        <% results.forEach(result => { 
+          let moodClass = 'mood-critical';
+          let moodText = 'Critical';
+          
+          if (result.percentage >= 80) {
+            moodClass = 'mood-excellent';
+            moodText = 'Excellent';
+          } else if (result.percentage >= 60) {
+            moodClass = 'mood-good';
+            moodText = 'Good';
+          } else if (result.percentage >= 40) {
+            moodClass = 'mood-average';
+            moodText = 'Average';
+          } else if (result.percentage >= 20) {
+            moodClass = 'mood-poor';
+            moodText = 'Poor';
+          }
+          
+          const completedDate = new Date(result.completed_at);
+          const formattedDate = completedDate.toLocaleString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+          
+          // Safety check for userEmail
+          const userEmail = result.userEmail || result.user_id || 'Guest';
+        %>
+          <tr data-email="<%= userEmail.toLowerCase() %>" 
+              data-percentage="<%= result.percentage %>"
+              data-date="<%= result.completed_at %>">
+            <td>
+              <strong><%= userEmail %></strong>
+            </td>
+            <td>
+              <strong><%= result.total_score %></strong> / <%= result.max_score %>
+              <div class="score-bar">
+                <div class="score-fill" style="width: <%= result.percentage %>%;"></div>
+              </div>
+            </td>
+            <td>
+              <span class="mood-badge <%= moodClass %>">
+                <%= moodText %> (<%= result.percentage.toFixed(0) %>%)
+              </span>
+            </td>
+            <td><%= formattedDate %></td>
+            <td>
+              <button class="btn-view" onclick='viewDetails(<%= JSON.stringify(result) %>)'>
+                👁️ View
+              </button>
+              <button class="btn-delete" onclick="deleteResult(<%= result.id %>)">
+                🗑️ Delete
+              </button>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } else { %>
+    <div class="empty-state">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+      <h3 style="font-size: 20px; margin-bottom: 10px;">No Results Yet</h3>
+      <p>Quiz responses will appear here once users complete the mood quiz.</p>
+    </div>
+  <% } %>
+</div>
+
+<!-- Detail Modal -->
+<div id="detailModal" class="modal">
+  <div class="modal-content" style="position: relative;">
+    <button class="close-modal" onclick="closeModal()">&times;</button>
+    <h2 id="modal-title" style="margin-bottom: 25px; color: #667eea;">Quiz Response Details</h2>
+    
+    <div id="modalContent">
+      <!-- Content will be dynamically inserted -->
+    </div>
+  </div>
+</div>
+
+<script>
+// Search and Filter Functionality
+const searchInput = document.getElementById('searchInput');
+const moodFilter = document.getElementById('moodFilter');
+const dateFilter = document.getElementById('dateFilter');
+const tableRows = document.querySelectorAll('#resultsTableBody tr');
+
+function filterResults() {
+  const searchTerm = searchInput.value.toLowerCase();
+  const selectedMood = moodFilter.value;
+  const selectedDate = dateFilter.value;
+  
+  tableRows.forEach(row => {
+    const userId = row.dataset.email.toLowerCase();
+    const percentage = parseFloat(row.dataset.percentage);
+    const rowDate = new Date(row.dataset.date);
+    const now = new Date();
+    
+    // Search filter
+    let matchesSearch = userId.includes(searchTerm);
+    
+    // Mood filter
+    let matchesMood = true;
+    if (selectedMood !== 'all') {
+      if (selectedMood === 'excellent' && (percentage < 80 || percentage > 100)) matchesMood = false;
+      if (selectedMood === 'good' && (percentage < 60 || percentage >= 80)) matchesMood = false;
+      if (selectedMood === 'average' && (percentage < 40 || percentage >= 60)) matchesMood = false;
+      if (selectedMood === 'poor' && (percentage < 20 || percentage >= 40)) matchesMood = false;
+      if (selectedMood === 'critical' && percentage >= 20) matchesMood = false;
+    }
+    
+    // Date filter
+    let matchesDate = true;
+    if (selectedDate === 'today') {
+      matchesDate = rowDate.toDateString() === now.toDateString();
+    } else if (selectedDate === 'week') {
+      const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      matchesDate = rowDate >= weekAgo;
+    } else if (selectedDate === 'month') {
+      const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+      matchesDate = rowDate >= monthAgo;
+    }
+    
+    // Show/hide row
+    if (matchesSearch && matchesMood && matchesDate) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
+  });
+}
+
+searchInput.addEventListener('input', filterResults);
+moodFilter.addEventListener('change', filterResults);
+dateFilter.addEventListener('change', filterResults);
+
+// View Details Modal
+function viewDetails(result) {
+  const modal = document.getElementById('detailModal');
+  const modalContent = document.getElementById('modalContent');
+  
+  let answersHtml = '';
+  
+  if (result.answers && result.answers.length > 0) {
+    result.answers.forEach(answer => {
+      answersHtml += `
+        <div class="answer-item">
+          <div class="answer-question">${answer.question}</div>
+          <div class="answer-response">
+            ${answer.selectedOption.emoji ? `<span class="answer-emoji">${answer.selectedOption.emoji}</span>` : ''}
+            ${answer.selectedOption.lucide ? `<i data-lucide="${answer.selectedOption.lucide}" style="width: 24px; height: 24px;"></i>` : ''}
+            ${answer.selectedOption.image ? `<img src="${answer.selectedOption.image}" style="width: 24px; height: 24px; border-radius: 4px;">` : ''}
+            <span class="answer-text">${answer.selectedOption.text}</span>
+            <span class="answer-value">+${answer.selectedOption.value}</span>
+          </div>
+        </div>
+      `;
+    });
+  }
+  
+  const completedDate = new Date(result.completed_at);
+  const formattedDate = completedDate.toLocaleString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+  
+  modalContent.innerHTML = `
+    <div style="background: linear-gradient(135deg, #F7FAFC 0%, #EDF2F7 100%); padding: 20px; border-radius: 15px; margin-bottom: 20px;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+        <div>
+          <p style="color: #718096; font-size: 13px; margin: 0;">User Email</p>
+          <p style="font-weight: 600; font-size: 16px; margin: 5px 0 0 0;">${result.userEmail || 'Guest'}</p>
+        </div>
+        <div>
+          <p style="color: #718096; font-size: 13px; margin: 0;">Total Score</p>
+          <p style="font-weight: 600; font-size: 16px; margin: 5px 0 0 0;">${result.total_score} / ${result.max_score}</p>
+        </div>
+        <div>
+          <p style="color: #718096; font-size: 13px; margin: 0;">Mood Level</p>
+          <p style="font-weight: 600; font-size: 16px; margin: 5px 0 0 0;">${result.percentage.toFixed(1)}%</p>
+        </div>
+        <div>
+          <p style="color: #718096; font-size: 13px; margin: 0;">Completed</p>
+          <p style="font-weight: 600; font-size: 14px; margin: 5px 0 0 0;">${formattedDate}</p>
+        </div>
+      </div>
+    </div>
+    
+    <h3 style="margin-bottom: 15px; color: #2d3748;">Detailed Responses</h3>
+    ${answersHtml || '<p style="text-align: center; color: #a0aec0; padding: 20px;">No answer details available.</p>'}
+  `;
+  
+  modal.classList.add('active');
+  
+  // Initialize Lucide icons if needed
+  if (window.lucide) {
+    lucide.createIcons();
+  }
+}
+
+function closeModal() {
+  document.getElementById('detailModal').classList.remove('active');
+}
+
+// Delete Result
+async function deleteResult(id) {
+  if (!confirm('Are you sure you want to delete this result? This action cannot be undone.')) {
+    return;
+  }
+  
+  try {
+    const response = await fetch(`/admin/moodquiz/results/delete/${id}`, {
+      method: 'POST'
+    });
+    
+    if (response.ok) {
+      alert('Result deleted successfully!');
+      window.location.reload();
+    } else {
+      alert('Error deleting result');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Error deleting result');
+  }
+}
+
+// Close modal on outside click
+document.getElementById('detailModal').addEventListener('click', function(e) {
+  if (e.target === this) {
+    closeModal();
+  }
+});
+</script>
+
+<%- include('../partials/footer') %>

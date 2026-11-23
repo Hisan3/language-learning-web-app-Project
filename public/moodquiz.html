@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mood Quiz</title>
+    <link rel="icon" type="image/png" href="./asset/quiz.png">
+  <link rel="stylesheet" href="./styles/moodquiz.css">
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header -->
+  <div class="header text-center">
+    <h1>Mood Check-in</h1>
+    <p>Let's see how you're doing today</p>
+  </div>
+  <!-- Progress -->
+  <div class="progress-container mb-8">
+    <div class="progress-info">
+      <span id="question-count">Question 1 of 4</span>
+      <span id="progress-percent">0% Complete</span>
+    </div>
+    <div class="progress-bar">
+      <div id="progress-fill"></div>
+    </div>
+  </div>
+
+  <!-- Question Card -->
+  <div id="question-card" class="question-card">
+    <h2 id="question-text" class="question-text"></h2>
+    <div id="options-container" class="options-container"></div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="navigation">
+    <button id="prev-btn" class="nav-btn disabled">
+      &#8592; Previous
+    </button>
+    <button id="next-btn" class="nav-btn disabled">
+      Next &#8594;
+    </button>
+  </div>
+</div>
+
+<!-- Completion Modal
+<div id="completion-modal" class="completion-modal hidden">
+  <div class="modal-content">
+    <div class="check-circle">&#10003;</div>
+    <h2>Assessment Complete! 🎉</h2>
+    <p>Thank you for taking the time to check in with yourself.</p>
+    <div class="mood-summary">
+      <h3>Your Current Mood</h3>
+      <p id="mood-text" class="mood-text"></p>
+      <p id="average-score"></p>
+    </div>
+    <div class="completion-buttons">
+      <button onclick="goToDashboard()" class="btn btn-gradient">View Dashboard</button>
+      <button onclick="startBreathing()" class="btn btn-outline">Start Breathing Exercise</button>
+    </div>
+  </div>
+</div> -->
+
+<!-- Completion Modal -->
+<!-- Completion Modal -->
+<div id="completion-modal" class="completion-modal hidden">
+  <div class="modal-content">
+    <div class="check-circle">&#10003;</div>
+    <h2>Assessment Complete! 🎉</h2>
+    <p>Thank you for taking the time to check in with yourself.</p>
+
+    <div class="mood-summary">
+      <h3>Your Mood Result</h3>
+      <p id="mood-text" class="mood-text"></p>
+      <p id="average-score"></p>
+    </div>
+
+    <div class="completion-buttons">
+      <button onclick="goToDashboard()" class="btn btn-gradient">View Dashboard</button>
+      <button onclick="startBreathing()" class="btn btn-outline">Start Breathing Exercise</button>
+    </div>
+  </div>
+</div>
+<script src="./JS/moodquiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,923 @@
+/* ===============================================
+   LEARNHOME - MUSHROOM THEME DESIGN
+   =============================================== */
+
+/* Reset & Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #F8EDE3;
+    min-height: 100vh;
+    padding: 60px 20px 40px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* ===============================================
+   BACKGROUND DECORATIONS (Cloud/Hill Style)
+   =============================================== */
+.decoration-left,
+.decoration-right {
+    position: fixed;
+    bottom: 0;
+    width: 280px;
+    height: 140px;
+    background: #C89B7B;
+    border-radius: 50% 50% 0 0;
+    z-index: 1;
+    opacity: 0.6;
+}
+
+.decoration-left {
+    left: -40px;
+}
+
+.decoration-right {
+    right: -40px;
+}
+
+/* Small decorative elements in top corners */
+.decoration-top-left,
+.decoration-top-right {
+    position: fixed;
+    top: 20px;
+    width: 60px;
+    height: 60px;
+    opacity: 0.35;
+    z-index: 1;
+}
+
+.decoration-top-left {
+    left: 20px;
+}
+
+.decoration-top-right {
+    right: 20px;
+}
+
+.decoration-top-left::before,
+.decoration-top-right::before {
+    content: '🍂';
+    font-size: 40px;
+    position: absolute;
+    animation: float 3s ease-in-out infinite;
+}
+
+.decoration-top-right::before {
+    animation-delay: 1.5s;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-10px) rotate(10deg);
+    }
+}
+
+/* ===============================================
+   BACK BUTTON (Professional Style)
+   =============================================== */
+.back-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: white;
+    border: 2px solid #E8D5C4;
+    border-radius: 12px;
+    padding: 10px 14px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.back-btn:hover {
+    transform: translateX(-4px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    background: #FFF9F4;
+}
+
+.back-btn:active {
+    transform: translateX(-2px);
+}
+
+.back-btn svg {
+    color: #8B5A3C;
+}
+
+/* ===============================================
+   CONTAINER & LAYOUT
+   =============================================== */
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+    width: 100%;
+    position: relative;
+    z-index: 10;
+}
+
+/* ===============================================
+   WELCOME TEXT (Handwritten Style)
+   =============================================== */
+.welcome-text {
+    text-align: center;
+    margin-bottom: 22px;
+    animation: fadeInDown 0.6s ease-out;
+}
+
+.welcome-text h1 {
+    font-family: 'Pacifico', cursive;
+    font-size: 10px;
+    font-weight: 400;
+    color: #A0522D;
+    margin: 0;
+    letter-spacing: 1.5px;
+}
+
+/* ===============================================
+   MASCOT IMAGE (Center)
+   =============================================== */
+.mascot-container {
+    text-align: center;
+    margin-bottom: 16px;
+    animation: fadeInDown 0.8s ease-out;
+}
+
+.mascot-image {
+    width: 200px;
+    height: auto;
+    max-width: 100%;
+    opacity: 0.95;
+    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.1));
+    animation: gentleBounce 2.5s ease-in-out infinite;
+}
+
+@keyframes gentleBounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===============================================
+   SUBTITLE TEXT (Professional Style)
+   =============================================== */
+.subtitle-text {
+    text-align: center;
+    margin-bottom: 42px;
+    animation: fadeInDown 1s ease-out;
+}
+
+.subtitle-text p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #F28C41;
+    margin: 0;
+    letter-spacing: 0.3px;
+    line-height: 1.5;
+}
+
+/* ===============================================
+   GRID LAYOUT (Responsive)
+   =============================================== */
+.grid {
+    display: grid;
+    gap: 22px;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.grid-2 {
+    grid-template-columns: 1fr;
+}
+
+/* Desktop: Side by Side */
+@media (min-width: 768px) {
+    .grid-2 {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+    }
+}
+
+/* ===============================================
+   CARDS (Student & Professional) - Reduced Size
+   =============================================== */
+.card {
+    background: white;
+    border-radius: 32px;
+    padding: 28px 24px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid transparent;
+    width: 100%;
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-clickable {
+    cursor: pointer;
+}
+
+.card-clickable:hover {
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.12);
+}
+
+.card-clickable:active {
+    transform: translateY(-4px) scale(1.005);
+}
+
+/* Card Gradients */
+.card-gradient-blue {
+    background: linear-gradient(135deg, #EDE9FE 0%, #F3E8FF 100%);
+    border-color: #C4B5FD;
+}
+
+.card-gradient-pink {
+    background: linear-gradient(135deg, #FFF1F2 0%, #FFE4E6 100%);
+    border-color: #FECACA;
+}
+
+/* ===============================================
+   PATH ICONS (Professional Modern Style)
+   =============================================== */
+.path-icon-container {
+    width: 85px;
+    height: 85px;
+    margin: 0 auto 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.card-gradient-blue .path-icon-container {
+    background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+}
+
+.card-gradient-pink .path-icon-container {
+    background: linear-gradient(135deg, #FB923C 0%, #F97316 100%);
+}
+
+.path-icon {
+    width: 44px;
+    height: 44px;
+    color: white;
+    transition: all 0.3s ease;
+    stroke-width: 2.5;
+}
+
+.card-clickable:hover .path-icon-container {
+    transform: scale(1.1) rotate(6deg);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.16);
+}
+
+.card-clickable:hover .path-icon {
+    transform: scale(1.08);
+}
+
+/* ===============================================
+   TYPOGRAPHY
+   =============================================== */
+h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 21px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #2D2D2D;
+    line-height: 1.3;
+}
+
+p {
+    line-height: 1.6;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-sm {
+    font-size: 13px;
+}
+
+.text-gray {
+    color: #4A4A4A;
+}
+
+/* ===============================================
+   BADGES
+   =============================================== */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: 18px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge-purple {
+    background: #E9D5FF;
+    color: #7C3AED;
+}
+
+.badge-blue {
+    background: #DBEAFE;
+    color: #2563EB;
+}
+
+.badge-pink {
+    background: #FCE7F3;
+    color: #DB2777;
+}
+
+.badge-green {
+    background: #D1FAE5;
+    color: #059669;
+}
+
+.badge-yellow {
+    background: #FEF3C7;
+    color: #D97706;
+}
+
+.badge-orange {
+    background: #FED7AA;
+    color: #EA580C;
+}
+
+.badge-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    justify-content: center;
+    margin-top: 12px;
+}
+
+/* ===============================================
+   SPACING UTILITIES
+   =============================================== */
+.space-y-4 > * + * {
+    margin-top: 14px;
+}
+
+/* ===============================================
+   ANIMATIONS
+   =============================================== */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-in {
+    animation: slideIn 0.7s ease-out;
+}
+
+/* ===============================================
+   MODAL (Word of the Day)
+   =============================================== */
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    position: relative;
+    max-width: 450px;
+    width: 100%;
+    background: white;
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: modalEnter 0.3s ease-out;
+    z-index: 10;
+}
+
+.modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(0, 0, 0, 0.05);
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-close:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+@keyframes modalEnter {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.word-of-day-card {
+    background: linear-gradient(135deg, #FEF3C7 0%, #FED7AA 100%);
+}
+
+.sparkle-icon {
+    margin: 0 auto 16px;
+    color: #EAB308;
+}
+
+.word-display {
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 16px;
+    margin: 24px 0;
+}
+
+.word-title {
+    font-size: 32px;
+    color: #9333EA;
+    margin-bottom: 12px;
+    font-weight: 800;
+}
+
+.word-meaning {
+    color: #374151;
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.word-example {
+    margin-top: 16px;
+    padding: 12px;
+    background: #F3E8FF;
+    border-radius: 12px;
+}
+
+.word-example p {
+    font-size: 14px;
+    font-style: italic;
+}
+
+/* ===============================================
+   BUTTONS
+   =============================================== */
+.btn {
+    padding: 14px 24px;
+    border: none;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+    color: white;
+}
+
+.btn-full {
+    width: 100%;
+}
+
+/* ===============================================
+   RESPONSIVE DESIGN - ALL BREAKPOINTS
+   =============================================== */
+
+/* Large Desktop (1200px+) */
+@media (min-width: 1200px) {
+    .container {
+        max-width: 950px;
+    }
+
+    .welcome-text h1 {
+        font-size: 24px;
+    }
+
+    .subtitle-text p {
+        font-size: 19px;
+    }
+
+    .mascot-image {
+        width: 250px;
+    }
+
+    .card {
+        padding: 32px 28px;
+        min-height: 340px;
+    }
+
+    .path-icon-container {
+        width: 92px;
+        height: 92px;
+    }
+
+    .path-icon {
+        width: 48px;
+        height: 48px;
+    }
+
+    h2 {
+        font-size: 22px;
+    }
+}
+
+/* Tablets (768px - 1199px) */
+@media (max-width: 1199px) and (min-width: 768px) {
+    .container {
+        max-width: 850px;
+    }
+
+    .welcome-text h1 {
+        font-size: 18px;
+    }
+
+    .subtitle-text p {
+        font-size: 17px;
+    }
+
+    .mascot-image {
+        width: 170px;
+    }
+
+    .card {
+        padding: 26px 22px;
+        min-height: 310px;
+    }
+}
+
+/* Mobile Landscape & Small Tablets (640px - 767px) */
+@media (max-width: 767px) {
+    body {
+        padding: 50px 16px 35px;
+    }
+
+    .container {
+        padding: 0 16px;
+        max-width: 600px;
+    }
+
+    .welcome-text {
+        margin-bottom: 16px;
+    }
+
+    .welcome-text h1 {
+        font-size: 32px;
+    }
+
+    .subtitle-text {
+        margin-bottom: 30px;
+    }
+
+    .subtitle-text p {
+        font-size: 16px;
+    }
+
+    .mascot-container {
+        margin-bottom: 16px;
+    }
+
+    .mascot-image {
+        width: 150px;
+    }
+
+    .card {
+        padding: 24px 20px;
+        border-radius: 24px;
+        min-height: 290px;
+    }
+
+    h2 {
+        font-size: 19px;
+    }
+
+    p {
+        font-size: 13px;
+    }
+
+    .text-sm {
+        font-size: 12px;
+    }
+
+    .path-icon-container {
+        width: 78px;
+        height: 78px;
+    }
+
+    .path-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .grid {
+        gap: 18px;
+    }
+
+    .decoration-left,
+    .decoration-right {
+        width: 200px;
+        height: 100px;
+    }
+}
+
+/* Mobile Portrait (480px - 639px) */
+@media (max-width: 639px) {
+    body {
+        padding: 45px 14px 30px;
+    }
+
+    .container {
+        padding: 0 14px;
+    }
+
+    .back-btn {
+        top: 14px;
+        left: 14px;
+        padding: 8px 12px;
+    }
+
+    .back-btn svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .welcome-text h1 {
+        font-size: 30px;
+    }
+
+    .subtitle-text p {
+        font-size: 15px;
+    }
+
+    .mascot-image {
+        width: 140px;
+    }
+
+    .card {
+        padding: 22px 18px;
+        border-radius: 22px;
+        min-height: 280px;
+    }
+
+    h2 {
+        font-size: 18px;
+        margin-bottom: 8px;
+    }
+
+    p {
+        font-size: 12px;
+    }
+
+    .path-icon-container {
+        width: 74px;
+        height: 74px;
+        margin-bottom: 12px;
+    }
+
+    .path-icon {
+        width: 38px;
+        height: 38px;
+    }
+
+    .badge {
+        font-size: 11px;
+        padding: 5px 10px;
+    }
+
+    .badge-group {
+        gap: 6px;
+    }
+
+    .grid {
+        gap: 16px;
+    }
+
+    .decoration-top-left::before,
+    .decoration-top-right::before {
+        font-size: 32px;
+    }
+}
+
+/* Small Mobile (360px - 479px) */
+@media (max-width: 479px) {
+    body {
+        padding: 40px 12px 25px;
+    }
+
+    .container {
+        padding: 0 12px;
+    }
+
+    .back-btn {
+        top: 12px;
+        left: 12px;
+        padding: 7px 10px;
+        border-radius: 10px;
+    }
+
+    .back-btn svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .welcome-text h1 {
+        font-size: 28px;
+    }
+
+    .welcome-text {
+        margin-bottom: 14px;
+    }
+
+    .subtitle-text p {
+        font-size: 14px;
+    }
+
+    .subtitle-text {
+        margin-bottom: 26px;
+    }
+
+    .mascot-container {
+        margin-bottom: 14px;
+    }
+
+    .mascot-image {
+        width: 130px;
+    }
+
+    .card {
+        padding: 20px 16px;
+        border-radius: 20px;
+        min-height: 270px;
+    }
+
+    h2 {
+        font-size: 17px;
+    }
+
+    p {
+        font-size: 11px;
+    }
+
+    .text-sm {
+        font-size: 11px;
+    }
+
+    .path-icon-container {
+        width: 70px;
+        height: 70px;
+    }
+
+    .path-icon {
+        width: 36px;
+        height: 36px;
+    }
+
+    .badge {
+        font-size: 10px;
+        padding: 4px 9px;
+    }
+
+    .grid {
+        gap: 14px;
+    }
+
+    .decoration-left,
+    .decoration-right {
+        width: 150px;
+        height: 75px;
+    }
+
+    .modal-content {
+        padding: 24px;
+    }
+
+    .word-title {
+        font-size: 28px;
+    }
+}
+
+/* Extra Small Phones (320px - 359px) */
+@media (max-width: 359px) {
+    body {
+        padding: 38px 10px 22px;
+    }
+
+    .welcome-text h1 {
+        font-size: 20px;
+    }
+
+    .subtitle-text p {
+        font-size: 13px;
+    }
+
+    .mascot-image {
+        width: 120px;
+    }
+
+    .card {
+        padding: 18px 14px;
+        min-height: 260px;
+    }
+
+    h2 {
+        font-size: 16px;
+    }
+
+    p {
+        font-size: 10px;
+    }
+
+    .path-icon-container {
+        width: 66px;
+        height: 66px;
+    }
+
+    .path-icon {
+        width: 34px;
+        height: 34px;
+    }
+
+    .badge {
+        font-size: 9px;
+        padding: 4px 8px;
+    }
+
+    .grid {
+        gap: 12px;
+    }
+}

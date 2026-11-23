@@ -1,0 +1,490 @@
+/* ============================================
+   GAMIFICATION SYSTEM STYLES
+   Streak, Badge, XP notifications and displays
+   ============================================ */
+
+/* Streak Notification */
+.streak-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+    padding: 1.25rem 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+    z-index: 9999;
+    opacity: 0;
+    transform: translateX(400px) scale(0.8);
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.streak-notification.show {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+}
+
+.streak-notification-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.streak-icon {
+    font-size: 2.5rem;
+    animation: fireFlicker 1.5s ease-in-out infinite;
+}
+
+@keyframes fireFlicker {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    25% { transform: scale(1.1) rotate(-5deg); }
+    50% { transform: scale(1.15) rotate(5deg); }
+    75% { transform: scale(1.05) rotate(-3deg); }
+}
+
+.streak-text {
+    color: white;
+}
+
+.streak-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    opacity: 0.95;
+    margin-bottom: 0.25rem;
+}
+
+.streak-count {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* Badge Unlock Notification */
+.badge-unlock-notification {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.5);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 2.5rem 3rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4);
+    z-index: 10000;
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    max-width: 90%;
+    width: 400px;
+}
+
+.badge-unlock-notification.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.badge-unlock-content {
+    text-align: center;
+    color: white;
+}
+
+.badge-unlock-animation {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.badge-unlock-icon {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    margin: 0 auto;
+    animation: badgePulse 0.8s ease-in-out infinite alternate;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes badgePulse {
+    0% { transform: scale(1); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); }
+    100% { transform: scale(1.1); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4); }
+}
+
+.badge-unlock-sparkles {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px;
+    height: 150px;
+    pointer-events: none;
+}
+
+.sparkle {
+    position: absolute;
+    font-size: 1.5rem;
+    animation: sparkleFloat 2s ease-in-out infinite;
+}
+
+.sparkle:nth-child(1) {
+    top: 0;
+    left: 20%;
+    animation-delay: 0s;
+}
+
+.sparkle:nth-child(2) {
+    top: 20%;
+    right: 10%;
+    animation-delay: 0.3s;
+}
+
+.sparkle:nth-child(3) {
+    bottom: 10%;
+    left: 10%;
+    animation-delay: 0.6s;
+}
+
+@keyframes sparkleFloat {
+    0%, 100% { 
+        transform: translateY(0) rotate(0deg);
+        opacity: 0.6;
+    }
+    50% { 
+        transform: translateY(-20px) rotate(180deg);
+        opacity: 1;
+    }
+}
+
+.badge-unlock-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.badge-unlock-name {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.badge-unlock-desc {
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+/* Badge Display on Home Page - 3D Style */
+.badge-item-home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: transparent;
+    transition: transform 0.3s ease;
+    animation: fadeInUp 0.5s ease-out forwards;
+    opacity: 0;
+    cursor: pointer;
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.8);
+    }
+    60% {
+        opacity: 1;
+        transform: translateY(-5px) scale(1.05);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.badge-item-home:hover {
+    transform: translateY(-8px) scale(1.08);
+}
+
+.badge-icon-home {
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    position: relative;
+    
+    /* 3D Effect with multiple shadows for depth */
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3))
+            drop-shadow(0 6px 10px rgba(0, 0, 0, 0.2))
+            drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15))
+            drop-shadow(0 -2px 4px rgba(255, 255, 255, 0.4));
+    
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform-style: preserve-3d;
+}
+
+/* Glossy highlight effect */
+.badge-icon-home::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
+    background: radial-gradient(circle at 35% 30%, 
+                rgba(255, 255, 255, 0.5), 
+                rgba(255, 255, 255, 0.1) 40%,
+                transparent 70%);
+    pointer-events: none;
+    opacity: 0.8;
+    border-radius: 50%;
+}
+
+/* Soft bottom shadow for depth */
+.badge-icon-home::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50%;
+    height: 8px;
+    background: radial-gradient(ellipse, rgba(0, 0, 0, 0.2), transparent);
+    opacity: 0.6;
+    transition: all 0.4s ease;
+}
+
+.badge-item-home:hover .badge-icon-home {
+    filter: drop-shadow(0 16px 32px rgba(0, 0, 0, 0.35))
+            drop-shadow(0 8px 16px rgba(0, 0, 0, 0.25))
+            drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2))
+            drop-shadow(0 -3px 6px rgba(255, 255, 255, 0.5));
+    transform: translateY(-4px) rotateZ(5deg) scale(1.05);
+}
+
+.badge-item-home:hover .badge-icon-home::after {
+    width: 60%;
+    opacity: 0.8;
+    bottom: -20px;
+}
+
+.badge-name-home {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #374151;
+    text-align: center;
+    margin-top: 0.25rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Badge Display on Profile Page */
+.badge-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem;
+    background: white;
+    border-radius: 1rem;
+    border: 2px solid #e5e7eb;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.badge-item.badge-earned {
+    border-color: transparent;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
+}
+
+.badge-item.badge-earned:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.25);
+}
+
+.badge-item.badge-locked {
+    opacity: 0.5;
+    filter: grayscale(100%);
+}
+
+.badge-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.25rem;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    flex-shrink: 0;
+}
+
+/* Ensure badge icon images are centered */
+.badge-icon img {
+    display: block;
+    margin: 0 auto;
+}
+
+/* Ensure badge icon Lucide icons are centered */
+.badge-icon i[data-lucide] {
+    display: block;
+    margin: 0 auto;
+}
+
+.badge-info {
+    flex: 1;
+}
+
+.badge-name {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.25rem;
+}
+
+.badge-desc {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.badge-check {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.25rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+/* Learning Path Top Bar Stats */
+.learning-path-stats {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1rem 1.5rem;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.stat-icon-small {
+    font-size: 1.25rem;
+}
+
+.stat-text {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #6b7280;
+}
+
+.stat-value-small {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+/* Progress Bar Animations */
+.progress-bar {
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .streak-notification,
+    .badge-unlock-notification {
+        right: 10px;
+        left: 10px;
+        transform: translateX(0);
+    }
+    
+    .badge-unlock-notification.show {
+        transform: translate(0, -50%) scale(1);
+    }
+    
+    .badge-unlock-notification {
+        width: auto;
+        padding: 2rem;
+    }
+    
+    .badge-unlock-icon {
+        width: 80px;
+        height: 80px;
+        font-size: 2.5rem;
+    }
+    
+    .badge-unlock-name {
+        font-size: 1.5rem;
+    }
+    
+    .badge-item-home {
+        padding: 0.5rem;
+    }
+    
+    .badge-icon-home {
+        width: 60px;
+        height: 60px;
+        font-size: 2.5rem;
+    }
+    
+    .badge-icon-home::after {
+        bottom: -12px;
+        height: 6px;
+    }
+    
+    .badge-item-home:hover .badge-icon-home::after {
+        bottom: -16px;
+    }
+    
+    .badge-name-home {
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .badge-icon-home {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+    
+    .learning-path-stats {
+        flex-wrap: wrap;
+        gap: 1rem;
+        padding: 1rem;
+    }
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+    .badge-item-home {
+        background: transparent;
+    }
+    
+    .badge-item,
+    .learning-path-stats {
+        background: #1f2937;
+        border-color: #374151;
+    }
+    
+    .badge-name-home,
+    .badge-name,
+    .stat-value-small {
+        color: #f9fafb;
+    }
+    
+    .badge-desc,
+    .stat-text {
+        color: #9ca3af;
+    }
+}

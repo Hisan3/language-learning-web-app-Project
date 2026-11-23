@@ -1,0 +1,843 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.6;
+  background: linear-gradient(to bottom right, #faf5ff, #fce7f3, #eff6ff);
+  min-height: 100vh;
+  padding-top: 70px;
+}
+
+/* ============================================
+   NAVIGATION - Matching mindhome.html exactly
+   ============================================ */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  z-index: 1000;
+}
+
+.navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.logo-icon {
+  width: 2rem;
+  height: 2rem;
+  background: linear-gradient(135deg, #ec4899, #a855f7);
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.logo-text {
+  font-weight: 600;
+  font-size: 1.125rem;
+  color: #1f2937;
+}
+
+.desktop-nav {
+  display: none;
+  gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .desktop-nav {
+    display: flex;
+  }
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  color: #6b7280;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+}
+
+.nav-link:hover {
+  background: #f3f4f6;
+  color: #1f2937;
+}
+
+.nav-link-active {
+  background: #fce7f3;
+  color: #ec4899;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.profile-pill {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  background: #f3f4f6;
+  border-radius: 9999px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.profile-pill:hover {
+  background: #e5e7eb;
+}
+
+@media (min-width: 768px) {
+  .profile-pill {
+    display: flex;
+  }
+}
+
+.profile-initial {
+  width: 2rem;
+  height: 2rem;
+  background: linear-gradient(135deg, #ec4899, #a855f7);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.profile-name {
+  font-size: 0.875rem;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.menu-btn {
+  display: flex;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 0.25rem;
+}
+
+@media (min-width: 768px) {
+  .menu-btn {
+    display: none;
+  }
+}
+
+/* Mobile Navigation */
+.mobile-nav {
+  display: none;
+  background: white;
+  border-top: 1px solid #e5e7eb;
+}
+
+.mobile-nav.active {
+  display: block;
+}
+
+/* Mobile Profile Section */
+.mobile-profile-section {
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.mobile-profile-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: white;
+  border-radius: 0.75rem;
+  text-decoration: none;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  transition: all 0.2s;
+}
+
+.mobile-profile-pill:hover {
+  background: #f3f4f6;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-profile-initial {
+  width: 2.5rem;
+  height: 2.5rem;
+  background: linear-gradient(135deg, #ec4899, #a855f7);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+
+.mobile-profile-name {
+  font-size: 1rem;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.mobile-nav-list {
+  list-style: none;
+  padding: 0.5rem;
+}
+
+.mobile-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  margin-bottom: 0.25rem;
+  transition: all 0.2s;
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.mobile-nav-link-pink {
+  color: #ec4899;
+  background: #fce7f3;
+}
+
+.mobile-nav-link-purple {
+  color: #a855f7;
+  background: #f3e8ff;
+}
+
+.mobile-nav-link-blue {
+  color: #3b82f6;
+  background: #dbeafe;
+}
+
+.mobile-nav-link-teal {
+  color: #14b8a6;
+  background: #ccfbf1;
+}
+
+.mobile-nav-link-yellow {
+  color: #f59e0b;
+  background: #fef3c7;
+}
+
+/* ============================================
+   PAGE CONTAINER & HEADER
+   ============================================ */
+.page-container {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+@media (min-width: 640px) {
+  .page-container {
+    padding: 2rem 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-container {
+    padding: 2.5rem 2rem;
+  }
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+  animation: fadeInDown 0.5s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header h1 {
+  font-size: clamp(1.875rem, 5vw, 2.5rem);
+  margin-bottom: 0.5rem;
+  color: #1f2937;
+}
+
+.subtitle {
+  color: #a855f7;
+  font-size: clamp(1rem, 2.5vw, 1.125rem);
+}
+
+/* ============================================
+   CARD & CHECKLIST - FULLY RESPONSIVE
+   ============================================ */
+.card {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .card {
+    padding: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .card {
+    padding: 2rem;
+  }
+}
+
+.checklist-card {
+  background: linear-gradient(to bottom right, #f3e8ff, #fce7f3);
+}
+
+.checklist-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .checklist-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.checklist-header h2 {
+  color: #1f2937;
+  font-size: clamp(1.25rem, 3vw, 1.5rem);
+}
+
+.add-button {
+  padding: 0.625rem 1.25rem;
+  background: #a855f7;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.add-button:hover {
+  background: #9333ea;
+}
+
+.button-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Progress Section - Responsive */
+.progress-section {
+  margin-bottom: 1.5rem;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: clamp(0.8125rem, 2vw, 0.875rem);
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.progress-bar-container {
+  height: 1rem;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(to right, #a855f7, #ec4899);
+  transition: width 0.5s ease;
+  width: 0%;
+  border-radius: 9999px;
+}
+
+/* Checklist Items - FULLY RESPONSIVE with EMOJI PLACEMENT FIX */
+.checklist-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.checklist-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  background: white;
+  border: 2px solid #d8b4fe;
+  border-radius: 1.25rem;
+  transition: all 0.2s;
+  animation: slideInLeft 0.3s ease-out;
+}
+
+@media (min-width: 640px) {
+  .checklist-item {
+    padding: 1rem 1.25rem;
+  }
+}
+
+/* Desktop: Emoji right after text */
+@media (min-width: 768px) {
+  .checklist-item {
+    grid-template-columns: auto 1fr auto auto auto;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.checklist-item.checked {
+  background: linear-gradient(to right, #d1fae5, #dbeafe);
+  border-color: #10b981;
+}
+
+.item-checkbox {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  cursor: pointer;
+  accent-color: #a855f7;
+  flex-shrink: 0;
+}
+
+.item-text {
+  color: #1f2937;
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  word-break: break-word;
+}
+
+.item-emoji {
+  font-size: clamp(1.25rem, 3vw, 1.5rem);
+  flex-shrink: 0;
+}
+
+/* Desktop: Emoji appears right after text */
+@media (min-width: 768px) {
+  .checklist-item {
+    grid-template-areas: 
+      "checkbox text emoji check actions";
+  }
+  
+  .item-checkbox {
+    grid-area: checkbox;
+  }
+  
+  .item-text {
+    grid-area: text;
+  }
+  
+  .item-emoji {
+    grid-area: emoji;
+    margin-left: 0.5rem;
+  }
+  
+  .check-icon {
+    grid-area: check;
+  }
+  
+  .item-actions {
+    grid-area: actions;
+  }
+}
+
+.item-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  color: #6b7280;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-button:hover {
+  color: #a855f7;
+}
+
+.icon-button.delete:hover {
+  color: #ef4444;
+}
+
+.icon-button svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+@media (min-width: 640px) {
+  .icon-button svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+
+.check-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #10b981;
+  flex-shrink: 0;
+}
+
+/* Completion Message - Responsive */
+.completion-message {
+  text-align: center;
+  padding: 1.5rem 1rem;
+  background: linear-gradient(to right, #fef3c7, #fed7aa);
+  border-radius: 1.25rem;
+  animation: scaleIn 0.5s ease-out;
+}
+
+@media (min-width: 640px) {
+  .completion-message {
+    padding: 2rem 1.5rem;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.completion-emoji {
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  margin-bottom: 0.75rem;
+}
+
+.completion-message h3 {
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+  font-size: clamp(1.125rem, 3vw, 1.5rem);
+}
+
+.completion-message p {
+  font-size: clamp(0.8125rem, 2vw, 0.875rem);
+  color: #6b7280;
+}
+
+/* ============================================
+   MODAL - FULLY RESPONSIVE
+   ============================================ */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1001;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 1rem;
+  max-width: 28rem;
+  width: 100%;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+@media (min-width: 640px) {
+  .modal-header {
+    padding: 1.5rem;
+  }
+}
+
+.modal-header h3 {
+  color: #1f2937;
+  font-size: clamp(1.125rem, 3vw, 1.25rem);
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.75rem;
+  color: #6b7280;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.close-button:hover {
+  color: #1f2937;
+}
+
+.modal-body {
+  padding: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .modal-body {
+    padding: 1.5rem;
+  }
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.modal-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.modal-input:focus {
+  border-color: #a855f7;
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+}
+
+.modal-footer {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+@media (min-width: 640px) {
+  .modal-footer {
+    padding: 1.5rem;
+  }
+}
+
+.cancel-button,
+.save-button {
+  flex: 1;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.cancel-button {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.cancel-button:hover {
+  background: #e5e7eb;
+}
+
+.save-button {
+  background: #a855f7;
+  color: white;
+}
+
+.save-button:hover {
+  background: #9333ea;
+}
+
+/* ============================================
+   TOAST - RESPONSIVE
+   ============================================ */
+.toast-container {
+  position: fixed;
+  top: 5rem;
+  right: 1rem;
+  z-index: 1002;
+  max-width: calc(100% - 2rem);
+}
+
+.toast {
+  background: white;
+  padding: 0.875rem 1.25rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 0.5rem;
+  animation: slideInRight 0.3s ease-out;
+  font-size: 0.875rem;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.toast.success {
+  border-left: 4px solid #10b981;
+}
+
+.toast.error {
+  border-left: 4px solid #ef4444;
+}
+
+/* ============================================
+   RESPONSIVE BREAKPOINTS - ADDITIONAL
+   ============================================ */
+
+/* Tablet Portrait */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .navbar-container {
+    padding: 0.75rem 1.5rem;
+  }
+  
+  .page-container {
+    padding: 2rem 1.5rem;
+  }
+}
+
+/* Tablet Landscape & Small Desktop */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .navbar-container {
+    max-width: 1024px;
+  }
+}
+
+/* Large Desktop */
+@media (min-width: 1280px) {
+  .navbar-container {
+    max-width: 1200px;
+  }
+  
+  .page-container {
+    max-width: 68rem;
+  }
+}
+
+/* 4K Screens */
+@media (min-width: 1920px) {
+  .navbar-container {
+    max-width: 1400px;
+  }
+  
+  .page-container {
+    max-width: 75rem;
+  }
+}
+
+/* Zoom Support - 90% to 110% */
+@media (min-resolution: 0.9dppx) and (max-resolution: 1.1dppx) {
+  body {
+    font-size: 100%;
+  }
+}

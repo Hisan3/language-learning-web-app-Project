@@ -1,0 +1,242 @@
+<%- include('../partials/header', { pageTitle: 'Study Tracker Analytics', activePage: 'studytracker' }) %>
+
+<!-- Study Tracker Analytics Content -->
+<h1 class="header-title">Study Tracker Analytics 📊</h1>
+<p class="header-subtitle">Monitor user study activity and progress</p>
+
+<!-- Month Display -->
+<div style="background: white; border-radius: 20px; padding: 20px 30px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); margin-bottom: 30px; display: flex; align-items: center; justify-content: space-between;">
+  <div style="display: flex; align-items: center; gap: 10px;">
+    <span style="font-size: 24px;">📅</span>
+    <div>
+      <p style="color: #a0aec0; font-size: 14px; margin-bottom: 3px;">Viewing Month</p>
+      <h3 style="font-size: 20px; font-weight: 600; color: #2d3748;" id="currentMonth">Loading...</h3>
+    </div>
+  </div>
+  <div style="display: flex; align-items: center; gap: 15px;">
+    <div style="text-align: center;">
+      <p style="color: #a0aec0; font-size: 12px; margin-bottom: 3px;">Total Users</p>
+      <h3 style="font-size: 24px; font-weight: 700; color: #667eea;" id="totalUsers">0</h3>
+    </div>
+    <div style="width: 1px; height: 40px; background: #e2e8f0;"></div>
+    <div style="text-align: center;">
+      <p style="color: #a0aec0; font-size: 12px; margin-bottom: 3px;">Total Hours</p>
+      <h3 style="font-size: 24px; font-weight: 700; color: #f687b3;" id="totalHours">0h</h3>
+    </div>
+  </div>
+</div>
+
+<!-- Users List -->
+<div class="content-panel">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+    <h2 class="panel-title">Active Study Tracker Users</h2>
+    <button onclick="refreshData()" class="btn" style="padding: 8px 16px; font-size: 14px;">
+      <span style="margin-right: 5px;">🔄</span>
+      Refresh
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div id="loadingState" style="text-align: center; padding: 40px 20px;">
+    <div style="font-size: 48px; margin-bottom: 15px;">⏳</div>
+    <p style="color: #718096; font-size: 16px;">Loading study tracker data...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div id="emptyState" class="empty-state" style="display: none;">
+    <div class="icon">📚</div>
+    <h3 style="font-size: 20px; color: #2d3748; margin-bottom: 10px;">No Study Activity This Month</h3>
+    <p>No users have logged any study sessions this month yet.</p>
+  </div>
+
+  <!-- Users Table -->
+  <div id="usersTable" style="display: none;">
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 50px;">#</th>
+            <th>User</th>
+            <th>Email</th>
+            <th style="text-align: center; width: 150px;">
+              <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
+                <span>⏱️</span>
+                <span>Total Hours</span>
+              </div>
+            </th>
+            <th style="text-align: center; width: 150px;">
+              <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
+                <span>📅</span>
+                <span>Study Days</span>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody id="usersTableBody">
+          <!-- Data will be inserted here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Initialize on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    loadStudyTrackerData();
+  });
+
+  async function loadStudyTrackerData() {
+    try {
+      console.log('📊 Loading study tracker data...');
+      
+      // Show loading state
+      document.getElementById('loadingState').style.display = 'block';
+      document.getElementById('emptyState').style.display = 'none';
+      document.getElementById('usersTable').style.display = 'none';
+
+      // Fetch data from API
+      const response = await fetch('/api/studytracker/stats/monthly');
+      const result = await response.json();
+
+      console.log('📊 Study tracker data:', result);
+
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to load data');
+      }
+
+      // Update month display
+      const monthDate = new Date(result.month + '-01');
+      const monthName = monthDate.toLocaleDateString('en-US', { 
+        month: 'long', 
+        year: 'numeric' 
+      });
+      document.getElementById('currentMonth').textContent = monthName;
+
+      // Update summary stats
+      const users = result.users || [];
+      document.getElementById('totalUsers').textContent = users.length;
+      
+      const totalMinutes = users.reduce((sum, user) => 
+        sum + (user.total_hours * 60) + user.total_minutes, 0
+      );
+      const totalHours = Math.floor(totalMinutes / 60);
+      document.getElementById('totalHours').textContent = totalHours + 'h';
+
+      // Hide loading
+      document.getElementById('loadingState').style.display = 'none';
+
+      // Show appropriate state
+      if (users.length === 0) {
+        document.getElementById('emptyState').style.display = 'block';
+      } else {
+        renderUsersTable(users);
+        document.getElementById('usersTable').style.display = 'block';
+      }
+
+    } catch (error) {
+      console.error('❌ Error loading study tracker data:', error);
+      document.getElementById('loadingState').innerHTML = `
+        <div style="text-align: center; padding: 40px 20px;">
+          <div style="font-size: 48px; margin-bottom: 15px;">⚠️</div>
+          <p style="color: #e53e3e; font-size: 16px; margin-bottom: 10px;">Error loading data</p>
+          <p style="color: #718096; font-size: 14px;">${error.message}</p>
+          <button onclick="refreshData()" class="btn" style="margin-top: 15px; padding: 8px 16px; font-size: 14px;">
+            Try Again
+          </button>
+        </div>
+      `;
+    }
+  }
+
+  function renderUsersTable(users) {
+    const tbody = document.getElementById('usersTableBody');
+    
+    tbody.innerHTML = users.map((user, index) => {
+      const totalTimeText = user.total_hours > 0 || user.total_minutes > 0
+        ? `${user.total_hours}h ${user.total_minutes}m`
+        : '0h 0m';
+
+      // Get user initials for avatar
+      const nameParts = (user.user_name || 'Unknown').split(' ');
+      const initials = nameParts.length > 1
+        ? nameParts[0][0] + nameParts[nameParts.length - 1][0]
+        : nameParts[0][0];
+
+      // Generate color based on user_id
+      const colors = ['#667eea', '#f687b3', '#4fd1c5', '#f6ad55', '#fc8181', '#9f7aea'];
+      const colorIndex = (user.user_id.charCodeAt(0) + user.user_id.charCodeAt(1)) % colors.length;
+      const avatarColor = colors[colorIndex];
+
+      return `
+        <tr style="transition: all 0.2s ease;" 
+            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)';" 
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+          <td style="font-weight: 600; color: #a0aec0;">${index + 1}</td>
+          <td>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div style="
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: ${avatarColor};
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 600;
+                font-size: 14px;
+                flex-shrink: 0;
+              ">
+                ${initials.toUpperCase()}
+              </div>
+              <div>
+                <p style="font-weight: 600; color: #2d3748; margin-bottom: 2px;">${escapeHtml(user.user_name)}</p>
+                <p style="font-size: 12px; color: #a0aec0;">ID: ${user.user_id.substring(0, 8)}...</p>
+              </div>
+            </div>
+          </td>
+          <td>
+            <span style="color: #718096;">${escapeHtml(user.user_email)}</span>
+          </td>
+          <td style="text-align: center;">
+            <div style="
+              display: inline-block;
+              padding: 8px 16px;
+              background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+              border-radius: 12px;
+              font-weight: 600;
+              color: #667eea;
+            ">
+              ${totalTimeText}
+            </div>
+          </td>
+          <td style="text-align: center;">
+            <div style="
+              display: inline-block;
+              padding: 8px 16px;
+              background: linear-gradient(135deg, #f687b315 0%, #f6ad5515 100%);
+              border-radius: 12px;
+              font-weight: 600;
+              color: #f687b3;
+            ">
+              ${user.study_days_count} ${user.study_days_count === 1 ? 'day' : 'days'}
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function refreshData() {
+    loadStudyTrackerData();
+  }
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+</script>
+
+<%- include('../partials/footer') %>
